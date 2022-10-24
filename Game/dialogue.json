@@ -1,0 +1,36 @@
+{
+  "passage": [
+    {
+      "charecter": "Bob",
+      "position": "0, 0, -4",
+      "text": "Ahhh Hello there I am bob"
+    },
+    {
+      "charecter": "Bob",
+      "position": "0, 0, -6",
+      "text": "And your name is?"
+    },
+    {
+      "choice": [
+        {
+          "text": "Tell him the truth",
+          "linksToPassageIndex": 2
+        },
+        {
+          "text": "Tell him a lie",
+          "linksToPassageIndex": 3
+        }
+      ]
+    },
+    {
+      "charecter": "Bob",
+      "position": "0, 0, -4",
+      "text": "Ahh hello Mr Smith"
+    },
+    {
+      "charecter": "Bob",
+      "position": "-1, 0, -4",
+      "text": "What a weird name!"
+    }
+  ]
+}

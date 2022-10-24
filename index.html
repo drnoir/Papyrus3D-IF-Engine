@@ -1,0 +1,33 @@
+<!--This is where are game is generated based on the JSON files in GAME folder-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/aframe.min.js"></script>
+    <script src="js/main.js" type = "module"></script>
+</head>
+<body>
+<a-scene>
+    <a-asset-item id="bob" src="/models/bob/scene.gltf"></a-asset-item>
+    <a-entity camera look-controls position="0 1.6 -2"></a-entity>
+    // scene component allowing customisation etc -
+    //ADD CONSTRUCTORS FOR DIFFERENT SCENE TYPES? - ROOM, INSIDE, OUTSIDE ETC?
+    <a-entity scene position="0 0 -5">
+        <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#7BC8A4"></a-plane>
+        <a-box position="0 2 -2" rotation="0 0 0" width="20" height="5" color="red"></a-box>
+        <a-box position="0 2 10" rotation="0 0 0" width="20" height="5" color="red"></a-box>
+        <a-box position="0 5 0" rotation="-90 0 0" width="20" height="20" color="red"></a-box>
+        //characters DUMMY ENTITIES TESTING OUT
+        <a-entity charecters position="0 0 -10">
+            <a-entity gltf-model="#bob" position="0 0 12" rotation="0 0 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>
+            <a-entity gltf-model="#bob" position="-1.6 0 12" rotation="0 45 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>
+            <a-entity gltf-model="#bob" position="2 0 12" rotation="0 45 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>
+        </a-entity>
+    </a-entity>
+
+
+    <a-sky color="#ECECEC"></a-sky>
+</a-scene>
+</body>
+</html>
