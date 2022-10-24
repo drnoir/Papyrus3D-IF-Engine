@@ -9,25 +9,35 @@
 </head>
 <body>
 <a-scene>
-    <a-asset-item id="bob" src="/models/bob/scene.gltf"></a-asset-item>
-    <a-entity camera look-controls position="0 1.6 -2"></a-entity>
-    // scene component allowing customisation etc -
-    //ADD CONSTRUCTORS FOR DIFFERENT SCENE TYPES? - ROOM, INSIDE, OUTSIDE ETC?
-    <a-entity scene position="0 0 -5">
-        <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#7BC8A4"></a-plane>
-        <a-box position="0 2 -2" rotation="0 0 0" width="20" height="5" color="red"></a-box>
-        <a-box position="0 2 10" rotation="0 0 0" width="20" height="5" color="red"></a-box>
-        <a-box position="0 5 0" rotation="-90 0 0" width="20" height="20" color="red"></a-box>
-        //characters DUMMY ENTITIES TESTING OUT
-        <a-entity charecters position="0 0 -10">
-            <a-entity gltf-model="#bob" position="0 0 12" rotation="0 0 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>
-            <a-entity gltf-model="#bob" position="-1.6 0 12" rotation="0 45 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>
-            <a-entity gltf-model="#bob" position="2 0 12" rotation="0 45 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>
+    <a-entity camera look-controls position="0 1.6 -2">
+        <a-entity dialogueUI position="0 -0.53 -1" rotation="0 0 0" depth="0.01"
+                  geometry="primitive: plane; width: 4; height: auto"
+                  material="alphaTest:0.4; opacity: 0.8; transparent:true; color:black"
+                  text="width:3; wrapCount: 100;
+                  value:
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque porttitor odio consequat nunc blandit, vel semper ex accumsan. Duis dictum, augue at aliquam interdum, diam dolor vulputate augue, non aliquam metus mauris sed ligula. Donec at imperdiet sapien, in elementum ex. Etiam lacinia nunc a ornare iaculis. Donec semper nec sem quis pharetra. Nunc vel massa in tortor interdum pulvinar blandit vel risus. Aliquam eu tellus ut libero euismod malesuada. Suspendisse cursus tellus et enim consectetur, pulvinar lacinia risus egestas. Sed cursus ex id tellus dictum, id imperdiet elit lacinia. Vivamus viverra orci ipsum, vitae rutrum risus malesuada at. Cras quis viverra nunc, interdum tincidunt odio.
+                    Vivamus vehicula magna sit amet sem viverra, in rhoncus dolor elementum. Phasellus interdum semper mollis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst. In eget massa sed eros semper fringilla vel eget nulla. Etiam posuere mi nulla, ut porta orci ultrices ac.">   </a-entity>
+            <a-entity dialogueUI position="-0.5 0.05 -1" rotation="0 0 0" depth="0.01"
+                      geometry="primitive: plane; width: 5; height: 0.1"
+                      material="color:blue"
+                      text="width:2; color:black;
+                  value: Name: Bob Smith">
         </a-entity>
     </a-entity>
+    // scene component allowing customisation etc -
+    //ADD CONSTRUCTORS FOR DIFFERENT SCENE TYPES? - ROOM, INSIDE, OUTSIDE ETC?
+        <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#7BC8A4"></a-plane>
 
-
-    <a-sky color="#ECECEC"></a-sky>
+<!--        <a-box position="0 2 10" rotation="0 0 0" width="20" height="5" color="red"></a-box>-->
+<!--        <a-box position="0 5 0" rotation="-90 0 0" width="20" height="20" color="red"></a-box>-->
+<!--        //characters DUMMY ENTITIES TESTING OUT-->
+<!--        <a-entity charecters position="0 0 -10">-->
+<!--            <a-entity gltf-model="#bob" position="0 0 12" rotation="0 0 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>-->
+<!--            <a-entity gltf-model="#bob" position="-1.6 0 12" rotation="0 45 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>-->
+<!--            <a-entity gltf-model="#bob" position="2 0 12" rotation="0 45 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>-->
+<!--        </a-entity>-->
+<!--    </a-entity>-->
+    <a-sky color="#000000"></a-sky>
 </a-scene>
 </body>
 </html>

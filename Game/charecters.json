@@ -2,18 +2,8 @@
   "characters": [
     {
       "name": "Bob",
-      "id": "Bob",
-      "model": "models/bob.glb"
-    },
-    {
-      "name": "Madam",
-      "id": "Madam",
-      "model": "models/madam.glb"
-    },
-    {
-      "name": "Flame",
-      "id": "Flame",
-      "model": "models/flame.glb"
+      "id": "bob",
+      "model": "models/bob/scene.gltf"
     }
   ]
 }
