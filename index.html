@@ -10,19 +10,15 @@
 <body>
 <a-scene>
     <a-entity camera look-controls position="0 1.6 -2">
-        <a-entity dialogueUI position="0 -0.53 -1" rotation="0 0 0" depth="0.01"
-                  geometry="primitive: plane; width: 4; height: auto"
-                  material="alphaTest:0.4; opacity: 0.8; transparent:true; color:black"
-                  text="width:3; wrapCount: 100;
-                  value:
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque porttitor odio consequat nunc blandit, vel semper ex accumsan. Duis dictum, augue at aliquam interdum, diam dolor vulputate augue, non aliquam metus mauris sed ligula. Donec at imperdiet sapien, in elementum ex. Etiam lacinia nunc a ornare iaculis. Donec semper nec sem quis pharetra. Nunc vel massa in tortor interdum pulvinar blandit vel risus. Aliquam eu tellus ut libero euismod malesuada. Suspendisse cursus tellus et enim consectetur, pulvinar lacinia risus egestas. Sed cursus ex id tellus dictum, id imperdiet elit lacinia. Vivamus viverra orci ipsum, vitae rutrum risus malesuada at. Cras quis viverra nunc, interdum tincidunt odio.
-                    Vivamus vehicula magna sit amet sem viverra, in rhoncus dolor elementum. Phasellus interdum semper mollis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst. In eget massa sed eros semper fringilla vel eget nulla. Etiam posuere mi nulla, ut porta orci ultrices ac.">   </a-entity>
-            <a-entity dialogueUI position="-0.5 0.05 -1" rotation="0 0 0" depth="0.01"
-                      geometry="primitive: plane; width: 5; height: 0.1"
-                      material="color:blue"
-                      text="width:2; color:black;
-                  value: Name: Bob Smith">
-        </a-entity>
+<!--        <a-entity  position="-0.5 0 -1" rotation="0 0 0" depth="0.01"-->
+<!--                  geometry="primitive: plane; width: auto; height: auto"-->
+<!--                   material="alphaTest:0.4; opacity: 0.8; transparent:true; color:black"-->
+<!--                  text="width:2;-->
+<!--                  value: Name: Bob Smith">-->
+<!--        </a-entity>-->
+        <a-entity dialogueUI id = "dialogueID" position="0 -0.45 -1" rotation="0 0 0" depth="0.01"
+                  geometry="primitive: plane; width: auto; height: auto"
+                  material="alphaTest:0.4; opacity: 0.8; transparent:true; color:black"></a-entity>
     </a-entity>
     // scene component allowing customisation etc -
     //ADD CONSTRUCTORS FOR DIFFERENT SCENE TYPES? - ROOM, INSIDE, OUTSIDE ETC?

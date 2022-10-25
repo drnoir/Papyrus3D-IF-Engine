@@ -1,12 +1,12 @@
 {
   "passage": [
     {
-      "charecter": "Bob",
+      "char": "Bob",
       "position": "0, 0, -4",
       "text": "Ahhh Hello there I am bob"
     },
     {
-      "charecter": "Bob",
+      "char": "Bob",
       "position": "0, 0, -6",
       "text": "And your name is?"
     },
@@ -23,12 +23,12 @@
       ]
     },
     {
-      "charecter": "Bob",
+      "char": "Bob",
       "position": "0, 0, -4",
       "text": "Ahh hello Mr Smith"
     },
     {
-      "charecter": "Bob",
+      "char": "Bob",
       "position": "-1, 0, -4",
       "text": "What a weird name!"
     }

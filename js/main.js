@@ -1,11 +1,14 @@
 // main js
-// import {loadData} from './loader.js';
 
 // global game vars
 let config;
 let chars;
 let diag;
 let textures;
+
+// dialogueUI Elements
+const scene = document.querySelector('a-scene')
+const dialogueUI = document.getElementById("dialogueID");
 
 loadData();
 
@@ -15,6 +18,8 @@ async function loadData(){
    await loadChars();
    await  loadDiag();
    await  populateScene();
+   // testing dialogue UI population
+   populateDiag(3)
    console.log(typeof  config, chars, diag);
 }
 
@@ -36,7 +41,6 @@ async function loadDiag() {
 // populate scene function
 function populateScene(){
     // load assets
-    let scene = document.querySelector('a-scene')
     let assets = document.createElement('a-assets');
     scene.appendChild(assets);
     // add character info and model path
@@ -56,6 +60,8 @@ function populateScene(){
         char.setAttribute('scale', 1,1 ,1);
         scene.appendChild(char);
     }
+
+    createSquareRoom();
 }
 
 // function to move to next scene
@@ -65,6 +71,18 @@ function nextScene(){
 
 // function to clear scene
 function clearScene(){
+
+}
+
+function populateDiag(passageID){
+    let newPassage = diag.passage[passageID].text;
+    let newCharName = diag.passage[passageID].char;
+    dialogueUI.setAttribute('text', 'wrapCount:'+125);
+    dialogueUI.setAttribute('text', 'width:'+3,2);
+    dialogueUI.setAttribute('text', 'value:'+newCharName+'\n'+newPassage);
+}
+
+function populateChoiceUI(){
 
 }
 
@@ -81,4 +99,24 @@ function createRoom(roomType, roomWidth, roomHeight, roomDepth){
         default:
         // code block
     }
+}
+
+function createSquareRoom(){
+    let wall1= document.createElement('a-box');
+    let wall2= document.createElement('a-box');
+
+    wall1.setAttribute('position', '0 2 10');
+    wall1.setAttribute('rotation', '0 0 0');
+    wall1.setAttribute('width', '20');
+    wall1.setAttribute('height', '5');
+    wall1.setAttribute('color', 'lightblue');
+
+    wall2.setAttribute('position', '0 2 -10');
+    wall2.setAttribute('rotation', '0 0 0');
+    wall2.setAttribute('width', '20');
+    wall2.setAttribute('height', '5');
+    wall2.setAttribute('color', 'lightblue');
+
+    scene.appendChild(wall1);
+    scene.appendChild(wall2);
 }
