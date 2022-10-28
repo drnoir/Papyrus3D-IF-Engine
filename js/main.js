@@ -5,6 +5,7 @@ let config;
 let chars;
 let diag;
 let textures;
+let currentDiagID = 0;
 
 // dialogueUI Elements
 const scene = document.querySelector('a-scene')
@@ -16,10 +17,10 @@ async function loadData(){
 // game vars
    await loadConfig();
    await loadChars();
-   await  loadDiag();
-   await  populateScene();
+   await loadDiag();
+   await populateScene();
    // testing dialogue UI population
-   populateDiag(3)
+   populateDiag(0);
    console.log(typeof  config, chars, diag);
 }
 
@@ -66,7 +67,15 @@ function populateScene(){
 
 // function to move to next scene
 function nextScene(){
-
+    if (diag.passage.length-1!==currentDiagID) {
+        console.log(diag.passage.length-1, currentDiagID)
+        currentDiagID++;
+        populateDiag(currentDiagID)
+    }
+    else{
+        // reset for now
+        currentDiagID=0;
+    }
 }
 
 // function to clear scene
@@ -75,15 +84,14 @@ function clearScene(){
 }
 
 function populateDiag(passageID){
+    // add button test function
+    addButton();
     let newPassage = diag.passage[passageID].text;
     let newCharName = diag.passage[passageID].char;
+    currentDiagID = passageID;
     dialogueUI.setAttribute('text', 'wrapCount:'+125);
     dialogueUI.setAttribute('text', 'width:'+3,2);
     dialogueUI.setAttribute('text', 'value:'+newCharName+'\n'+newPassage);
-}
-
-function populateChoiceUI(){
-
 }
 
 // create room function
@@ -101,7 +109,7 @@ function createRoom(roomType, roomWidth, roomHeight, roomDepth){
     }
 }
 
-function createSquareRoom(){
+function createSquareRoom(textureWall, textureFloor){
     let wall1= document.createElement('a-box');
     let wall2= document.createElement('a-box');
 
@@ -120,3 +128,45 @@ function createSquareRoom(){
     scene.appendChild(wall1);
     scene.appendChild(wall2);
 }
+
+// UI functions - functions and actions for UI
+function populateChoiceUI(){
+
+}
+
+// show passagebtn relative to character model
+function addButton() {
+    // check if there is an existing button element firsst before adding a new one
+    if(!document.getElementById('nextPassageBtn')) {
+        let nextPassageBtn = document.createElement('a-box')
+        nextPassageBtn.setAttribute('id', 'nextPassageBtn');
+        nextPassageBtn.setAttribute('cursor-listener', '');
+        nextPassageBtn.setAttribute('depth', '0.01');
+        nextPassageBtn.setAttribute('height', '0.15');
+        nextPassageBtn.setAttribute('width', '0.15');
+        nextPassageBtn.setAttribute('material', 'color: red');
+        nextPassageBtn.setAttribute('position', '0.2 1.2  0.1');
+        // addtext
+        let nextPassageBtnTxt = document.createElement('a-text');
+        nextPassageBtnTxt.setAttribute('value', '>');
+        nextPassageBtnTxt.setAttribute('height', '1');
+        nextPassageBtnTxt.setAttribute('width', '3');
+        nextPassageBtnTxt.setAttribute('position', '-0.05 0.011 0.1');
+        nextPassageBtn.appendChild(nextPassageBtnTxt);
+
+        let bobGuy = document.getElementById('bobGuy') // FOR TESTING PURPOSES - needs to be passed associated char
+        bobGuy.appendChild(nextPassageBtn);
+
+    }
+    else{
+        console.log('Opps something went wrong - There is already a passage btn on the scene')
+    }
+}
+
+function removeButton() {
+    const passageBtn = document.getElementById('nextPassageBtn');
+    if (passageBtn !=null){
+        bobGuy.removeChild(passageBtn);
+    }
+}
+export {nextScene};

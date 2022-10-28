@@ -5,34 +5,37 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="js/aframe.min.js"></script>
-    <script src="js/main.js" type = "module"></script>
+    <script src="js/aframe-extras.min.js"></script>
+    <script src="js/main.js" type="module"></script>
+    <script src="js/components.js" type="module"></script>
 </head>
 <body>
 <a-scene>
+    <a-assets>
+        <a-asset-item id="bob" src="models/geek.glb"></a-asset-item>
+        <a-asset-item id="lady" src="models/lady.glb"></a-asset-item>
+    </a-assets>
+<!--    // scene-->
     <a-entity camera look-controls position="0 1.6 -2">
-<!--        <a-entity  position="-0.5 0 -1" rotation="0 0 0" depth="0.01"-->
-<!--                  geometry="primitive: plane; width: auto; height: auto"-->
-<!--                   material="alphaTest:0.4; opacity: 0.8; transparent:true; color:black"-->
-<!--                  text="width:2;-->
-<!--                  value: Name: Bob Smith">-->
-<!--        </a-entity>-->
-        <a-entity dialogueUI id = "dialogueID" position="0 -0.45 -1" rotation="0 0 0" depth="0.01"
+        <a-entity cursor="fuse: true; fuseTimeout: 500"
+                  position="0 0 -1"
+                  geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+                  material="color: black; shader: flat">
+        </a-entity>
+        <a-entity dialogueUI id="dialogueID" position="0 -0.45 -1" rotation="0 0 0" depth="0.01"
                   geometry="primitive: plane; width: auto; height: auto"
-                  material="alphaTest:0.4; opacity: 0.8; transparent:true; color:black"></a-entity>
+                  material="alphaTest:0.4; opacity: 0.8; transparent:true; color:black">
+        </a-entity>
     </a-entity>
-    // scene component allowing customisation etc -
-    //ADD CONSTRUCTORS FOR DIFFERENT SCENE TYPES? - ROOM, INSIDE, OUTSIDE ETC?
-        <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#7BC8A4"></a-plane>
-
-<!--        <a-box position="0 2 10" rotation="0 0 0" width="20" height="5" color="red"></a-box>-->
-<!--        <a-box position="0 5 0" rotation="-90 0 0" width="20" height="20" color="red"></a-box>-->
-<!--        //characters DUMMY ENTITIES TESTING OUT-->
-<!--        <a-entity charecters position="0 0 -10">-->
-<!--            <a-entity gltf-model="#bob" position="0 0 12" rotation="0 0 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>-->
-<!--            <a-entity gltf-model="#bob" position="-1.6 0 12" rotation="0 45 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>-->
-<!--            <a-entity gltf-model="#bob" position="2 0 12" rotation="0 45 0" animation-mixer scale="0.005 0.005 0.005"></a-entity>-->
-<!--        </a-entity>-->
-<!--    </a-entity>-->
+<!--    <a-box id="nextPassageBtn" cursor-listener depth="0.01" height="0.1" width="0.15" material="color: red" position="0.5 1.5 -3">-->
+        <a-text value=">" position="-0.09 0.011 0.1" height="0.5" width="2.5"></a-text>
+    </a-box>
+    <a-plane position="0 0 0" rotation="-90 0 0" width="20" height="20" color="#7BC8A4"></a-plane>
+    <!--        //characters DUMMY ENTITIES TESTING OUT-->
+            <a-entity charecters position="0 0 -1">
+                <a-entity id = "bobGuy" gltf-model="#bob" position="0 0 -3" rotation="0 0 0" animation-mixer="clip: *; loop: repeat; " scale="1.2 1.2 1.2".></a-entity>
+            </a-entity>
+        </a-entity>
     <a-sky color="#000000"></a-sky>
 </a-scene>
 </body>
