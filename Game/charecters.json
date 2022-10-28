@@ -1,9 +1,9 @@
 {
   "characters": [
     {
-      "name": "Bob",
+      "name": "bobGuy",
       "id": "bob",
-      "model": "models/bob/scene.gltf"
+      "model": "models/geek.glb"
     }
   ]
 }

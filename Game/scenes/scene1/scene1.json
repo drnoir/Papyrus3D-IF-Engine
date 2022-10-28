@@ -6,5 +6,7 @@
   "RoomWidth" : 8,
   "RoomHeight" : 10,
   "RoomDepth" : 20,
-  "skyColor":"blue"
+  "skyColor":"blue",
+  "foilage": "bush",
+  "foilageAmount": 8
 }
