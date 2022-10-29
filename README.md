@@ -1,4 +1,5 @@
 ## Papyrus 3D - Interactive Fiction Engine by Chris Godber
+#### GNU GENERAL PUBLIC LICENSE
 ##### Current Version: 0.0.1
 
 ### IDEA
