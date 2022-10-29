@@ -6,6 +6,7 @@ let diag;
 let textures;
 let currentDiagID = 0;
 let currentScene = 1;
+let currentChar;
 
 // dialogueUI Elements
 const scene = document.querySelector('a-scene');
@@ -46,8 +47,8 @@ function populateScene(){
     // add character info and model path
     for (let i = 0; i < chars.characters.length; i++) {
         let assetItem = document.createElement('a-asset-item');
-        assetItem.setAttribute('id',chars.characters[i].id)
-        assetItem.setAttribute('src',chars.characters[i].model)
+        assetItem.setAttribute('id',chars.characters[i].id);
+        assetItem.setAttribute('src',chars.characters[i].model);
         assets.appendChild(assetItem);
 
         // // add charecters to scene
@@ -69,9 +70,11 @@ function populateScene(){
 // function to move to next scene
 function nextScene(){
     if (diag.passage.length-1!==currentDiagID) {
+        currentChar = diag.passage[currentDiagID].char;
         console.log(diag.passage.length-1, currentDiagID)
         currentDiagID++;
-        populateDiag(currentDiagID)
+        populateDiag(currentDiagID);
+        makeCharActive(currentChar);
     }
     else{
         // reset for now
@@ -93,6 +96,14 @@ function populateDiag(passageID){
     dialogueUI.setAttribute('text', 'wrapCount:'+125);
     dialogueUI.setAttribute('text', 'width:'+3,2);
     dialogueUI.setAttribute('text', 'value:'+newCharName+'\n'+newPassage);
+}
+
+// make glow component show on specified char indicating char speaking
+function makeCharActive(charID) {
+    const charRef = document.getElementById(charID);
+    if (charRef.getAttribute('glowFX','visible:false;')) {
+        charRef.setAttribute('glowFX', 'visible:true;');
+    }
 }
 
 // create room function
@@ -192,6 +203,7 @@ function addButton() {
         console.log('Opps something went wrong - There is already a passage btn on the scene')
     }
 }
+
 
 function removeButton() {
     const passageBtn = document.getElementById('nextPassageBtn');

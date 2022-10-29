@@ -17,7 +17,7 @@ AFRAME.registerComponent('cursor-listener', {
 AFRAME.registerComponent('glowfx', {
     schema: {
         color: {type: 'color', default: 'white'},
-        visible: {type: 'boolean', default:  false}
+        visible: {type: 'boolean', default:  true}
     },
     init: function () {
         const data = this.data;
@@ -84,4 +84,43 @@ AFRAME.registerComponent('character', {
         // Do something the component or its entity is detached.
     },
 
+});
+
+AFRAME.registerComponent('hiddencollider', {
+    schema: {
+        visible: {type: 'boolean', default:  true},
+        body: {type: 'string', default:  'static-body'}
+    },
+    init: function () {
+        const data = this.data;
+        const el = this.el;
+        const visible = data.visible;
+        const elHeight = this.el.height; // HEIGHT WIDTH ETC
+        // Do something when component first attached
+
+        // not sure if it will work but this in theroy should get the geometry of the shape and clone it
+        const sourceGeo =  document.createElement('a-box');
+        console.log(sourceGeo)
+        const walls = document.querySelectorAll('rw-wall');
+        sourceGeo.setAttribute('visible', visible ); // we dont want this dummy geometry to be visisble
+
+// set attributes for 'dummy' collider geomoery
+        for (let i = 0; i < walls.length; i++) {
+            console.log(walls);
+            let wallsH = walls[i].height;
+            let wallsW = walls[i].width;
+            let wallsD = walls[i].depth;
+
+            console.log(wallsH )
+            sourceGeo.setAttribute('class', 'collider');
+            // this is static body from a-frame physcis sys attirbute
+            // sourceGeo.setAttribute('body', 'static-body');
+            sourceGeo.setAttribute('position', '0 0  0');
+            // sourceGeo.setAttribute('height','0.5');
+            // sourceGeo.setAttribute('width','0.5' );
+            // sourceGeo.setAttribute('depth','0.5');
+            // sourceGeo.setAttribute('scale','1 1 1');
+            walls[i].appendChild(sourceGeo);
+        }
+    },
 });

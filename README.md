@@ -18,10 +18,10 @@ Multi-Platform support - Desktop, Mobile, VR and (Possibly) AR.
 ### Possible Features
 * Further / optional - create interface for creating the branching narratives (similar to Twine) 
 
-### Current Teck Stack
-* Rendering / 3D - A-Frame
+### Current Tech Stack / dependecies
+* Rendering / 3D - A-Frame + a-frame component libraries 
 
-## Documentation
+## Documentation (WIP)
 
 * Creating Your Story
 
