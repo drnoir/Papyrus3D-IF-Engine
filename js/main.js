@@ -7,6 +7,7 @@ let textures;
 let currentDiagID = 0;
 let currentScene = 1;
 let currentChar;
+let mapSource = 0;
 
 // dialogueUI Elements
 const scene = document.querySelector('a-scene');
@@ -14,15 +15,18 @@ const assets = document.querySelector('a-assets');
 const dialogueUI = document.getElementById("dialogueID");
 loadData();
 
+
 async function loadData(){
 // game vars
    await loadConfig();
    await loadChars();
    await loadDiag(1);
-   await populateScene();
-   await populateDiag(0)
+   await loadMap(1);
+   await createRooms();
+   // await populateScene();
+   // await populateDiag(0)
    // testing dialogue.json UI population
-   console.log(config, chars, diag);
+   console.log(config, chars, diag, mapSource);
 }
 
 async function loadConfig() {
@@ -39,6 +43,12 @@ async function loadDiag(sceneToLoad) {
     let fetchURL = 'Game/scenes/scene'+sceneToLoad+'/dialogue.json';
     const res = await fetch(fetchURL)
     diag = await res.json();
+}
+
+async function loadMap(mapToLoad) {
+    let fetchURL = 'Game/scenes/scene'+mapToLoad+'/map.json';
+    const res = await fetch(fetchURL)
+    mapSource= await res.json();
 }
 
 
@@ -64,7 +74,9 @@ function populateScene(){
     }
 
 
-    createSquareRoom();
+    // createSquareRoom();
+
+    createRooms();
 }
 
 // function to move to next scene
@@ -170,6 +182,83 @@ function createSquareRoom(textureWall, textureFloor){
     scene.appendChild(wallSide2);
 }
 
+function createRooms() {
+    const mapData = mapSource.data;
+    console.log(mapData, mapSource.height)
+    const WALL_SIZE = 4;
+    const WALL_HEIGHT = 12;
+    const el = document.getElementById('room')
+    // let playerPos;
+    let wall;
+    let floor = document.createElement('a-plane');
+    let floorArea = (mapSource.width*mapSource.height);
+    floor.setAttribute('width', floorArea*2);
+    floor.setAttribute('height', floorArea*2);
+    floor.setAttribute('rotation', '-90 0 0');
+    floor.setAttribute('position', '0 -4 0');
+    floor.setAttribute('scale', '0.2 0.2 0.2');
+    floor.setAttribute('material', 'src: #grunge; repeat: 1 2');
+    el.appendChild(floor);
+
+    let ceil = document.createElement('a-box');
+    let ceilArea = (mapSource.width*mapSource.height);
+    ceil.setAttribute('width', ceilArea*2);
+    ceil.setAttribute('height', ceilArea*2);
+    ceil.setAttribute('rotation', '-90 0 0');
+    ceil.setAttribute('position', '0 6 0');
+    ceil.setAttribute('scale', '0.2 0.2 0.2');
+    ceil.setAttribute('material', 'src: #grunge; repeat: 1 2');
+    el.appendChild(ceil);
+
+    for (var x = 0; x <  mapSource.height; x++) {
+        for (var y = 0; y < mapSource.width; y++) {
+
+            const i = (y * mapSource.width) + x;
+            const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 1.5 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+
+            // if the number is 1 - 4, create a wall
+            if (mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
+                wall = document.createElement('a-box');
+                wall.setAttribute('width', WALL_SIZE);
+                wall.setAttribute('height', WALL_HEIGHT);
+                wall.setAttribute('depth', WALL_SIZE);
+                wall.setAttribute('position', position);
+                console.log(el, wall)
+                el.appendChild(wall);
+
+                // black wall
+                if (mapData[i] === 2) {
+                    wall.setAttribute('color', '#000');
+                    wall.setAttribute('static-body', '');
+                }
+                // secretwall
+                else if (mapData[i] === 3) {
+                    wall.setAttribute('color', '#fff');
+                    wall.setAttribute('material', 'src: #brick;; repeat: 1 20');
+                }
+                // brick wall
+                else if (mapData[i] === 4) {
+                    wall.setAttribute('color', '#fff');
+                    wall.setAttribute('material', 'src: #brick; repeat: 20 20');
+                    wall.setAttribute('static-body', '');
+                } else { // normal walls
+                    wall.setAttribute('color', '#fff');
+                    wall.setAttribute('material', 'src: #brick; repeat: 0.2 0.25');
+                    wall.setAttribute('static-body', '');
+                }
+            }
+            // set player position if the number is a 2
+            // if (mapData === 8) {
+            //     playerPos = position;
+            // }
+            // if (mapData === 9) {
+            //     console.log(position);
+            // }
+        }
+    }
+    // document.querySelector('#player').setAttribute('position', playerPos);
+}
+
 // UI functions - functions and actions for UI
 function populateChoiceUI(){
 
@@ -204,11 +293,11 @@ function addButton() {
     }
 }
 
-
 function removeButton() {
     const passageBtn = document.getElementById('nextPassageBtn');
     if (passageBtn !=null){
         bobGuy.removeChild(passageBtn);
     }
 }
+
 export {nextScene};
