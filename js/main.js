@@ -24,7 +24,7 @@ async function loadData(){
    await loadMap(1);
    await createRooms();
    // await populateScene();
-   // await populateDiag(0)
+   await populateDiag(0)
    // testing dialogue.json UI population
    console.log(config, chars, diag, mapSource);
 }
@@ -76,7 +76,20 @@ function populateScene(){
 
     // createSquareRoom();
 
-    createRooms();
+}
+
+function addChar(charID){
+    console.log(chars.characters[charID].id, chars.characters[charID].name);
+    let modelRef = chars.characters[charID].id;
+    let modelID = '#'+modelRef;
+    console.log(modelRef);
+    let char = document.createElement('a-entity');
+    char.setAttribute('name', chars.characters[charID].name);
+    char.setAttribute('gltf-model', modelID );
+    // char.setAttribute('position', '0 -5 -5');
+    char.setAttribute('scale', "3 3 3");
+
+    return char;
 }
 
 // function to move to next scene
@@ -184,9 +197,15 @@ function createSquareRoom(textureWall, textureFloor){
 
 function createRooms() {
     const mapData = mapSource.data;
-    console.log(mapData, mapSource.height)
-    const WALL_SIZE = 4;
-    const WALL_HEIGHT = 12;
+    console.log(mapData, mapSource.height);
+
+    // char info
+    const chars = mapSource.chars;
+    const charNum = mapSource.charnumber;
+    let charLoopIndex =0;
+
+    const WALL_SIZE = 5;
+    const WALL_HEIGHT = 10;
     const el = document.getElementById('room')
     // let playerPos;
     let wall;
@@ -215,7 +234,18 @@ function createRooms() {
 
             const i = (y * mapSource.width) + x;
             const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 1.5 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-
+            const charPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} -4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            // console.log(mapData[i].charAt(0));
+            // char
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c"){
+                console.log("its a char!")
+                    let charID = mapSource.chars.id;
+                    let char = addChar(charLoopIndex);
+                    console.log('char ran and char is' + char)
+                    char.setAttribute('position', charPos);
+                    el.appendChild(char);
+                    charLoopIndex++
+            }
             // if the number is 1 - 4, create a wall
             if (mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
                 wall = document.createElement('a-box');
@@ -246,6 +276,8 @@ function createRooms() {
                     wall.setAttribute('material', 'src: #brick; repeat: 0.2 0.25');
                     wall.setAttribute('static-body', '');
                 }
+
+
             }
             // set player position if the number is a 2
             // if (mapData === 8) {
