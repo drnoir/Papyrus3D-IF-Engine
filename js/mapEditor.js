@@ -86,6 +86,20 @@ function createRooms() {
                 el.appendChild(char);
                 charLoopIndex++;
             }
+
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "d"){
+                console.log("its a door!")
+                const door = document.createElement('a-box');
+                door.setAttribute('width', WALL_SIZE);
+                door.setAttribute('height', WALL_HEIGHT);
+                door.setAttribute('depth', WALL_SIZE);
+                door.setAttribute('position', position);
+                door.setAttribute('material', 'src: #door; repeat: 20 20');
+                // create component for door / lock
+                door.setAttribute('locked', 'false');
+
+            }
+
             // if the number is 1 - 4, create a wall
             if (mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
                 wall = document.createElement('a-box');

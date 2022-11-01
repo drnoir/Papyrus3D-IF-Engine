@@ -8,6 +8,7 @@
     {
       "char": "bobGuy",
       "position": "0, 0, -6",
+      "moveToCam": "2",
       "text": "Suspendisse quis tincidunt tellus. Nullam est ligula, auctor et purus in, viverra congue augue. Donec erat dolor, venenatis eget nulla ut, eleifend dapibus arcu. Fusce imperdiet turpis sed enim auctor congue. Nulla non odio euismod, tincidunt urna ut, maximus nisl. Curabitur ornare tellus non augue convallis aliquam. Sed ultricies felis vel orci dapibus pellentesque. Integer ultrices quam a odio eleifend pretium. Aliquam nec leo iaculis, auctor nisl ut, facilisis eros. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus"
     },
     {
