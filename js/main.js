@@ -202,8 +202,8 @@ function createRooms() {
         el.appendChild(ceil);
     }
 
-    for (var x = 0; x < mapSource.height; x++) {
-        for (var y = 0; y < mapSource.width; y++) {
+    for (let x = 0; x < mapSource.height; x++) {
+        for (let y = 0; y < mapSource.width; y++) {
 
             const i = (y * mapSource.width) + x;
             const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 1.5 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;

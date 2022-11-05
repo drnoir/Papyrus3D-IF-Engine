@@ -1,0 +1,35 @@
+{
+  "name": "papyrus3dengine",
+  "version": "1.0.0",
+  "description": "Build an engine for generating 3D interactive Fiction games based on JSON inputs. ",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drnoir/Papyrus3D-IF-Engine.git"
+  },
+  "keywords": [
+    "open",
+    "source",
+    "metaverse",
+    "VR",
+    "AR",
+    "engine",
+    "game",
+    "engine",
+    "GNU",
+    "papyus",
+    "interactive"
+  ],
+  "author": "Christopher Godber",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/drnoir/Papyrus3D-IF-Engine/issues"
+  },
+  "homepage": "https://github.com/drnoir/Papyrus3D-IF-Engine#readme",
+  "devDependencies": {
+    "make-dir-webpack-plugin": "^0.1.0"
+  }
+}

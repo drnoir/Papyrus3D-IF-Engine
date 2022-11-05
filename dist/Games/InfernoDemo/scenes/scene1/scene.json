@@ -1,0 +1,12 @@
+{
+  "SceneName": "Scene1",
+  "Author" : "Chris Godber",
+  "roomtype": "Outdoor",
+  "RoomTextures" : "Brick",
+  "RoomWidth" : 8,
+  "RoomHeight" : 10,
+  "RoomDepth" : 20,
+  "skyColor":"blue",
+  "foilage": "bush",
+  "foilageAmount": 8
+}
