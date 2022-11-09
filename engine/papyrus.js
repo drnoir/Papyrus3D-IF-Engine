@@ -153,6 +153,7 @@ function createRooms() {
         ceil.setAttribute('height', ceilArea * 2);
         ceil.setAttribute('rotation', '-90 0 0');
         ceil.setAttribute('position', '0 4 0');
+        ceil.setAttribute('static-body', '');
         ceil.setAttribute('scale', '0.2 0.2 0.2');
         ceil.setAttribute('material', 'src: #grunge; repeat: 1 2');
         el.appendChild(ceil);
@@ -171,22 +172,33 @@ function createRooms() {
                 let char = addChar(charLoopIndex);
                 console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
+                char.setAttribute('static-body', '');
                 el.appendChild(char);
+
                 charLoopIndex++;
             }
+
+            if (mapData[i] === 9 ) {
+                const enemy1 = document.createElement('a-entity');
+                enemy1.setAttribute('enemy', 'modelPath:./models/monster.glb');
+                enemy1.setAttribute('id','enemy');
+                enemy1.setAttribute('position',position);
+                el.appendChild(enemy1);
+            }
             // add torch / light
-            else if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "t") {
+             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "t") {
                 console.log("its a torch!")
                 let torch = addTorch('yellow', i);
                 console.log('torch ran and char is' + torch)
                 torch.setAttribute('position', torchPosition );
-                let floor = document.createElement('a-entity');
-                floor.setAttribute('height', WALL_HEIGHT / 20);
-                floor.setAttribute('static-body', '');
-                floor.setAttribute('position', position);
-                floor.setAttribute('editor-listener', '');
+                // let floor = document.createElement('a-entity');
+                // floor.setAttribute('height', WALL_HEIGHT / 20);
+                // floor.setAttribute('static-body', '');
+                // floor.setAttribute('position', position);
+                // floor.setAttribute('editor-listener', '');
+                // floor.setAttribute('static-body', '');
                 el.appendChild(torch);
-                el.appendChild(floor);
+                // el.appendChild(floor);
             }
             // add   cam - UPDATE CONDITIONAL THIS IS TERRIBLE JSUT KEEPING IT FOR TESTING
             else if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "a") {
@@ -205,6 +217,7 @@ function createRooms() {
                 wall.setAttribute('height', WALL_HEIGHT);
                 wall.setAttribute('depth', WALL_SIZE);
                 wall.setAttribute('position', position);
+                wall.setAttribute('static-body', '');
                 // console.log(el, wall)
                 el.appendChild(wall);
 
@@ -217,7 +230,7 @@ function createRooms() {
                     wall.setAttribute('material', 'src: #floor; repeat: 1 1');
                     wall.setAttribute('editor-listener', '');
                 }
-
+                // 1/2 height wall
                 if (mapData[i] === 2) {
                     // wall.setAttribute('color', '#000');
                     wall.setAttribute('height', WALL_HEIGHT / 2);
@@ -233,22 +246,35 @@ function createRooms() {
                     // create component for door / lock
                     door.setAttribute('locked', 'false');
                 }
+                // play pos
                 else if (mapData === 8) {
-                    // const playerInitPos = document.getElementById('cam1');
                     const playerStart = document.createElement('a-entity');
                     playerStart.setAttribute('playercam', '');
-                    playerStart.setAttribute('position:',position)
+                    playerStart.setAttribute('position',position)
+                    playerStart.setAttribute('static-body', '');
                     el.appendChild(playerStart);
                 }
                 else { // normal walls
-                    wall.setAttribute('color', '#fff');
+                    let floor = document.createElement('a-entity');
+                    floor.setAttribute('height', WALL_HEIGHT / 20);
+                    floor.setAttribute('static-body', '');
+                    floor.setAttribute('position', position);
                     wall.setAttribute('material', 'src: #brick; repeat: 1 1');
-                    wall.setAttribute('static-body', '');
+                    floor.setAttribute('editor-listener', '');
+                    floor.setAttribute('static-body', '');
+                    el.appendChild(floor);
                 }
             }
         }
     }
 // document.querySelector('#player').setAttribute('position', playerPos);
+    MapMaker(mapData);
+}
+
+function MapMaker(mapData){
+    const playerMap = document.createElement('a-entity');
+    playerMap.setAttribute('playermap', '');
+    document.querySelector('#mapUI').appendChild(playerMap)
 }
 
 // UI functions - functions and actions for UI
@@ -288,5 +314,10 @@ function removeButton() {
         bobGuy.removeChild(passageBtn);
     }
 }
+
+function updatePlayerPos(newPlayPos){
+   document.querySelector('#player').setAttribute('position', newPlayPos);
+}
+
 
 export {nextScene};

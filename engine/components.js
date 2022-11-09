@@ -98,6 +98,100 @@ AFRAME.registerComponent('playercam', {
 
 });
 
+// player componenet
+AFRAME.registerComponent('playermap', {
+    schema: {
+        color: {type: 'color', default: 'white'},
+        position:{type: 'string', default: '0 0 -3'},
+        rotation:{type: 'string', default: '0 0 0'},
+        scale:{type: 'string', default: '1 1 1'},
+        mapNum: {type: 'number', default: 1},
+    },
+    init: function () {
+        const data = this.data;
+        const el = this.el;
+        let scale = data.scale;
+        let pos = data.position;
+        let rot = data.rotation;
+        let mapNum = data.mapNum;
+        const elScale = this.el.scale;
+
+        //fetch map JSOn
+        const mapSource = loadMap(mapNum);
+        console.log(mapSource);
+        console.log(mapSource, mapSource.height);
+        // let roomType = sceneMetadata.roomtype;
+
+
+        const WALL_SIZE = 2;
+        const WALL_HEIGHT = 8;
+        const WALL_MAP_SIZE = mapSource.height * mapSource.width / mapSource.length;
+        const mapContainer =  document.createElement('a-plane');
+        mapContainer.setAttribute('height', 10);
+        mapContainer.setAttribute('width', 10);
+        el.appendChild(mapContainer);
+        // let playerPos;
+        let mapWall;
+        for (let x = 0; x < mapSource.height; x++) {
+            for (let y = 0; y < mapSource.width; y++) {
+                const i = (y * mapSource.width) + x;
+                const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+
+                // if the number is 1 - 4, create a wall
+                if (mapSource[i] === 0 || mapSource[i] === 1 ||mapSource[i] == 2 || mapSource[i] === 3) {
+                    // floor
+                    if (mapSource[i] === 0) {
+                        mapWall = document.createElement('a-entity');
+                        mapWall.setAttribute('geometry','primitive: box; width:'+WALL_MAP_SIZE+'height:'+WALL_MAP_SIZE+'depth:'+WALL_MAP_SIZE);
+                        mapWall.setAttribute('position', position);
+                        mapWall.setAttribute('color', 'yellow');
+                        mapWall.setAttribute('color', 'yellow');
+                        mapWall.setAttribute('scale', WALL_MAP_SIZE);
+                        mapContainer.appendChild(mapWall);
+                    }
+                    // 1/2 height wall
+                    if (mapSource[i] === 2) {
+                        mapWall = document.createElement('a-entity');
+                        mapWall.setAttribute('geometry','primitive: box; width:'+WALL_MAP_SIZE+'height:'+WALL_MAP_SIZE+'depth:'+WALL_MAP_SIZE);
+                        mapWall.setAttribute('position', position);
+                        mapWall.setAttribute('color', 'blue');
+                        mapWall.setAttribute('scale', WALL_MAP_SIZE);
+                        mapContainer.appendChild(mapWall);
+                    }
+                    // door
+                    if (mapSource[i] === 3) {
+                        mapWall = document.createElement('a-entity');
+                        mapWall.setAttribute('geometry','primitive: box; width:'+WALL_MAP_SIZE+'height:'+WALL_MAP_SIZE+'depth:'+WALL_MAP_SIZE);
+                        mapWall.setAttribute('position', position);
+                        mapWall.setAttribute('color', 'brown');
+                        mapWall.setAttribute('scale', WALL_MAP_SIZE);
+                        mapContainer.appendChild(mapWall);
+                    }
+                    // play pos
+                    // else if (mapData === 8) {
+                    //     const playerStart = document.createElement('a-entity');
+                    //
+                    // }
+                    else { // normal walls
+                        mapWall = document.createElement('a-entity');
+                        mapWall.setAttribute('geometry','primitive: box; width:'+WALL_MAP_SIZE+'height:'+WALL_MAP_SIZE+'depth:'+WALL_MAP_SIZE);
+                        mapWall.setAttribute('position', position);
+                        mapWall.setAttribute('color', 'blue');
+                        mapWall.setAttribute('scale', WALL_MAP_SIZE);
+                        mapContainer.appendChild(mapWall);
+                    }
+                }
+            }
+        }
+    },
+
+    remove: function () {
+        // Do something the component or its entity is detached.
+    },
+
+});
+
+
 
 AFRAME.registerComponent('character', {
     schema: {
@@ -140,6 +234,46 @@ AFRAME.registerComponent('character', {
 });
 
 
+AFRAME.registerComponent('enemy', {
+    schema: {
+        color: {type: 'color', default: 'white'},
+        modelPath: {type: 'string', default: './models/demon.glb'},
+        position:{type: 'string', default: '0 0.7 0'},
+        rotation:{type: 'string', default: '0 0 0'},
+        scale:{type: 'string', default: '0.1 0.1 0.1'},
+        animated: {type: 'boolean', default:  false},
+        glowOn: {type: 'boolean', default:  false}
+    },
+    init: function () {
+        const data = this.data;
+        const el = this.el;
+        const modelPath = data.modelPath;
+        let scale = data.scale;
+        let pos = data.position;
+        let rot = data.rotation;
+        let animated = data.animated;
+        let glowOn = data.glowOn;
+        const elScale = this.el.scale;
+        // create a char based on attributes
+        const newEnemy = document.createElement('a-entity');
+        newEnemy.setAttribute('position',pos);
+        newEnemy.setAttribute('glowFX','visible:'+glowOn);
+        newEnemy.setAttribute('gltf-model', modelPath);
+        newEnemy.setAttribute('scale', scale);
+        if (animated) {
+            newEnemy.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
+        }
+        newEnemy.setAttribute('rotation',rot);
+        el.appendChild( newEnemy);
+    },
+
+    remove: function () {
+        // Do something the component or its entity is detached.
+    },
+
+});
+
+
 AFRAME.registerComponent('intersection-spawn', {
     schema: {
         default: '',
@@ -168,3 +302,10 @@ AFRAME.registerComponent('intersection-spawn', {
         });
     }
 });
+
+async function loadMap(mapToLoad) {
+    let fetchURL = './scenes/scene' + mapToLoad + '/map.json';
+    const res = await fetch(fetchURL)
+    let mapSource = await res.json();
+    return mapSource;
+}

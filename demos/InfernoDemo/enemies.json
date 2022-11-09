@@ -1,0 +1,10 @@
+{
+  "enemies": [
+    {
+      "name": "demon",
+      "id": "demon",
+      "model": "models/monster.glb",
+      "scale": 0.2
+    }
+  ]
+}

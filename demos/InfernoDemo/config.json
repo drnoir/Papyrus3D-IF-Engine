@@ -3,5 +3,7 @@
   "Author" : "Bob Smith",
   "UIBackgroundColour": "blue",
   "UITextColour": "white",
-  "UIBackgroundTexture":null
+  "UIBackgroundTexture":null,
+  "CombatDiceNumber": 20,
+  "ChecksDiceNumber": 4
 }
