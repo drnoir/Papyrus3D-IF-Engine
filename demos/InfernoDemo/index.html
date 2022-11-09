@@ -31,9 +31,9 @@
             <img id="grunge" src="textures/structures/grunge.jpg">
     </a-assets>
 
-    <a-entity id="playercam" position="25 10 0">
-        <a-entity id="camera" camera look-controls>
-            <a-entity id="mapUI" playermap="sourceArrMap:map" position="-8 0 -12"></a-entity>
+    <a-entity id="playercam" position="0 1 0">
+        <a-entity id="camera" camera look-controls wasd-controls>
+            <a-entity id="mapUI" playermap="sourceArrMap:map" scale ="0.02 0.02 0.02"position="-0.2 0 -0.2"></a-entity>
         </a-entity>
     </a-entity>
     <a-entity environment ="preset: volcano; ground:flat; playArea:300;" position="0 0 -20"></a-entity>
