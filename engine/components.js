@@ -1,4 +1,4 @@
-import {nextScene} from "./papyrus";
+import {nextScene} from "./papyrus.js";
 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -42,11 +42,68 @@ AFRAME.registerComponent('glowfx', {
     },
 });
 
+// player componenet
+AFRAME.registerComponent('playercam', {
+    schema: {
+        color: {type: 'color', default: 'white'},
+        position:{type: 'string', default: '0 0 -3'},
+        rotation:{type: 'string', default: '0 0 0'},
+        scale:{type: 'string', default: '1 1 1'},
+        camNum: {type: 'number', default: 1},
+        camTestMode:{type: 'boolean', default:  false}
+    },
+    init: function () {
+        const data = this.data;
+        const el = this.el;
+        let scale = data.scale;
+        let pos = data.position;
+        let rot = data.rotation;
+        let camnum = data.camNum;
+        const elScale = this.el.scale;
+
+        const newCursor= document.createElement('a-entity');
+        const newDialogueUI = document.createElement('a-entity');
+        const newCam = document.createElement('a-entity');
+        // create cam
+        newCam.setAttribute('position',pos);
+        newCam.setAttribute('id','player');
+        newCam.setAttribute('class','cam'+camnum);
+        // testing mode allows for wasd for wondering around
+        if (data.camTestMode) {
+            newCam.setAttribute('wasd-controls', '');
+        }
+        newCam.setAttribute('look-controls', '');
+        newCam.setAttribute('camera', '');
+        const scene = document.getElementsByName('a-scene');
+        scene.appendChild(newCam);
+
+        // create cursor
+        newCursor.setAttribute('position','0 0 -1');
+        newCursor.setAttribute('cursor','fuse: true; fiseTimeout:500');
+        newCursor.setAttribute('geometry', 'primitive: ring; radiusInner: 0.02; radiusOuter: 0.03');
+        newCursor.setAttribute('material', 'color: black; shader: flat');
+       // create dialogue box
+        newDialogueUI.setAttribute('id','dialogueID');
+        newDialogueUI.setAttribute('position','0 -0.45 -1');
+        newDialogueUI.setAttribute('geometry:', "primitive: plane; width: auto; height: auto");
+        newDialogueUI.setAttribute('material:', 'alphaTest:0.4; opacity: 0.8; transparent:true; color:black');
+
+        newCam.appendChild(newCursor);
+        newCam.appendChild( newDialogueUI);
+    },
+
+    remove: function () {
+        // Do something the component or its entity is detached.
+    },
+
+});
+
+
 AFRAME.registerComponent('character', {
     schema: {
         color: {type: 'color', default: 'white'},
-        modelPath: {type: 'string', default: 'white'},
-        position:{type: 'string', default: '0 0 -3'},
+        modelPath: {type: 'string', default: 'models/model.glb'},
+        position:{type: 'string', default: '0 0.5 -3'},
         rotation:{type: 'string', default: '0 0 0'},
         scale:{type: 'string', default: '1 1 1'},
         animated: {type: 'boolean', default:  false},

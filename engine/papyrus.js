@@ -13,7 +13,7 @@ let mapSource = 0;
 // dialogueUI Elements
 const scene = document.querySelector('a-scene');
 const assets = document.querySelector('a-assets');
-const dialogueUI = document.getElementById("dialogueID");
+
 loadData();
 
 async function loadData() {
@@ -25,35 +25,35 @@ async function loadData() {
     await loadSceneMetaData(1);
     await createRooms();
     // await populateScene();
-    await populateDiag(0)
+    // await populateDiag(0)
     // testing dialogue.json UI population
     console.log(config, chars, diag, mapSource);
 }
 
 async function loadConfig() {
-    const res = await fetch('./Games/config.json')
+    const res = await fetch('config.json')
     config = await res.json();
 }
 
 async function loadChars() {
-    const res = await fetch('/scenes/characters.json')
+    const res = await fetch('characters.json')
     chars = await res.json();
 }
 
 async function loadDiag(sceneToLoad) {
-    let fetchURL = './InfernoDemo/scenes/scene' + sceneToLoad + '/dialogue.json';
+    let fetchURL = './scenes/scene' + sceneToLoad + '/dialogue.json';
     const res = await fetch(fetchURL)
     diag = await res.json();
 }
 
 async function loadMap(mapToLoad) {
-    let fetchURL = './InfernoDemo/scenes/scene' + mapToLoad + '/map.json';
+    let fetchURL = './scenes/scene' + mapToLoad + '/map.json';
     const res = await fetch(fetchURL)
     mapSource = await res.json();
 }
 
 async function loadSceneMetaData(metaDataToLoad) {
-    let fetchURL = './InfernoDemo/scenes/scene' + metaDataToLoad + '/scene1.json';
+    let fetchURL = './scenes/scene' + metaDataToLoad + '/scene.json';
     const res = await fetch(fetchURL)
     sceneMetadata = await res.json();
 }
@@ -78,7 +78,7 @@ function addTorch(torchColor, torchIndex) {
     let torch = document.createElement('a-box');
     torch.setAttribute('id', torch + [torchIndex]);
     let fire = document.createElement('a-entity');
-    fire.setAttribute('light', 'type: point; intensity: 0.75; distance: 50; decay: 2');
+    fire.setAttribute('light', 'type: point; intensity: 0.10; distance: 1; decay: 0');
     fire.setAttribute('color' + torchColor);
     torch.appendChild(fire);
     return torch;
@@ -101,6 +101,7 @@ function clearScene() {
 
 }
 function populateDiag(passageID, currentChar) {
+    const dialogueUI = document.getElementById("dialogueID");
     // add button test function
     addButton(currentChar);
     let newPassage = diag.passage[passageID].text;
@@ -140,8 +141,8 @@ function createRooms() {
     const charNum = mapSource.charnumber;
     let charLoopIndex = 0;
 
-    const WALL_SIZE = 5;
-    const WALL_HEIGHT = 15;
+    const WALL_SIZE = 2;
+    const WALL_HEIGHT = 8;
     const el = document.getElementById('room')
     // let playerPos;
     let wall;
@@ -151,7 +152,7 @@ function createRooms() {
         ceil.setAttribute('width', ceilArea * 2);
         ceil.setAttribute('height', ceilArea * 2);
         ceil.setAttribute('rotation', '-90 0 0');
-        ceil.setAttribute('position', '0 6 0');
+        ceil.setAttribute('position', '0 4 0');
         ceil.setAttribute('scale', '0.2 0.2 0.2');
         ceil.setAttribute('material', 'src: #grunge; repeat: 1 2');
         el.appendChild(ceil);
@@ -161,10 +162,9 @@ function createRooms() {
 
             const i = (y * mapSource.width) + x;
             const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-            const halfYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} -3 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const halfYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const charPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} -4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-            const torchPosition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 2.5 ${(y - (mapSource.height / 2)) * WALL_SIZE / 1.2}`;
-            // console.log(mapData[i].charAt(0));
+            const torchPosition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             // char
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "h") {
                 console.log("its a char!")
@@ -179,16 +179,20 @@ function createRooms() {
                 console.log("its a torch!")
                 let torch = addTorch('yellow', i);
                 console.log('torch ran and char is' + torch)
-                torch.setAttribute('position', torchPosition);
-                torch.setAttribute('position', torchPosition);
+                torch.setAttribute('position', torchPosition );
+                let floor = document.createElement('a-entity');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', position);
+                floor.setAttribute('editor-listener', '');
                 el.appendChild(torch);
+                el.appendChild(floor);
             }
-
             // add   cam - UPDATE CONDITIONAL THIS IS TERRIBLE JSUT KEEPING IT FOR TESTING
             else if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "a") {
                 const camPoint = document.createElement('a-entity');
                 camPoint.setAttribute('id', 'cam' + [i]);
-                camPoint.setAttribute('position', position);
+                camPoint.setAttribute('player','position:'+position);
                 const camPointDebug = document.createElement('a-box');
                 camPointDebug.setAttribute('visible', false)
                 el.appendChild(camPoint);
@@ -201,7 +205,7 @@ function createRooms() {
                 wall.setAttribute('height', WALL_HEIGHT);
                 wall.setAttribute('depth', WALL_SIZE);
                 wall.setAttribute('position', position);
-                console.log(el, wall)
+                // console.log(el, wall)
                 el.appendChild(wall);
 
                 // floor
@@ -210,6 +214,7 @@ function createRooms() {
                     wall.setAttribute('height', WALL_HEIGHT / 20);
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', position);
+                    wall.setAttribute('material', 'src: #floor; repeat: 1 1');
                     wall.setAttribute('editor-listener', '');
                 }
 
@@ -217,28 +222,30 @@ function createRooms() {
                     // wall.setAttribute('color', '#000');
                     wall.setAttribute('height', WALL_HEIGHT / 2);
                     wall.setAttribute('static-body', '');
+                    wall.setAttribute('material', 'src: #floorboards; repeat: 1 1');
                     wall.setAttribute('position', halfYposition);
                 }
                 // door
-                else if (mapData[i] === 3) {
+                if (mapData[i] === 3) {
                     const door = document.createElement('a-box');
                     door.setAttribute('id', door);
-                    door.setAttribute('material', 'src: #door; repeat: 1 1');
+                    door.setAttribute('material', 'src: #wooddoor; repeat: 1 1');
                     // create component for door / lock
                     door.setAttribute('locked', 'false');
-                } else { // normal walls
+                }
+                else if (mapData === 8) {
+                    // const playerInitPos = document.getElementById('cam1');
+                    const playerStart = document.createElement('a-entity');
+                    playerStart.setAttribute('playercam', '');
+                    playerStart.setAttribute('position:',position)
+                    el.appendChild(playerStart);
+                }
+                else { // normal walls
                     wall.setAttribute('color', '#fff');
                     wall.setAttribute('material', 'src: #brick; repeat: 1 1');
                     wall.setAttribute('static-body', '');
                 }
             }
-            // set player position if the number is a 2
-            // if (mapData === 8) {
-            //     playerPos = position;
-            // }
-            // if (mapData === 9) {
-            //     console.log(position);
-            // }
         }
     }
 // document.querySelector('#player').setAttribute('position', playerPos);
@@ -268,7 +275,7 @@ function addButton(activeChar) {
         nextPassageBtnTxt.setAttribute('width', '3');
         nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1');
         nextPassageBtn.appendChild(nextPassageBtnTxt);
-        let bobGuy = document.getElementById(activeChar) // FOR TESTING PURPOSES - needs to be passed associated char
+        let bobGuy = document.getElementById('bobGuy') // FOR TESTING PURPOSES - needs to be passed associated char
         bobGuy.appendChild(nextPassageBtn);
     } else {
         console.log('Opps something went wrong - There is already a passage btn on the scene')
@@ -282,4 +289,4 @@ function removeButton() {
     }
 }
 
-// export {nextScene};
+export {nextScene};
