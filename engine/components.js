@@ -238,9 +238,12 @@ AFRAME.registerComponent('enemy', {
     schema: {
         color: {type: 'color', default: 'white'},
         modelPath: {type: 'string', default: './models/demon.glb'},
+        modelID: {type: 'string', default: 'demon'},
+        modelMat: {type: 'string', default: 'demonMat'},
+        format: {type: 'string', default: 'glb'},
         position:{type: 'string', default: '0 0.7 0'},
         rotation:{type: 'string', default: '0 0 0'},
-        scale:{type: 'string', default: '0.1 0.1 0.1'},
+        scale:{type: 'string', default: '0.2 0.2 0.2'},
         animated: {type: 'boolean', default:  false},
         glowOn: {type: 'boolean', default:  false}
     },
@@ -248,9 +251,12 @@ AFRAME.registerComponent('enemy', {
         const data = this.data;
         const el = this.el;
         const modelPath = data.modelPath;
+        const modelID = data.modelID;
+        const modelMat = data.modelID;
         let scale = data.scale;
         let pos = data.position;
         let rot = data.rotation;
+        let format = data.format;
         let animated = data.animated;
         let glowOn = data.glowOn;
         const elScale = this.el.scale;
@@ -258,7 +264,12 @@ AFRAME.registerComponent('enemy', {
         const newEnemy = document.createElement('a-entity');
         newEnemy.setAttribute('position',pos);
         newEnemy.setAttribute('glowFX','visible:'+glowOn);
-        newEnemy.setAttribute('gltf-model', modelPath);
+        if (format === "glb") {
+            newEnemy.setAttribute('gltf-model', modelPath);
+        }
+        else{
+            newEnemy.setAttribute('obj-model', 'obj:#'+modelID+';'+'mtl:#'+modelMat+';');
+        }
         newEnemy.setAttribute('scale', scale);
         if (animated) {
             newEnemy.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
@@ -304,8 +315,34 @@ AFRAME.registerComponent('intersection-spawn', {
 });
 
 async function loadMap(mapToLoad) {
-    let fetchURL = './scenes/scene' + mapToLoad + '/map.json';
+    let fetchURL = './scenes/scene' + mapToLoad + '/map-old.json';
     const res = await fetch(fetchURL)
     let mapSource = await res.json();
     return mapSource;
 }
+
+AFRAME.registerComponent("load-texture", {
+    schema: {
+        src:{type: 'string', default: 'textures/structures/rocky.JPG'},
+    },
+    init: function() {
+        const data = this.data;
+        const el = this.el;
+        let src = data.src;
+        var textureLoader = new THREE.TextureLoader();
+
+        textureLoader.load(src,
+            // onLoad
+            function(tex) {
+                let mesh = el.getObject3D('mesh')
+                mesh.material.map = tex;
+                console.log(tex);
+            },
+            // onProgress
+            undefined,
+            //onError
+            function(err) {
+                console.error('An error happened.');
+            });
+    }
+})

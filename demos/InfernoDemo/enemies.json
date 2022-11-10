@@ -3,7 +3,7 @@
     {
       "name": "demon",
       "id": "demon",
-      "model": "models/monster.glb",
+      "model": "models/Hellknight.obj",
       "scale": 0.2
     }
   ]

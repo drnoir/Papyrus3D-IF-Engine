@@ -18,16 +18,20 @@ loadData();
 
 async function loadData() {
 // game vars
+//     config and diagloue loading
+    await loadTextures(1);
     await loadConfig();
     await loadChars();
     await loadDiag(1);
+    //scene loading / aFrame loading
     await loadMap(1);
     await loadSceneMetaData(1);
+   // run create scene routine
     await createRooms();
     // await populateScene();
     // await populateDiag(0)
     // testing dialogue.json UI population
-    console.log(config, chars, diag, mapSource);
+    console.log(config, chars, diag, mapSource, textures);
 }
 
 async function loadConfig() {
@@ -52,11 +56,28 @@ async function loadMap(mapToLoad) {
     mapSource = await res.json();
 }
 
+async function loadTextures(textureScene) {
+    let fetchURL = './scenes/scene' +textureScene + '/textures.json';
+    const res = await fetch(fetchURL)
+    textures = await res.json();
+}
+
 async function loadSceneMetaData(metaDataToLoad) {
     let fetchURL = './scenes/scene' + metaDataToLoad + '/scene.json';
     const res = await fetch(fetchURL)
     sceneMetadata = await res.json();
 }
+
+// function addTextureAssets(){
+//     const assets= document.createElement('a-assets');
+//     scene.appendChild(assets)
+//     for (let t= 0; t < textures.length;t++) {
+//         let assetIMG = document.createElement('img');
+//         assetIMG.setAttribute('id',textures.textures[t].id)
+//         assetIMG.setAttribute('src',textures.textures[t].path)
+//         assets.appendChild(assets)
+//     }
+// }
 
 function addChar(charID) {
     console.log(chars.characters[charID].id, chars.characters[charID].name);
@@ -141,31 +162,42 @@ function createRooms() {
     const charNum = mapSource.charnumber;
     let charLoopIndex = 0;
 
-    const WALL_SIZE = 2;
-    const WALL_HEIGHT = 8;
+    // allocate textures from JSON config
+    let wallTexture = textures.textures[0].id;
+    let floorTexture = textures.textures[1].id;
+    let doorTexture = textures.textures[2].id;
+    let wallTexture2 = textures.textures[3].id;
+    console.log(typeof  wallTexture);
+
+    const WALL_SIZE = 0.8;
+    const WALL_HEIGHT = 5;
     const el = document.getElementById('room')
     // let playerPos;
-    let wall;
+
+    let door; let wall;
     if (roomType === "Indoor") {
         let ceil = document.createElement('a-box');
         let ceilArea = (mapSource.width * mapSource.height);
-        ceil.setAttribute('width', ceilArea * 2);
-        ceil.setAttribute('height', ceilArea * 2);
+        ceil.setAttribute('width', ceilArea );
+        ceil.setAttribute('height', ceilArea );
         ceil.setAttribute('rotation', '-90 0 0');
-        ceil.setAttribute('position', '0 4 0');
+        ceil.setAttribute('position', '0 5 0');
         ceil.setAttribute('static-body', '');
         ceil.setAttribute('scale', '0.2 0.2 0.2');
-        ceil.setAttribute('material', 'src: #grunge; repeat: 1 2');
+        ceil.setAttribute('material', 'src: #grunge; repeat: 5 5');
         el.appendChild(ceil);
     }
     for (let x = 0; x < mapSource.height; x++) {
         for (let y = 0; y < mapSource.width; y++) {
 
             const i = (y * mapSource.width) + x;
-            const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-            const halfYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-            const charPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} -4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const floorPos= `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(WALL_HEIGHT/2)} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const halfYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 1 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const quarterYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const charPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const torchPosition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const stairsPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${( y- (mapSource.height)) * WALL_SIZE} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             // char
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "h") {
                 console.log("its a char!")
@@ -174,15 +206,14 @@ function createRooms() {
                 char.setAttribute('position', charPos);
                 char.setAttribute('static-body', '');
                 el.appendChild(char);
-
                 charLoopIndex++;
             }
 
             if (mapData[i] === 9 ) {
                 const enemy1 = document.createElement('a-entity');
-                enemy1.setAttribute('enemy', 'modelPath:./models/monster.glb');
+                enemy1.setAttribute('enemy', 'modelPath:./models/Hellknight.obj; format:obj;');
                 enemy1.setAttribute('id','enemy');
-                enemy1.setAttribute('position',position);
+                enemy1.setAttribute('position',charPos);
                 el.appendChild(enemy1);
             }
             // add torch / light
@@ -209,16 +240,16 @@ function createRooms() {
                 camPointDebug.setAttribute('visible', false)
                 el.appendChild(camPoint);
             }
-
             // if the number is 1 - 4, create a wall
-            if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3) {
+            if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
                 wall = document.createElement('a-box');
                 wall.setAttribute('width', WALL_SIZE);
                 wall.setAttribute('height', WALL_HEIGHT);
                 wall.setAttribute('depth', WALL_SIZE);
                 wall.setAttribute('position', position);
-                wall.setAttribute('static-body', '');
-                // console.log(el, wall)
+                wall.setAttribute('material', 'src:#'+wallTexture);
+         
+                // console.log(el, wall'
                 el.appendChild(wall);
 
                 // floor
@@ -226,49 +257,70 @@ function createRooms() {
                     // wall.setAttribute('color', '#000');
                     wall.setAttribute('height', WALL_HEIGHT / 20);
                     wall.setAttribute('static-body', '');
-                    wall.setAttribute('position', position);
-                    wall.setAttribute('material', 'src: #floor; repeat: 1 1');
+                    wall.setAttribute('position', floorPos);
+                    // wall.setAttribute('load-texture', '');
                     wall.setAttribute('editor-listener', '');
+                    wall.setAttribute('material', 'src:#'+floorTexture);
+                }
+                // full height wall
+                if (mapData[i] === 1) {
+                    // wall.setAttribute('color', '#000');
+                    wall.setAttribute('height', WALL_HEIGHT);
+                    wall.setAttribute('static-body', '');
+                    // wall.setAttribute('load-texture', '');
+                    wall.setAttribute('position', position);
+                    wall.setAttribute('material', 'src:#'+wallTexture);
                 }
                 // 1/2 height wall
                 if (mapData[i] === 2) {
                     // wall.setAttribute('color', '#000');
                     wall.setAttribute('height', WALL_HEIGHT / 2);
                     wall.setAttribute('static-body', '');
-                    wall.setAttribute('material', 'src: #floorboards; repeat: 1 1');
+                    // wall.setAttribute('load-texture', '');
                     wall.setAttribute('position', halfYposition);
+                    wall.setAttribute('material', 'src:#'+wallTexture2);
+                }
+                //  1/4 height wall
+                if (mapData[i] === 3) {
+                    wall.setAttribute('height', WALL_HEIGHT / 4);
+                    wall.setAttribute('static-body', '');
+                    // wall.setAttribute('load-texture', '');
+                    wall.setAttribute('position', quarterYposition);
+                    wall.setAttribute('material', 'src:#'+wallTexture2);
                 }
                 // door
-                if (mapData[i] === 3) {
-                    const door = document.createElement('a-box');
-                    door.setAttribute('id', door);
-                    door.setAttribute('material', 'src: #wooddoor; repeat: 1 1');
+                if (mapData[i] === 4) {
+                    wall.setAttribute('id', 'door');
                     // create component for door / lock
-                    door.setAttribute('locked', 'false');
+                    // wall.setAttribute('load-texture', '');
+                    wall.setAttribute('door', 'false');
+                    wall.setAttribute('locked', 'false');
+                    wall.setAttribute('material', 'src:#'+doorTexture);
                 }
-                // play pos
-                else if (mapData === 8) {
-                    const playerStart = document.createElement('a-entity');
-                    playerStart.setAttribute('playercam', '');
-                    playerStart.setAttribute('position',position)
-                    playerStart.setAttribute('static-body', '');
-                    el.appendChild(playerStart);
-                }
-                else { // normal walls
-                    let floor = document.createElement('a-entity');
-                    floor.setAttribute('height', WALL_HEIGHT / 20);
-                    floor.setAttribute('static-body', '');
-                    floor.setAttribute('position', position);
-                    wall.setAttribute('material', 'src: #brick; repeat: 1 1');
-                    floor.setAttribute('editor-listener', '');
-                    floor.setAttribute('static-body', '');
-                    el.appendChild(floor);
-                }
+
+                // // play pos
+                // else if (mapData === 8) {
+                //     const playerStart = document.createElement('a-entity');
+                //     playerStart.setAttribute('playercam', '');
+                //     playerStart.setAttribute('position',position)
+                //     playerStart.setAttribute('static-body', '');
+                //     el.appendChild(playerStart);
+                // }
+                // else { // normal walls
+                //     let floor = document.createElement('a-entity');
+                //     floor.setAttribute('height', WALL_HEIGHT / 20);
+                //     floor.setAttribute('static-body', '');
+                //     floor.setAttribute('position', position);
+                //     // wall.setAttribute('material', 'src: #brick; repeat: 1 1');
+                //     floor.setAttribute('editor-listener', '');
+                //     floor.setAttribute('static-body', '');
+                //     el.appendChild(floor);
+                // }
             }
         }
     }
 // document.querySelector('#player').setAttribute('position', playerPos);
-    MapMaker(mapData);
+//     MapMaker(mapData);
 }
 
 function MapMaker(mapData){
@@ -318,6 +370,5 @@ function removeButton() {
 function updatePlayerPos(newPlayPos){
    document.querySelector('#player').setAttribute('position', newPlayPos);
 }
-
 
 export {nextScene};
