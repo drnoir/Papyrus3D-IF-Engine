@@ -1,7 +1,7 @@
 ## Papyrus 3D - Interactive Fiction Engine by Chris Godber
 #### GNU GENERAL PUBLIC LICENSE
 ##### Current Version: 0.0.1
-
+![alt text](https://raw.githubusercontent.com/drnoir/Papyrus3D-IF-Engine/main/papyrusscreengrab.jpg)
 ### IDEA
 Build an engine for generating 3D interactive Fiction games based on JSON inputs. 
 Edit the json files in the Game folder and then use the preview and export buttons to export your adventure game.
