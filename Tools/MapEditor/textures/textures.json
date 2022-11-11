@@ -1,0 +1,20 @@
+{
+  "textures": [
+    {
+      "id": "brick",
+      "path": "structures/rocky.JPG"
+    },
+    {
+      "id": "floor",
+      "path": "wood/floor.JPG"
+    },
+    {
+      "id": "door",
+      "path": "wood/bigdoor.JPG"
+    },
+    {
+      "id": "orangebrick",
+      "path": "walls/orangebrick.JPG"
+    }
+  ]
+}

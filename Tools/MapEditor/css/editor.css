@@ -1,0 +1,16 @@
+body{
+    background: black;
+}
+
+#editorUI{
+    background:white;
+    width:200px;
+    height:200px;
+    z-index:1000;
+}
+
+a-scene {
+    height: 800px;
+    width: 50%;
+    position: relative;
+}
