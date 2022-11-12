@@ -5,7 +5,7 @@
 let sceneMetadata;
 let textures;
 let mapTemplate = [];
-let templateSize = 50;
+let templateSize = 25;
 let chars;
 let mapRes;
 let saveNum = 1;
@@ -26,10 +26,13 @@ AFRAME.registerComponent('editor-listener', {
     schema: {
         parse: AFRAME.utils.styleParser.parse,
         visible: {type: 'boolean', default: true},
+        index: {type: 'number', default: 0},
         colors: {type: 'array', default: ['red', 'white']}
     },
     init: function () {
         const data = this.data;
+        const index = data.index;
+
         this.el.addEventListener('mouseover', function (evt) {
             let lastHoverIndex = (lastHoverIndex + 1) % data.colors.length;
             this.el.setAttribute('material', 'color', data.colors[lastHoverIndex]);
@@ -44,7 +47,6 @@ AFRAME.registerComponent('editor-listener', {
             let lastIndex = -1;
             lastIndex = (lastIndex + 1) % mapTemplate.length;
             this.setAttribute('material', 'color', 'red');
-            let index = this.getAttribute('index');
             console.log('I was clicked at: ', evt.detail.intersection.point);
             console.log('I was clicked at: ', evt.detail.intersection);
             console.log('index Map: ', index);
@@ -56,7 +58,7 @@ AFRAME.registerComponent('editor-listener', {
 });
 
 function updateMap(indexToReplace, mapNumType) {
-    console.log(typeof mapTemplate)
+    console.log('update map index'+indexToReplace, mapNumType)
     mapTemplate.splice(indexToReplace, 1, mapNumType);
     console.log('map arr is now' + mapTemplate)
 }
@@ -187,9 +189,9 @@ function createRooms() {
                     wall.setAttribute('height', WALL_HEIGHT / 20);
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', floorPos);
-                    wall.setAttribute('index', y);
+                    // wall.setAttribute('index', y);
                     // wall.setAttribute('load-texture', '');
-                    wall.setAttribute('editor-listener', '');
+                    wall.setAttribute('editor-listener', 'index:'+y);
                     wall.setAttribute('material', 'src:#' + floorTexture);
                 }
                 // full height wall
@@ -236,8 +238,8 @@ function exportJSON() {
     let fileName = 'newPapyrusMap'+saveNum+'.json';
     // structure the map for consumption by engine
     // for every width length - add a space - FOR EXAMPLE 25 - ADD NEW LINEBREAK EVERY 25 ARR ELEMENTS
-    const JSONBlog = JSON.stringify(mapTemplate);
-    const JSONParsed = addNewlines(JSONBlog)
+   let JSONBlog = JSON.stringify(mapTemplate);
+    let JSONParsed = addNewlines(JSONBlog)
     // Create a blob of the data
          const fileToSave = new Blob([JSONParsed], {
         type: 'application/json'
@@ -251,8 +253,8 @@ function exportJSON() {
 function addNewlines(str) {
     let result = '';
     while (str.length > 0) {
-        result += str.substring(0, templateSize*2) + '\n';
-        str = str.substring(templateSize*2);
+        result += str.substring(0, mapRes.width * 4 ) + '\n';
+        str = str.substring(mapRes.height * 4 );
     }
     return result;
 }

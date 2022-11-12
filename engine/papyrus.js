@@ -22,10 +22,10 @@ async function loadData() {
     await loadTextures(1);
     await loadConfig();
     await loadChars();
-    await loadDiag(1);
+    await loadDiag(2);
     //scene loading / aFrame loading
-    await loadMap(1);
-    await loadSceneMetaData(1);
+    await loadMap(2);
+    await loadSceneMetaData(2);
    // run create scene routine
     await createRooms();
     // await populateScene();
