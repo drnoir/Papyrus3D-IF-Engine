@@ -1,6 +1,6 @@
 ## Papyrus 3D - Interactive Fiction Engine by Chris Godber
 #### GNU GENERAL PUBLIC LICENSE
-##### Current Version: 0.0.1
+##### Current Version: 0.1.1
 ![alt text](https://raw.githubusercontent.com/drnoir/Papyrus3D-IF-Engine/main/papyrusscreengrab.jpg)
 ### IDEA
 Build an engine for generating 3D interactive Fiction games based on JSON inputs. 
@@ -11,6 +11,7 @@ Multi-Platform support - Desktop, Mobile, VR and (Possibly) AR.
 
 ### Planned Features
 * Component system for characters supporting custom models and associated avatar  
+* Map Editor WIP- Currently working on a map editor for easy export / import  of created maps
 * Dialogue System with branching - Dialogue UI allowing for custom colours / texture etc
 * Define 3D Scenes with character components and assets
 * Create unique repayable games that the engine can generate based on easily editable JSON files
@@ -19,10 +20,11 @@ Multi-Platform support - Desktop, Mobile, VR and (Possibly) AR.
 ### Possible Features
 * Further / optional - create interface for creating the branching narratives (similar to Twine) 
 
-### Current Tech Stack / dependecies
+### Current Tech Stack / dependencies
 * Rendering / 3D - A-Frame + a-frame component libraries 
 
-## Documentation (WIP)
+## Documentation (WIP) 
+(Will be added when Engine is in BETA)
 
 * Creating Your Story
 
@@ -31,7 +33,7 @@ Multi-Platform support - Desktop, Mobile, VR and (Possibly) AR.
 * Customizing UI 
 
 * Creating Player Choices
-
+* Map Creatopm
 * Exporting your project 
   - Web / VR
   - Desktop
