@@ -12,6 +12,13 @@ let saveNum = 1;
 const mapNumTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 'char', 't', 'cam']
 
 let currentEntity= 1;
+
+// textures
+
+let wallTexture;
+let floorTexture;
+let doorTexture;
+let  wallTexture2;
 // dialogueUI Elements
 const scene = document.querySelector('a-scene');
 const assets = document.querySelector('a-assets');
@@ -31,27 +38,29 @@ AFRAME.registerComponent('editor-listener', {
     },
     init: function () {
         const data = this.data;
-        const index = data.index;
+        let index = data.index;
 
-        this.el.addEventListener('mouseover', function (evt) {
-            let lastHoverIndex = (lastHoverIndex + 1) % data.colors.length;
-            this.el.setAttribute('material', 'color', data.colors[lastHoverIndex]);
-        });
-
-        this.el.addEventListener('mouseout', function (evt) {
-            let lastHoverIndex = (lastHoverIndex - 1) % data.colors.length;
-            this.el.setAttribute('material', 'color', data.colors[lastHoverIndex]);
-        });
+        // this.el.addEventListener('mouseover', function (evt) {
+        //     let lastHoverIndex = (lastHoverIndex + 1) % data.colors.length;
+        //     this.el.setAttribute('material', 'color', data.colors[lastHoverIndex]);
+        // });
+        //
+        // this.el.addEventListener('mouseout', function (evt) {
+        //     let lastHoverIndex = (lastHoverIndex - 1) % data.colors.length;
+        //     this.el.setAttribute('material', 'color', "#fff");
+        // });
 
         this.el.addEventListener('click', function (evt) {
             let lastIndex = -1;
             lastIndex = (lastIndex + 1) % mapTemplate.length;
-            this.setAttribute('material', 'color', 'red');
+            // this.setAttribute('material', 'color', "#000");
+            this.setAttribute('height', '5');
+            this.setAttribute('material', 'src:#'+wallTexture);
             console.log('I was clicked at: ', evt.detail.intersection.point);
             console.log('I was clicked at: ', evt.detail.intersection);
             console.log('index Map: ', index);
             // REPLACE WITH MAP NUM TYPE WHEN READY TO PASS DOWN PARAM SETUP T
-            updateMap(index, currentEntity);
+             updateMap(index, currentEntity);
         });
     },
 
@@ -105,9 +114,17 @@ async function loadTextures(e) {
     let fetchURL = './textures/textures.json';
     const res = await fetch(fetchURL)
     textures = await res.json();
+
+    // allocate textures from JSON config
+   wallTexture = textures.textures[0].id;
+   floorTexture = textures.textures[1].id;
+   doorTexture = textures.textures[2].id;
+   wallTexture2 = textures.textures[3].id;
 }
 
 function createRooms() {
+
+
     const mapData = mapTemplate;
     console.log(mapData, mapRes.height);
     let roomType = "Map Editor";
@@ -116,11 +133,7 @@ function createRooms() {
     const charNum = mapRes.charnumber;
     let charLoopIndex = 0;
 
-    // allocate textures from JSON config
-    let wallTexture = textures.textures[0].id;
-    let floorTexture = textures.textures[1].id;
-    let doorTexture = textures.textures[2].id;
-    let wallTexture2 = textures.textures[3].id;
+
     console.log(typeof wallTexture);
 
     const WALL_SIZE = 0.8;
@@ -128,6 +141,7 @@ function createRooms() {
     const el = document.getElementById('room')
     // let playerPos;
     let wall;
+    let floorIndex = 0;
 
     if (roomType === "Indoor") {
         let ceil = document.createElement('a-box');
@@ -143,6 +157,7 @@ function createRooms() {
 
     for (let x = 0; x < mapRes.height; x++) {
         for (let y = 0; y < mapRes.width; y++) {
+            floorIndex++;
             const i = (y * mapRes.width) + x;
             const floorPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 0 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const position = `${((x - (mapRes.width / 2)) * WALL_SIZE)} ${(WALL_HEIGHT / 2)} ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
@@ -180,7 +195,7 @@ function createRooms() {
                 wall.setAttribute('depth', WALL_SIZE);
                 wall.setAttribute('position', position);
                 wall.setAttribute('material', 'src: #grunge; repeat: 1 2');
-
+                wall.setAttribute('editor-listener', 'index:'+floorIndex);
                 el.appendChild(wall);
 
                 // floor
@@ -191,7 +206,6 @@ function createRooms() {
                     wall.setAttribute('position', floorPos);
                     // wall.setAttribute('index', y);
                     // wall.setAttribute('load-texture', '');
-                    wall.setAttribute('editor-listener', 'index:'+y);
                     wall.setAttribute('material', 'src:#' + floorTexture);
                 }
                 // full height wall

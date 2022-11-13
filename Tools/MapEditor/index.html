@@ -12,6 +12,13 @@
 <div id="myEmbeddedScene">
     <a-scene embedded vr-mode-ui="enabled: false">
         <a-assets>
+            <img id="brick" src="textures/structures/rocky.JPG">
+            <img id="door" src="textures/wood/bigdoor.JPG">
+            <img id="floorboards" src="textures/wood/floorboards.JPG">
+            <img id="floor" src="textures/wood/floor.JPG">
+            <img id="wooddoor" src="textures/wood/wooddoor.JPG">
+            <img id="grunge" src="textures/structures/grunge.jpg">
+            <img id="orangebrick" src="textures/walls/orangebrick.JPG">
             <!-- models -->
             <!--textures-->
             <a-mixin id="wall"
@@ -19,6 +26,7 @@
                      material="color:black;"
             ></a-mixin>
         </a-assets>
+        <a-entity light="type: ambient; color: #CCC;intensity: 0.9;"></a-entity>
         <a-entity id="rig" movement-controls="fly: true; speed: 1">
             <a-entity camera look-controls position="0 1.6 4" id="player">
                 <a-entity cursor="fuse: true; fuseTimeout: 500"
