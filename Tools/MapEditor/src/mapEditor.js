@@ -10,7 +10,7 @@ let chars;
 let mapRes;
 let saveNum = 1;
 const mapNumTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 'char', 't', 'cam']
-
+let wallHeight = 5;
 let currentEntity= 1;
 
 // textures
@@ -18,7 +18,11 @@ let currentEntity= 1;
 let wallTexture;
 let floorTexture;
 let doorTexture;
-let  wallTexture2;
+let wallTexture2;
+
+// possible options - wall, door, enemies
+let paintMode = ['wall', 'door', 'enemies'];
+
 // dialogueUI Elements
 const scene = document.querySelector('a-scene');
 const assets = document.querySelector('a-assets');
@@ -39,7 +43,7 @@ AFRAME.registerComponent('editor-listener', {
     init: function () {
         const data = this.data;
         let index = data.index;
-
+        const el = this.el;
         // this.el.addEventListener('mouseover', function (evt) {
         //     let lastHoverIndex = (lastHoverIndex + 1) % data.colors.length;
         //     this.el.setAttribute('material', 'color', data.colors[lastHoverIndex]);
@@ -49,13 +53,12 @@ AFRAME.registerComponent('editor-listener', {
         //     let lastHoverIndex = (lastHoverIndex - 1) % data.colors.length;
         //     this.el.setAttribute('material', 'color', "#fff");
         // });
-
         this.el.addEventListener('click', function (evt) {
             let lastIndex = -1;
             lastIndex = (lastIndex + 1) % mapTemplate.length;
             // this.setAttribute('material', 'color', "#000");
-            this.setAttribute('height', '5');
-            this.setAttribute('material', 'src:#'+wallTexture);
+            el.setAttribute('material', 'src:#'+wallTexture);
+            el.setAttribute('height', wallHeight );
             console.log('I was clicked at: ', evt.detail.intersection.point);
             console.log('I was clicked at: ', evt.detail.intersection);
             console.log('index Map: ', index);
@@ -123,8 +126,6 @@ async function loadTextures(e) {
 }
 
 function createRooms() {
-
-
     const mapData = mapTemplate;
     console.log(mapData, mapRes.height);
     let roomType = "Map Editor";
@@ -137,7 +138,7 @@ function createRooms() {
     console.log(typeof wallTexture);
 
     const WALL_SIZE = 0.8;
-    const WALL_HEIGHT = 5;
+    const WALL_HEIGHT = wallHeight;
     const el = document.getElementById('room')
     // let playerPos;
     let wall;
@@ -244,6 +245,7 @@ function createRooms() {
     }
 }
 
+
 function exportJSON() {
 
     let data = {
@@ -272,3 +274,38 @@ function addNewlines(str) {
     }
     return result;
 }
+
+// UI set option
+function setOption(id) {
+    const e = document.getElementById(id);
+    let value = e.value;
+    allHeightSwitch(value);
+    return parseInt(value);
+}
+
+const wallType = document.getElementById('wallType')
+// reassign types for select dropdown UI
+wallType.addEventListener("change", function() {
+    currentEntity = setOption('wallType');
+});
+
+function allHeightSwitch(currentEntity){
+    console.log('passed Curr'+currentEntity);
+    if (currentEntity == 1){
+        wallHeight = 5;
+    }
+    else if (currentEntity == 2){
+        console.log("current entity matched"+currentEntity);
+        wallHeight = 5/2;
+        console.log(wallHeight);
+    }
+    else if (currentEntity == 3){
+        console.log("current entity matched"+currentEntity);
+        wallHeight = 5/4;
+        console.log(wallHeight);
+    }
+    else{
+        wallHeight = 5;
+    }
+}
+
