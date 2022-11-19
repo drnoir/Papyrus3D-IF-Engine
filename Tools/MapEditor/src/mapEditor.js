@@ -24,6 +24,7 @@ let wallTexture3;
 // possible options - wall, door, enemies
 let paintMode = ['wall','enemies', 'door', 'delete' ];
 let currentPaintMode =  paintMode[0];
+let deleteMode =false;
 
 // dialogueUI Elements
 const scene = document.querySelector('a-scene');
@@ -56,59 +57,42 @@ AFRAME.registerComponent('editor-listener', {
         //     this.el.setAttribute('material', 'color', "#fff");
         // });
         this.el.addEventListener('mousedown', function (evt) {
+            const WALL_HEIGHT = wallHeight;
             if (currentPaintMode === "wall" ) {
                 // this.setAttribute('material', 'color', "#000");
                 el.setAttribute('material', 'src:#' + wallTexture);
                 el.setAttribute('height', wallHeight);
-                if (currentEntity === 1) {
+                if (currentEntity === 1 && !deleteMode) {
                     el.object3D.position.y = 2.5;
-                } else if (currentEntity === 2) {
+                } else if (currentEntity === 2 && !deleteMode) {
                     el.object3D.position.y = 1;
                     el.setAttribute('material', 'src:#' + wallTexture2);
                 }
-                else {
-                    el.object3D.position.y = 0.5;
+                else if (currentEntity === 3 && !deleteMode) {
+                    l.object3D.position.y = 0.5;
                     el.setAttribute('material', 'src:#' + wallTexture3);
                 }
-
+                else if (currentEntity === 0 && deleteMode) {
+                    el.object3D.position.y = 0;
+                    el.setAttribute('height', WALL_HEIGHT / 20);
+                    el.setAttribute('material', 'src:#' + floorTexture);
+                }
+                else {
+                    el.object3D.position.y = 0;
+                    el.setAttribute('height', WALL_HEIGHT / 20);
+                    el.setAttribute('material', 'src:#' + floorTexture);
+                }
                 console.log('I was clicked at: ', evt.detail.intersection.point);
                 console.log('I was clicked at: ', evt.detail.intersection);
                 console.log('index Map: ', index);
                 // update the map and show new element
                 updateMap(index, currentEntity);
             }
-
             if (currentPaintMode === "door" ) {
                 el.setAttribute('material', 'src:#' + doorTexture);
                 el.setAttribute('height', wallHeight);
                 el.object3D.position.y = 0.5;
                 el.setAttribute('material',  'src:#' + doorTexture+'repeat:1 1');
-                // update the map and show new element
-                updateMap(index, currentEntity);
-            }
-            if (currentPaintMode === "delete" ) {
-                const WALL_HEIGHT = wallHeight;
-                const WALL_SIZE = 0.8;
-
-                let floorPos = el.object3D.position;
-                console.log(floorPos)
-                floorPos = `${((floorPos.x - (mapRes.width / 2)) * WALL_SIZE)} 0 ${(floorPos.y - (mapRes.height / 2)) * WALL_SIZE}`;
-                const room = document.getElementById('room');
-
-                el.parentNode.removeChild(el);
-
-                let floor = document.createElement('a-box');
-                floor.setAttribute('width', WALL_SIZE);
-                floor.setAttribute('height', WALL_HEIGHT);
-                floor.setAttribute('depth', WALL_SIZE);
-                floor.setAttribute('material',  'src:#' + floorTexture+'repeat:1 1');
-                floor.setAttribute('height', WALL_HEIGHT / 20);
-                floor.setAttribute('static-body', '');
-                floor.setAttribute('position', floorPos);
-                floorPos.y = 0;
-                floor.setAttribute('material', 'src:#' + floorTexture);
-
-                room.appendChild(floor);
                 // update the map and show new element
                 updateMap(index, currentEntity);
             }
@@ -394,13 +378,10 @@ function allHeightSwitch(currentEntity){
     }
 }
 
+
 function switchPaintMode(currentPaintMode){
     const enemyTitle = document.getElementById('enemiesTitle');
-    if (currentPaintMode === "delete"){
-        enemyTypeSelect.setAttribute('hidden', '');
-        enemyTitle.setAttribute('hidden', '');
-        currentEntity = 0;
-    }
+
     if (currentPaintMode === "wall"){
         enemyTypeSelect.setAttribute('hidden', '');
         enemyTitle.setAttribute('hidden', '');
@@ -417,3 +398,17 @@ function switchPaintMode(currentPaintMode){
     }
 }
 
+
+const deleteCheckbox = document.querySelector("input[name=deletemode]");
+deleteCheckbox.addEventListener('change', function() {
+    if (this.checked) {
+        deleteMode = true;
+        currentEntity = 0;
+        console.log(deleteMode)
+    }
+    if (!this.checked) {
+        deleteMode = false;
+        currentEntity = setOption('wallType');
+        console.log(deleteMode)
+    }
+});
