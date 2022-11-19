@@ -16,9 +16,10 @@
             <img id="door" src="textures/wood/bigdoor.JPG">
             <img id="floorboards" src="textures/wood/floorboards.JPG">
             <img id="floor" src="textures/wood/floor.JPG">
-            <img id="wooddoor" src="textures/wood/wooddoor.JPG">
+            <img id="wooddoor" src="textures/wood/woodendoor.jpg">
             <img id="grunge" src="textures/structures/grunge.jpg">
             <img id="orangebrick" src="textures/walls/orangebrick.JPG">
+            <img id="oldbrick" src="textures/walls/oldbrick.JPG">
             <!-- models -->
             <!--textures-->
             <a-mixin id="wall"
@@ -26,7 +27,7 @@
                      material="color:black;"
             ></a-mixin>
         </a-assets>
-        <a-entity light="type: ambient; color: #CCC;intensity: 0.9;"></a-entity>
+        <a-entity light="type: ambient; color: #CCC;intensity: 1;"></a-entity>
         <a-entity id="rig" movement-controls="fly: true; speed: 1">
             <a-entity camera look-controls position="0 1.6 4" id="player">
                 <a-entity cursor="fuse: true; fuseTimeout: 500"
@@ -47,9 +48,10 @@
     <h2>Papyrus 3D Map Editor</h2>
     <h4>Paint Mode</h4>
     <select id="paintmode" class="m1 ">
-        <option value="1">Walls</option>
-        <option value="2">Enemies</option>
+        <option value="0">Walls</option>
+        <option value="1">Enemies</option>
         <option value="2">Doors</option>
+        <option value="3">Delete</option>
     </select>
     <h4>Wall Type</h4>
     <select id="wallType" class="m1 ">
@@ -64,7 +66,7 @@
         <option value="3">Wall 3</option>
         <option value="4">Wall 4</option>
     </select>
-    <h4>Enemies Select</h4>
+    <h4 id = "enemiesTitle">Enemies Select</h4>
     <select id=enemies" class="m1">
         <option value="monster1">Enemy 1</option>
         <option value="monster2">Enemy 2</option>

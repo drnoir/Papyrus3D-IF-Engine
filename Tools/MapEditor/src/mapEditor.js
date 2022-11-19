@@ -6,22 +6,24 @@ let sceneMetadata;
 let textures;
 let mapTemplate = [];
 let templateSize = 25;
+let templateWalled = true;
 let chars;
 let mapRes;
 let saveNum = 1;
-const mapNumTypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 'char', 't', 'cam']
 let wallHeight = 5;
+let heightY = 2.5
 let currentEntity= 1;
 
 // textures
-
 let wallTexture;
 let floorTexture;
 let doorTexture;
 let wallTexture2;
+let wallTexture3;
 
 // possible options - wall, door, enemies
-let paintMode = ['wall', 'door', 'enemies'];
+let paintMode = ['wall','enemies', 'door', 'delete' ];
+let currentPaintMode =  paintMode[0];
 
 // dialogueUI Elements
 const scene = document.querySelector('a-scene');
@@ -53,21 +55,69 @@ AFRAME.registerComponent('editor-listener', {
         //     let lastHoverIndex = (lastHoverIndex - 1) % data.colors.length;
         //     this.el.setAttribute('material', 'color', "#fff");
         // });
-        this.el.addEventListener('click', function (evt) {
-            let lastIndex = -1;
-            lastIndex = (lastIndex + 1) % mapTemplate.length;
-            // this.setAttribute('material', 'color', "#000");
-            el.setAttribute('material', 'src:#'+wallTexture);
-            el.setAttribute('height', wallHeight );
-            console.log('I was clicked at: ', evt.detail.intersection.point);
-            console.log('I was clicked at: ', evt.detail.intersection);
-            console.log('index Map: ', index);
-            // REPLACE WITH MAP NUM TYPE WHEN READY TO PASS DOWN PARAM SETUP T
-             updateMap(index, currentEntity);
+        this.el.addEventListener('mousedown', function (evt) {
+            if (currentPaintMode === "wall" ) {
+                // this.setAttribute('material', 'color', "#000");
+                el.setAttribute('material', 'src:#' + wallTexture);
+                el.setAttribute('height', wallHeight);
+                if (currentEntity === 1) {
+                    el.object3D.position.y = 2.5;
+                } else if (currentEntity === 2) {
+                    el.object3D.position.y = 1;
+                    el.setAttribute('material', 'src:#' + wallTexture2);
+                }
+                else {
+                    el.object3D.position.y = 0.5;
+                    el.setAttribute('material', 'src:#' + wallTexture3);
+                }
+
+                console.log('I was clicked at: ', evt.detail.intersection.point);
+                console.log('I was clicked at: ', evt.detail.intersection);
+                console.log('index Map: ', index);
+                // update the map and show new element
+                updateMap(index, currentEntity);
+            }
+
+            if (currentPaintMode === "door" ) {
+                el.setAttribute('material', 'src:#' + doorTexture);
+                el.setAttribute('height', wallHeight);
+                el.object3D.position.y = 0.5;
+                el.setAttribute('material',  'src:#' + doorTexture+'repeat:1 1');
+                // update the map and show new element
+                updateMap(index, currentEntity);
+            }
+            if (currentPaintMode === "delete" ) {
+                const WALL_HEIGHT = wallHeight;
+                const WALL_SIZE = 0.8;
+
+                let floorPos = el.object3D.position;
+                console.log(floorPos)
+                floorPos = `${((floorPos.x - (mapRes.width / 2)) * WALL_SIZE)} 0 ${(floorPos.y - (mapRes.height / 2)) * WALL_SIZE}`;
+                const room = document.getElementById('room');
+
+                el.parentNode.removeChild(el);
+
+                let floor = document.createElement('a-box');
+                floor.setAttribute('width', WALL_SIZE);
+                floor.setAttribute('height', WALL_HEIGHT);
+                floor.setAttribute('depth', WALL_SIZE);
+                floor.setAttribute('material',  'src:#' + floorTexture+'repeat:1 1');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', floorPos);
+                floorPos.y = 0;
+                floor.setAttribute('material', 'src:#' + floorTexture);
+
+                room.appendChild(floor);
+                // update the map and show new element
+                updateMap(index, currentEntity);
+            }
         });
     },
 
 });
+
+
 
 function updateMap(indexToReplace, mapNumType) {
     console.log('update map index'+indexToReplace, mapNumType)
@@ -102,10 +152,17 @@ async function init() {
 }
 
 async function loadMapTemplateData(templateSize) {
-    let fetchURL = './mapTemplates/map' + templateSize + templateSize + '.json';
+    let fetchURL
+    if (!templateWalled) {
+         fetchURL = './mapTemplates/map' + templateSize + templateSize + '.json';
+    }
+    else{
+        fetchURL = './mapTemplates/map' + templateSize + templateSize +'Walled.json';
+    }
     const res = await fetch(fetchURL)
     mapRes = await res.json();
     mapTemplate = mapRes.data;
+    console.log(mapRes.length);
 }
 
 async function loadChars() {
@@ -117,12 +174,12 @@ async function loadTextures(e) {
     let fetchURL = './textures/textures.json';
     const res = await fetch(fetchURL)
     textures = await res.json();
-
     // allocate textures from JSON config
    wallTexture = textures.textures[0].id;
    floorTexture = textures.textures[1].id;
    doorTexture = textures.textures[2].id;
    wallTexture2 = textures.textures[3].id;
+   wallTexture3 = textures.textures[4].id;
 }
 
 function createRooms() {
@@ -161,7 +218,7 @@ function createRooms() {
             floorIndex++;
             const i = (y * mapRes.width) + x;
             const floorPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 0 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
-            const position = `${((x - (mapRes.width / 2)) * WALL_SIZE)} ${(WALL_HEIGHT / 2)} ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
+            const position = `${((x - (mapRes.width / 2)) * WALL_SIZE)} ${(WALL_HEIGHT/2)} ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const halfYposition = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 1 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const quarterYposition = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 0 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const charPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 0 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
@@ -247,17 +304,18 @@ function createRooms() {
 
 
 function exportJSON() {
-
     let data = {
         key: 'data'
     };
     let fileName = 'newPapyrusMap'+saveNum+'.json';
     // structure the map for consumption by engine
     // for every width length - add a space - FOR EXAMPLE 25 - ADD NEW LINEBREAK EVERY 25 ARR ELEMENTS
-   let JSONBlog = JSON.stringify(mapTemplate);
-    let JSONParsed = addNewlines(JSONBlog)
+    // let structArr = addNewlines(mapTemplate, templateSize);
+    // console.log('stuctured array'+structArr);
+    let JSONBlog = JSON.stringify(mapTemplate);
+    // let JSONParsed = addNewlines(JSONBlog, templateSize);
     // Create a blob of the data
-         const fileToSave = new Blob([JSONParsed], {
+         const fileToSave = new Blob([JSONBlog], {
         type: 'application/json'
     });
 // Save the file
@@ -266,14 +324,21 @@ function exportJSON() {
     saveNum++;
 }
 
-function addNewlines(str) {
-    let result = '';
-    while (str.length > 0) {
-        result += str.substring(0, mapRes.width * 4 ) + '\n';
-        str = str.substring(mapRes.height * 4 );
+function addNewlines(arr, breakLength) {
+    arr.toString();
+    while (arr.length > 0){
+        for (let i = 0; i < arr.length; i++) {
+        //if increment is divided by 2 and there is not a remainder of 0
+         if (i% breakLength===0 && i!== 0){
+            //console log the length
+            console.log(arr[i])
+            //append a line break after every 10th element
+            //     arr.splice(i,0, '\n');
+             arr[i] = parseInt(arr[i]+"\n");
+        }
     }
-    return result;
-}
+        return arr;
+}}
 
 // UI set option
 function setOption(id) {
@@ -289,23 +354,66 @@ wallType.addEventListener("change", function() {
     currentEntity = setOption('wallType');
 });
 
+const paintModeSelect = document.getElementById('paintmode')
+// reassign types for select dropdown UI
+paintModeSelect.addEventListener("change", function() {
+    let SelectedPaintMode = setOption('paintmode');
+    currentPaintMode = paintMode[SelectedPaintMode];
+    switchPaintMode( currentPaintMode);
+    console.log(currentPaintMode, paintMode[SelectedPaintMode]);
+});
+
+const enemyTypeSelect = document.getElementById('enemies"')
+
+
 function allHeightSwitch(currentEntity){
     console.log('passed Curr'+currentEntity);
+    if (currentEntity == 0){
+        wallHeight = 0;
+        heightY= wallHeight/2;
+    }
     if (currentEntity == 1){
         wallHeight = 5;
+        heightY= wallHeight/2;
     }
     else if (currentEntity == 2){
         console.log("current entity matched"+currentEntity);
         wallHeight = 5/2;
+        heightY = 1;
         console.log(wallHeight);
     }
     else if (currentEntity == 3){
         console.log("current entity matched"+currentEntity);
         wallHeight = 5/4;
+        heightY = 0;
         console.log(wallHeight);
     }
+
     else{
         wallHeight = 5;
+    }
+}
+
+function switchPaintMode(currentPaintMode){
+    const enemyTitle = document.getElementById('enemiesTitle');
+    if (currentPaintMode === "delete"){
+        enemyTypeSelect.setAttribute('hidden', '');
+        enemyTitle.setAttribute('hidden', '');
+        currentEntity = 0;
+    }
+    if (currentPaintMode === "wall"){
+        enemyTypeSelect.setAttribute('hidden', '');
+        enemyTitle.setAttribute('hidden', '');
+    }
+    if (currentPaintMode === "enemies"){
+        enemyTypeSelect.removeAttribute('hidden', '');
+        enemyTitle.removeAttribute('hidden', '');
+    }
+    if (currentPaintMode === "door"){
+        enemyTypeSelect.setAttribute('hidden', '');
+        enemyTitle.setAttribute('hidden', '');
+        wallHeight = 2.5;
+        heightY = 1;
     }
 }
 

@@ -9,12 +9,16 @@
       "path": "wood/floor.JPG"
     },
     {
-      "id": "door",
-      "path": "wood/bigdoor.JPG"
+      "id": "wooddoor",
+      "path": "wood/woodendoor.jpg"
     },
     {
       "id": "orangebrick",
       "path": "walls/orangebrick.JPG"
+    },
+    {
+      "id": "oldbrick",
+      "path": "walls/oldbrick.JPG"
     }
   ]
 }
