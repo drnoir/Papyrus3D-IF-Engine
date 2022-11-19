@@ -1,0 +1,19 @@
+{
+  "characters": [
+    {
+      "name": "bobGuy",
+      "id": "bob",
+      "model": "models/geek.glb"
+    },
+    {
+      "name": "lady",
+      "id": "lady",
+      "model": "models/lady.glb"
+    },
+    {
+      "name": "ninja",
+      "id": "ninja",
+      "model": "models/bob/scene.gltf"
+    }
+  ]
+}

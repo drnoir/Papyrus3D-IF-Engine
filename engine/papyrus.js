@@ -19,7 +19,7 @@ loadData();
 async function loadData() {
 // game vars
 //     config and diagloue loading
-    await loadTextures(1);
+    await loadTextures(2);
     await loadConfig();
     await loadChars();
     await loadDiag(2);

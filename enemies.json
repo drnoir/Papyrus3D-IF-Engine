@@ -1,0 +1,10 @@
+{
+  "enemies": [
+    {
+      "name": "demon",
+      "id": "demon",
+      "model": "models/Hellknight.obj",
+      "scale": 0.2
+    }
+  ]
+}
