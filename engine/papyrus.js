@@ -19,13 +19,13 @@ loadData();
 async function loadData() {
 // game vars
 //     config and diagloue loading
-    await loadTextures(2);
+    await loadTextures(1);
     await loadConfig();
     await loadChars();
-    await loadDiag(2);
+    await loadDiag(1);
     //scene loading / aFrame loading
-    await loadMap(2);
-    await loadSceneMetaData(2);
+    await loadMap(1);
+    await loadSceneMetaData(1);
    // run create scene routine
     await createRooms();
     // await populateScene();

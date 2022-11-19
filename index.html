@@ -9,26 +9,26 @@
 </head>
 <body>
 <a-scene>
-
-    <a-sound src="src: url(sound/music.mp3)" positional ="false" autoplay="false" volume="1.5" position="0 0 0"></a-sound>
     <a-assets>
         <!-- models -->
-        <a-asset-item id="bobGuy" src='models/geek.glb'></a-asset-item>
-        <a-asset-item id="lady" src="models/lady.glb"></a-asset-item>
-        <a-asset-item id="ninja" src="models/bob/scene.gltf"></a-asset-item>
-        <a-asset-item id="demon" src="models/Hellknight.obj"></a-asset-item>
-        <a-asset-item id="glow" src="glow.png"></a-asset-item>
-        <a-asset-item id="map" src="scenes/scene1/map.json"></a-asset-item>
-        <a-asset-item id="demonMat" src="models/Hellknight.mtl"></a-asset-item>
+        <a-asset-item id="bobGuy" src='./models/geek.glb'></a-asset-item>
+        <a-asset-item id="lady" src="./models/lady.glb"></a-asset-item>
+        <a-asset-item id="ninja" src="./models/bob/scene.gltf"></a-asset-item>
+        <a-asset-item id="demon" src="./models/Hellknight.obj"></a-asset-item>
+        <a-asset-item id="glow" src="./glow.png"></a-asset-item>
+        <a-asset-item id="map" src="./scenes/scene1/map.json"></a-asset-item>
+        <a-asset-item id="demonMat" src="./models/Hellknight.mtl"></a-asset-item>
+        <audio id="music" src="./sound/music.mp3" preload="auto"></audio>
         <!--textures-->
-        <img id="brick" src="textures/walls/brick.jpg">
-        <img id="door" src="textures/wood/bigdoor.jpg">
-        <img id="floorboards" src="textures/wood/floorboards.jpg">
-        <img id="floor" src="textures/wood/floor.jpg">
-        <img id="wooddoor" src="textures/wood/wooddoor.jpg">
-        <img id="grunge" src="textures/structures/grunge.jpg">
-        <img id="orangebrick" src="textures/walls/orangebrick.jpg">
+        <img id="brick" src="./textures/walls/brick.jpg">
+        <img id="door" src="./textures/wood/bigdoor.jpg">
+        <img id="floorboards" src="./textures/wood/floorboards.jpg">
+        <img id="floor" src="./textures/wood/floor.jpg">
+        <img id="wooddoor" src="./textures/wood/wooddoor.jpg">
+        <img id="grunge" src="./textures/structures/whiterock.JPG">
+        <img id="orangebrick" src="./textures/walls/orangebrick.jpg">
     </a-assets>
+    <a-entity sound="src: #music" autoplay="true" volume="1.5" loop=""true"></a-entity>
     <a-entity light="type: ambient; color: #CCC;intensity: 0.7;"></a-entity>
     <a-entity id="playercam" position="1 1.5 2">
         <a-entity id="camera" camera look-controls wasd-controls>
@@ -48,6 +48,6 @@
     <!--    <a-sky id="sky" color="#fff"></a-sky>-->
 </a-scene>
 </body>
-<script src="/engine/components.js" type="module"></script>
-<script src="/engine/papyrus.js" type="module"></script>
+<script src="./engine/components.js" type="module"></script>
+<script src="./engine/papyrus.js" type="module"></script>
 </html>
