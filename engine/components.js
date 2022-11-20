@@ -13,6 +13,51 @@ AFRAME.registerComponent('cursor-listener', {
     }
 });
 
+AFRAME.registerComponent('turnmonitor', {
+    schema: {
+        color: {type: 'color', default: 'white'},
+        visible: {type: 'boolean', default:  true},
+        turnNumber: {type: 'number', default:  1}
+    },
+    init: function () {
+        const data = this.data;
+        const el = this.el;
+        const visible = data.visible;
+        const elHeight = this.el.height;
+        let turnNumber = this.data.turnNumber;
+        el.setAttribute('value', 'Turn '+ turnNumber)
+
+    },
+    nextTurn: function () {
+        this.turnNumber++;
+        el.setAttribute('value', 'Turn '+ turnNumber)
+        // Do something the component or its entity is detached.
+    },
+    remove: function () {
+        // Do something the component or its entity is detached.
+    },
+});
+
+AFRAME.registerComponent('startgamebtn', {
+    schema: {
+        color: {default: 'red'}
+    },
+
+    init: function () {
+        var data = this.data;
+        var el = this.el;  // <a-box>
+        var defaultColor = el.getAttribute('material').color;
+
+        el.addEventListener('mouseenter', function () {
+            el.setAttribute('color', data.color);
+        });
+
+        el.addEventListener('mouseleave', function () {
+            el.setAttribute('color', defaultColor);
+        });
+    }
+});
+
 AFRAME.registerComponent('glowfx', {
     schema: {
         color: {type: 'color', default: 'white'},

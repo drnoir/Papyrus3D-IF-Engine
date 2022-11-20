@@ -10,6 +10,7 @@ let currentDiagID = 0;
 let currentScene = 1;
 let currentChar = 0;
 let mapSource = 0;
+let turn= 0;
 
 // dialogueUI Elements
 const scene = document.querySelector('a-scene');
@@ -33,6 +34,7 @@ async function loadData() {
     // await populateScene();
     // await populateDiag(0)
     // testing dialogue.json UI population
+    turn++;
     console.log(config, chars, enemies, diag, mapSource, textures);
 }
 
@@ -341,7 +343,7 @@ function createRooms() {
         }
     }
 // document.querySelector('#player').setAttribute('position', playerPos);
-//     MapMaker(mapData);
+    MapMaker(mapData);
 }
 
 function MapMaker(mapData){

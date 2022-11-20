@@ -30,17 +30,24 @@
         <img id="grunge" src="textures/structures/whiterock.jpg">
         <img id="orangebrick" src="./textures/walls/orangebrick.jpg">
     </a-assets>
-    <a-entity sound="src: #music" autoplay="true" volume="1.5" loop=""true"></a-entity>
+    <a-entity sound="src: #music" autoplay="true" volume="1.5" loop="true"></a-entity>
     <a-entity light="type: ambient; color: #CCC;intensity: 0.1;"></a-entity>
+    <a-circle id="startGame" startgamebtn radius="0.3" depth="0.1" position="1 1.5 -0.1 " rotation="0 0 0" color="black" ><a-text position="-0.5 0 0.2" value="Start Game"></a-text></a-circle>
     <a-entity id="playercam" position="1 1.5 2">
         <a-entity id="camera" camera look-controls wasd-controls>
-            <a-entity cursor="fuse: true; fuseTimeout: 500"
+            <a-entity animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+                      animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+                      animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+                      cursor="fuse: true;"
+                      material="color: white; shader: flat"
                       position="0 0 -1"
-                      geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-                      material="color: black; shader: flat">
+                      geometry="primitive: ring; radiusInner: 0.2; radiusOuter: 0.25;"
+                      scale="0.1 0.1 0.1"
+            >
             </a-entity>
-            <!--            <a-entity id="mapUI" playermap="sourceArrMap:map" scale="0.012 0.012 0.012"-->
-            <!--                      position="-0.2 0 -0.2"></a-entity>-->
+                        <a-text turnmonitor height = "0.5" width = "1"position="1 -0.3 -0.8" value="Turn:"></a-text>
+                        <a-entity id="mapUI" playermap="sourceArrMap:map" scale="0.012 0.012 0.012"
+                                  position="-0.25 -0.1 -0.2"></a-entity>
         </a-entity>
     </a-entity>
             <a-entity environment ="preset: volcano; ground:flat; playArea:300;" position="0 0 -20"></a-entity>
