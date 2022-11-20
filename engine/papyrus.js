@@ -2,6 +2,7 @@
 // global game vars
 let config;
 let chars;
+let enemies;
 let diag;
 let sceneMetadata;
 let textures;
@@ -22,6 +23,7 @@ async function loadData() {
     await loadTextures(1);
     await loadConfig();
     await loadChars();
+    await loadEnemies();
     await loadDiag(1);
     //scene loading / aFrame loading
     await loadMap(1);
@@ -31,7 +33,7 @@ async function loadData() {
     // await populateScene();
     // await populateDiag(0)
     // testing dialogue.json UI population
-    console.log(config, chars, diag, mapSource, textures);
+    console.log(config, chars, enemies, diag, mapSource, textures);
 }
 
 async function loadConfig() {
@@ -42,6 +44,11 @@ async function loadConfig() {
 async function loadChars() {
     const res = await fetch('characters.json')
     chars = await res.json();
+}
+
+async function loadEnemies() {
+    const res = await fetch('enemies.json')
+    enemies = await res.json();
 }
 
 async function loadDiag(sceneToLoad) {
@@ -104,6 +111,7 @@ function addTorch(torchColor, torchIndex) {
     torch.appendChild(fire);
     return torch;
 }
+
 // function to move to next scene
 function nextScene() {
     if (diag.passage.length - 1 !== currentDiagID) {
@@ -139,6 +147,7 @@ function makeCharActive(charID) {
         charRef.setAttribute('glowfx', 'visible:true;');
     }
 }
+
 // create room function
 function createRoom(roomType, roomWidth, roomHeight, roomDepth) {
     let roomArea = roomWidth * roomDepth;
@@ -153,6 +162,7 @@ function createRoom(roomType, roomWidth, roomHeight, roomDepth) {
         // code block
     }
 }
+
 function createRooms() {
     const mapData = mapSource.data;
     console.log(mapData, mapSource.height);
@@ -208,13 +218,24 @@ function createRooms() {
                 el.appendChild(char);
                 charLoopIndex++;
             }
-
+            // enemy slots
             if (mapData[i] === 9 ) {
                 const enemy1 = document.createElement('a-entity');
-                enemy1.setAttribute('enemy', 'modelPath:./models/Hellknight.obj; format:obj;');
+                enemy1.setAttribute('enemy', 'modelPath:./models/hellknight/hellknightGLB.glb; format:glb;animated:true');
                 enemy1.setAttribute('id','enemy');
-                enemy1.setAttribute('position',charPos);
-                el.appendChild(enemy1);
+                enemy1.setAttribute('class', enemies.enemies[0].name)
+
+                const floor = document.createElement('a-box');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('width', WALL_SIZE);
+                floor.setAttribute('depth', WALL_SIZE);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', floorPos);
+                // wall.setAttribute('load-texture', '');
+                floor.setAttribute('editor-listener', '');
+                floor.setAttribute('material', 'src:#'+floorTexture);
+                el.appendChild(floor);
+                floor.appendChild(enemy1);
             }
             // add torch / light
              if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "t") {

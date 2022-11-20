@@ -1,10 +1,16 @@
 {
   "enemies": [
     {
-      "name": "demon",
-      "id": "demon",
-      "model": "models/Hellknight.obj",
-      "scale": 0.2
+      "name": "zombie",
+      "id": "zombie",
+      "model": "/models/zombie.obj",
+      "scale": 0.035
+    },
+    {
+      "name": "hellknight",
+      "id": "hellknight",
+      "model": "/models/hellknight/hellknightGLB.glb",
+      "scale": 0.1
     }
   ]
 }

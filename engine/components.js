@@ -241,7 +241,7 @@ AFRAME.registerComponent('enemy', {
         modelID: {type: 'string', default: 'demon'},
         modelMat: {type: 'string', default: 'demonMat'},
         format: {type: 'string', default: 'glb'},
-        position:{type: 'string', default: '0 0.7 0'},
+        position:{type: 'string', default: '0 0.1 0'},
         rotation:{type: 'string', default: '0 0 0'},
         scale:{type: 'string', default: '0.2 0.2 0.2'},
         animated: {type: 'boolean', default:  false},
