@@ -30,9 +30,9 @@
         <img id="grunge" src="textures/structures/whiterock.jpg">
         <img id="orangebrick" src="./textures/walls/orangebrick.jpg">
     </a-assets>
-    <a-entity sound="src: #music" autoplay="true" volume="1.5" loop="true"></a-entity>
+    <a-entity sound="src: #music" autoplay="true" volume="1.5" loop="true" positional="false" refDistance="1000"></a-entity>
     <a-entity light="type: ambient; color: #CCC;intensity: 0.1;"></a-entity>
-    <a-circle id="startGame" startgamebtn radius="0.3" depth="0.1" position="1 1.5 -0.1 " rotation="0 0 0" color="black" ><a-text position="-0.5 0 0.2" value="Start Game"></a-text></a-circle>
+    <a-circle id="startGame" startgamebtn radius="0.3" depth="0.1" position="1 2 -0.1 " rotation="0 0 0" color="black" ><a-text position="-0.5 0 0.2" value="Start Game"></a-text></a-circle>
     <a-entity id="playercam" position="1 1.5 2">
         <a-entity id="camera" camera look-controls wasd-controls>
             <a-entity animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
@@ -50,7 +50,7 @@
                                   position="-0.25 -0.1 -0.2"></a-entity>
         </a-entity>
     </a-entity>
-            <a-entity environment ="preset: volcano; ground:flat; playArea:300;" position="0 0 -20"></a-entity>
+            <a-entity environment ="preset: poison; ground:flat; playArea:300;" position="0 0 -20"></a-entity>
     <!-- Walls (used by map-old.json.js -->)
     <a-entity id="room"></a-entity>
     <!-- Sky -->

@@ -1,4 +1,4 @@
-import {nextScene} from "./papyrus.js";
+import {nextScene, loadData} from "./papyrus.js";
 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -8,7 +8,7 @@ AFRAME.registerComponent('cursor-listener', {
             lastIndex = (lastIndex + 1) % COLORS.length;
             this.setAttribute('material', 'color', COLORS[lastIndex]);
             console.log('I was clicked at: ', evt.detail.intersection.point);
-            nextScene();
+            // nextScene();
         });
     }
 });
@@ -17,7 +17,8 @@ AFRAME.registerComponent('turnmonitor', {
     schema: {
         color: {type: 'color', default: 'white'},
         visible: {type: 'boolean', default:  true},
-        turnNumber: {type: 'number', default:  1}
+        turnNumber: {type: 'number', default:  1},
+        turnType: {type: 'array', default:  ['player','enemy']}
     },
     init: function () {
         const data = this.data;
@@ -25,12 +26,13 @@ AFRAME.registerComponent('turnmonitor', {
         const visible = data.visible;
         const elHeight = this.el.height;
         let turnNumber = this.data.turnNumber;
+        let turnType = this.data.turnType[0];
         el.setAttribute('value', 'Turn '+ turnNumber)
 
     },
     nextTurn: function () {
         this.turnNumber++;
-        el.setAttribute('value', 'Turn '+ turnNumber)
+        el.setAttribute('value', 'Turn '+ this.turnNumber + this.turnType )
         // Do something the component or its entity is detached.
     },
     remove: function () {
@@ -50,12 +52,19 @@ AFRAME.registerComponent('startgamebtn', {
 
         el.addEventListener('mouseenter', function () {
             el.setAttribute('color', data.color);
+            loadData();
+            el.remove();
         });
 
         el.addEventListener('mouseleave', function () {
             el.setAttribute('color', defaultColor);
         });
-    }
+    },
+    remove: function () {
+
+        el.destroy();
+        // Do something the component or its entity is detached.
+    },
 });
 
 AFRAME.registerComponent('glowfx', {
@@ -321,6 +330,12 @@ AFRAME.registerComponent('enemy', {
         }
         newEnemy.setAttribute('rotation',rot);
         el.appendChild( newEnemy);
+
+        el.addEventListener('click', function (evt) {
+            this.setAttribute('material', 'color', 'red');
+            console.log('enemy clicked at: ', evt.detail.intersection.point);
+            // nextScene();
+        });
     },
 
     remove: function () {
@@ -355,6 +370,24 @@ AFRAME.registerComponent('intersection-spawn', {
 
             // Append to scene.
             el.sceneEl.appendChild(spawnEl);
+        });
+    }
+});
+
+AFRAME.registerComponent('playermovement', {
+    schema: {
+        default: '',
+    },
+    init: function () {
+        this.el.addEventListener('click', function (evt) {
+            console.log(evt.detail.intersection.object.material.color);
+            this.setAttribute('material', 'color', 'red');
+            let newPos =  this.getAttribute('position');
+            const playercam = document.getElementById('playercam');
+            playercam.setAttribute('position', newPos);
+            playercam.object3D.position.y = 1.5;
+            console.log('I was clicked at: ', evt.detail.intersection.point);
+            // nextScene();
         });
     }
 });

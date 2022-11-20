@@ -16,7 +16,7 @@ let turn= 0;
 const scene = document.querySelector('a-scene');
 const assets = document.querySelector('a-assets');
 
-loadData();
+// loadData();
 
 async function loadData() {
 // game vars
@@ -35,6 +35,8 @@ async function loadData() {
     // await populateDiag(0)
     // testing dialogue.json UI population
     turn++;
+   const sound = document.querySelector('[sound]');
+    sound.components.sound.playSound();
     console.log(config, chars, enemies, diag, mapSource, textures);
 }
 
@@ -282,7 +284,7 @@ function createRooms() {
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', floorPos);
                     // wall.setAttribute('load-texture', '');
-                    wall.setAttribute('editor-listener', '');
+                    wall.setAttribute('playermovement', '');
                     wall.setAttribute('material', 'src:#'+floorTexture);
                 }
                 // full height wall
@@ -394,4 +396,4 @@ function updatePlayerPos(newPlayPos){
    document.querySelector('#player').setAttribute('position', newPlayPos);
 }
 
-export {nextScene};
+export {nextScene, loadData};
