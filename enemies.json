@@ -3,13 +3,13 @@
     {
       "name": "zombie",
       "id": "zombie",
-      "model": "/models/zombie.obj",
+      "model": "./models/zombie.obj",
       "scale": 0.035
     },
     {
       "name": "hellknight",
       "id": "hellknight",
-      "model": "/models/hellknight/hellknightGLB.glb",
+      "model": "./models/hellknight/hellknightGLB.glb",
       "scale": 0.1
     }
   ]
