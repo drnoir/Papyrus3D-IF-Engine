@@ -1,9 +1,10 @@
 {
-  "StoryName": "Story Name",
-  "Author" : "Bob Smith",
+  "StoryName": "Demo Papyrus",
+  "Author" : "Chris Godber",
   "UIBackgroundColour": "blue",
   "UITextColour": "white",
   "UIBackgroundTexture":null,
   "CombatDiceNumber": 20,
-  "ChecksDiceNumber": 4
+  "ChecksDiceNumber": 4,
+  "CombatDMGDiceNumber": 6
 }

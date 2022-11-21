@@ -12,6 +12,10 @@ let currentChar = 0;
 let mapSource = 0;
 let turn= 0;
 
+// combat var
+let CombatDiceNumber = 6;
+let CombatDMGDiceNumber = 6;
+
 // dialogueUI Elements
 const scene = document.querySelector('a-scene');
 const assets = document.querySelector('a-assets');
@@ -43,6 +47,9 @@ async function loadData() {
 async function loadConfig() {
     const res = await fetch('config.json')
     config = await res.json();
+    CombatDiceNumber = config.CombatDiceNumber;
+    CombatDMGDiceNumber  = config.CombatDMGDiceNumber ;
+    console.log('combat dice num'+CombatDiceNumber, CombatDMGDiceNumber )
 }
 
 async function loadChars() {
@@ -225,10 +232,15 @@ function createRooms() {
             // enemy slots
             if (mapData[i] === 9 ) {
                 const enemy1 = document.createElement('a-entity');
-                enemy1.setAttribute('enemy', 'modelPath:./models/hellknight/hellknightGLB.glb; format:glb;animated:true');
-                enemy1.setAttribute('id','enemy');
-                enemy1.setAttribute('class', enemies.enemies[0].name)
+                const enemyNum = enemies.enemies[0];
+                enemy1.setAttribute('enemy', 'modelPath:./models/hellknight/hellknightGLB.glb; ' +
+                    'format:glb;animated:true;'+'health:'+ enemyNum.health+
+                    'id:'+i+'constitution:'+ enemyNum.constitution+'scale:'+ enemyNum.scale);
 
+                enemy1.setAttribute('id',i);
+                enemy1.setAttribute('class', enemyNum.name);
+                // this is for handling enemy death animation
+                enemy1.setAttribute('animation__001', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
                 floor.setAttribute('width', WALL_SIZE);
@@ -385,6 +397,28 @@ function addButton(activeChar) {
     }
 }
 
+// combat functions
+function startMeleeCombatAttack(enemyID){
+    const currentEnemy = enemies.enemies[enemyID];
+    let enemyConst= parseInt(currentEnemy.constitution);
+    let playerDicerollDmg = 0;
+    let playerDicerollHit = RandomDiceRoll(1,CombatDiceNumber);
+    console.log('player hitroll '+playerDicerollHit)
+    if (playerDicerollHit>=enemyConst){
+        playerDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber );
+        console.log('You hit! '+playerDicerollHit / CombatDiceNumber +'The enemy takes'+ playerDicerollDmg);
+        return playerDicerollDmg;
+    }
+    else{
+        console.log(playerDicerollHit / CombatDiceNumber +'You Missed! and caused '+playerDicerollDmg+'damage');
+        return playerDicerollDmg;
+    }
+}
+
+function RandomDiceRoll(min,max) {
+    return min + Math.floor(Math.random() * (max - min + 1));
+}
+
 function removeButton() {
     const passageBtn = document.getElementById('nextPassageBtn');
     if (passageBtn != null) {
@@ -396,4 +430,4 @@ function updatePlayerPos(newPlayPos){
    document.querySelector('#player').setAttribute('position', newPlayPos);
 }
 
-export {nextScene, loadData};
+export {nextScene, loadData, startMeleeCombatAttack};

@@ -1,4 +1,4 @@
-import {nextScene, loadData} from "./papyrus.js";
+import {nextScene, loadData, startMeleeCombatAttack} from "./papyrus.js";
 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -62,7 +62,7 @@ AFRAME.registerComponent('startgamebtn', {
     },
     remove: function () {
 
-        el.destroy();
+        this.el.destroy();
         // Do something the component or its entity is detached.
     },
 });
@@ -245,8 +245,6 @@ AFRAME.registerComponent('playermap', {
 
 });
 
-
-
 AFRAME.registerComponent('character', {
     schema: {
         color: {type: 'color', default: 'white'},
@@ -297,13 +295,20 @@ AFRAME.registerComponent('enemy', {
         format: {type: 'string', default: 'glb'},
         position:{type: 'string', default: '0 0.1 0'},
         rotation:{type: 'string', default: '0 0 0'},
-        scale:{type: 'string', default: '0.2 0.2 0.2'},
+        scale:{type: 'string', default: '0.3 0.3 0.3'},
         animated: {type: 'boolean', default:  false},
-        glowOn: {type: 'boolean', default:  false}
+        glowOn: {type: 'boolean', default:  false},
+        id: {type: 'number', default:  0},
+        constitution: {type:'number', default:10},
+        strength: {type:'number', default:5},
+        health: {type: 'number', default:  5},
+        status:{type:'string', default: 'alive'}
     },
     init: function () {
         const data = this.data;
         const el = this.el;
+        // this is super important for combat - don't delete it
+        const id = data.id;
         const modelPath = data.modelPath;
         const modelID = data.modelID;
         const modelMat = data.modelID;
@@ -313,11 +318,16 @@ AFRAME.registerComponent('enemy', {
         let format = data.format;
         let animated = data.animated;
         let glowOn = data.glowOn;
+        let health = data.health;
+        let constitution = data.constitution;
+        let strength = data.strength;
+        let status = data.strength;
         const elScale = this.el.scale;
         // create a char based on attributes
         const newEnemy = document.createElement('a-entity');
         newEnemy.setAttribute('position',pos);
         newEnemy.setAttribute('glowFX','visible:'+glowOn);
+        // check if model GLB or Obj
         if (format === "glb") {
             newEnemy.setAttribute('gltf-model', modelPath);
         }
@@ -331,17 +341,25 @@ AFRAME.registerComponent('enemy', {
         newEnemy.setAttribute('rotation',rot);
         el.appendChild( newEnemy);
 
-        el.addEventListener('click', function (evt) {
-            this.setAttribute('material', 'color', 'red');
-            console.log('enemy clicked at: ', evt.detail.intersection.point);
-            // nextScene();
+        newEnemy.addEventListener('click', function (evt) {
+            console.log(evt.detail.intersection.object);
+            // newEnemy.setAttribute('glowFX','visible:'+glowOn);
+            let newMeleeAttack = startMeleeCombatAttack(0);
+            if (newMeleeAttack > 0){
+                health=health-newMeleeAttack;
+                console.log('enemy health is now'+health)
+                if (health<=0){
+                    console.log('Enemy is dead');
+                    el.emit(`enemydead`, null, false);
+                    el.remove();
+                }
+            }
         });
     },
-
     remove: function () {
-        // Do something the component or its entity is detached.
+        const el = this.el;
+        el.destroy();
     },
-
 });
 
 
@@ -424,3 +442,7 @@ AFRAME.registerComponent("load-texture", {
             });
     }
 })
+
+function RandomDiceRoll(min, max) {
+    return Math.random() * (max - min) + min;
+}

@@ -1,16 +1,14 @@
 {
   "enemies": [
     {
-      "name": "zombie",
-      "id": "zombie",
-      "model": "./models/zombie.obj",
-      "scale": 0.035
-    },
-    {
       "name": "hellknight",
       "id": "hellknight",
       "model": "./models/hellknight/hellknightGLB.glb",
-      "scale": 0.1
+      "health": 10,
+      "scale": 0.3,
+      "strength" : 4,
+      "constitution" : 12,
+      "animations": []
     }
   ]
 }
