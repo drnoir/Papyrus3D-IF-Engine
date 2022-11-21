@@ -404,7 +404,11 @@ function startMeleeCombatAttack(enemyID){
     let playerDicerollDmg = 0;
     let playerDicerollHit = RandomDiceRoll(1,CombatDiceNumber);
     console.log('player hitroll '+playerDicerollHit)
+    let attackAudio= document.querySelector("#attack");
+    attackAudio.play();
     if (playerDicerollHit>=enemyConst){
+        let hitAudio= document.querySelector("#hit");
+        hitAudio.play();
         playerDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber );
         console.log('You hit! '+playerDicerollHit / CombatDiceNumber +'The enemy takes'+ playerDicerollDmg);
         return playerDicerollDmg;

@@ -349,6 +349,8 @@ AFRAME.registerComponent('enemy', {
                 health=health-newMeleeAttack;
                 console.log('enemy health is now'+health)
                 if (health<=0){
+                    let deathAudio= document.querySelector("#death");
+                    deathAudio.play();
                     console.log('Enemy is dead');
                     el.emit(`enemydead`, null, false);
                     el.remove();
