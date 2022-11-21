@@ -327,6 +327,22 @@ AFRAME.registerComponent('enemy', {
         const newEnemy = document.createElement('a-entity');
         newEnemy.setAttribute('position',pos);
         newEnemy.setAttribute('glowFX','visible:'+glowOn);
+
+        const healthBar= document.createElement('a-box');
+        const healthBarTracker= document.createElement('a-box');
+        let healthBarVal = health/10*3;
+        healthBar.setAttribute('height', 0.5);
+        healthBar.setAttribute('position', '0 8 0');
+        healthBar.setAttribute('width', 3);
+        healthBar.setAttribute('depth', 0.1);
+        healthBar.setAttribute('material', 'color:white');
+        healthBarTracker.setAttribute('height', 0.4);
+        healthBarTracker.setAttribute('width', healthBarVal.toString());
+        healthBarTracker.setAttribute('depth', 0.1);
+        healthBarTracker.setAttribute('position', '0 0 0.1');
+        healthBarTracker.setAttribute('material', 'color:red');
+        healthBar.appendChild(healthBarTracker);
+        newEnemy.appendChild(healthBar);
         // check if model GLB or Obj
         if (format === "glb") {
             newEnemy.setAttribute('gltf-model', modelPath);
@@ -347,6 +363,8 @@ AFRAME.registerComponent('enemy', {
             let newMeleeAttack = startMeleeCombatAttack(0);
             if (newMeleeAttack > 0){
                 health=health-newMeleeAttack;
+                healthBarVal = health/10*3
+                healthBarTracker.setAttribute('width', healthBarVal);
                 console.log('enemy health is now'+health)
                 if (health<=0){
                     let deathAudio= document.querySelector("#death");
