@@ -1,4 +1,4 @@
-import {nextScene, loadData, startMeleeCombatAttack} from "./papyrus.js";
+import {nextScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth} from "./papyrus.js";
 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -34,6 +34,29 @@ AFRAME.registerComponent('turnmonitor', {
         this.turnNumber++;
         el.setAttribute('value', 'Turn '+ this.turnNumber + this.turnType )
         // Do something the component or its entity is detached.
+    },
+    remove: function () {
+        // Do something the component or its entity is detached.
+    },
+});
+
+AFRAME.registerComponent('playerhealth', {
+    schema: {
+        color: {type: 'color', default: 'white'},
+        visible: {type: 'boolean', default:  true},
+    },
+    init: function () {
+        const data = this.data;
+        const el = this.el;
+        const visible = data.visible;
+        const elHeight = this.el.height;
+        let health = getPlayerHealth();
+        el.setAttribute('value', 'Health '+ health)
+
+    },
+    updated: function () {
+        let health = getPlayerHealth;
+        el.setAttribute('value', 'Health '+ health)
     },
     remove: function () {
         // Do something the component or its entity is detached.
@@ -285,6 +308,43 @@ AFRAME.registerComponent('character', {
 
 });
 
+AFRAME.registerComponent('door', {
+    schema: {
+        color: {type: 'color', default: 'white'},
+        position:{type: 'string', default: '0 0.5 -3'},
+        rotation:{type: 'string', default: '0 0 0'},
+        scale:{type: 'string', default: '1 1 1'},
+        animated: {type: 'boolean', default:  false},
+        glowOn: {type: 'boolean', default:  false},
+        open: {type : 'boolean', default:  false},
+    },
+    init: function () {
+        const data = this.data; const el = this.el;
+        let scale = data.scale;let pos = data.position; let rot = data.rotation;
+        let animated = data.animated; let glowOn = data.glowOn;
+
+        // create a char based on attributes
+        const newDoor = document.createElement('a-entity');
+        newDoor.setAttribute('position',pos);
+        newDoor.setAttribute('glowFX','visible:'+glowOn);
+        newDoor.setAttribute('scale', scale);
+        if (animated) {
+            newDoor.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
+        }
+        newDoor.setAttribute('rotation',rot);
+        this.el.appendChild(newDoor);
+    },
+
+    openDoor: function () {
+        // Do something the component or its entity is detached.
+    },
+
+    remove: function () {
+        // Do something the component or its entity is detached.
+    },
+
+});
+
 
 AFRAME.registerComponent('enemy', {
     schema: {
@@ -305,7 +365,7 @@ AFRAME.registerComponent('enemy', {
         status:{type:'string', default: 'alive'}
     },
     init: function () {
-        const data = this.data;
+        let data = this.data;
         const el = this.el;
         // this is super important for combat - don't delete it
         const id = data.id;
@@ -321,16 +381,19 @@ AFRAME.registerComponent('enemy', {
         let health = data.health;
         let constitution = data.constitution;
         let strength = data.strength;
-        let status = data.strength;
         const elScale = this.el.scale;
+        let lifeStatus = data.status;
+
         // create a char based on attributes
         const newEnemy = document.createElement('a-entity');
-        newEnemy.setAttribute('position',pos);
-        newEnemy.setAttribute('glowFX','visible:'+glowOn);
+        newEnemy.setAttribute('position', pos);
+        newEnemy.setAttribute('glowFX', 'visible:' + glowOn);
 
-        const healthBar= document.createElement('a-box');
-        const healthBarTracker= document.createElement('a-box');
-        let healthBarVal = health/10*3;
+        // health bar UI
+        const healthBar = document.createElement('a-box');
+        const healthBarTracker = document.createElement('a-box');
+        this.healthBarTracker = healthBarTracker;
+        let healthBarVal = health / 10 * 3;
         healthBar.setAttribute('height', 0.5);
         healthBar.setAttribute('position', '0 8 0');
         healthBar.setAttribute('width', 3);
@@ -341,40 +404,63 @@ AFRAME.registerComponent('enemy', {
         healthBarTracker.setAttribute('depth', 0.1);
         healthBarTracker.setAttribute('position', '0 0 0.1');
         healthBarTracker.setAttribute('material', 'color:red');
+        healthBarTracker.setAttribute('HealthBarid', id);
         healthBar.appendChild(healthBarTracker);
         newEnemy.appendChild(healthBar);
+
         // check if model GLB or Obj
         if (format === "glb") {
             newEnemy.setAttribute('gltf-model', modelPath);
-        }
-        else{
-            newEnemy.setAttribute('obj-model', 'obj:#'+modelID+';'+'mtl:#'+modelMat+';');
+        } else {
+            newEnemy.setAttribute('obj-model', 'obj:#' + modelID + ';' + 'mtl:#' + modelMat + ';');
         }
         newEnemy.setAttribute('scale', scale);
         if (animated) {
             newEnemy.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
-        newEnemy.setAttribute('rotation',rot);
-        el.appendChild( newEnemy);
+        newEnemy.setAttribute('rotation', rot);
+        el.appendChild(newEnemy);
 
         newEnemy.addEventListener('click', function (evt) {
-            console.log(evt.detail.intersection.object);
-            // newEnemy.setAttribute('glowFX','visible:'+glowOn);
+            // const data = this.data;
+            // const el = this.el;
             let newMeleeAttack = startMeleeCombatAttack(0);
-            if (newMeleeAttack > 0){
-                health=health-newMeleeAttack;
-                healthBarVal = health/10*3
+            if (newMeleeAttack > 0 && lifeStatus === 'alive') {
+                // new health is for UI , health is the enemies health
+                health=-newMeleeAttack;
+                healthBarVal =  health / 10 * 3;
+                console.log('enemy health reassigned to ' + health)
                 healthBarTracker.setAttribute('width', healthBarVal);
-                console.log('enemy health is now'+health)
-                if (health<=0){
-                    let deathAudio= document.querySelector("#death");
-                    deathAudio.play();
-                    console.log('Enemy is dead');
-                    el.emit(`enemydead`, null, false);
-                    el.remove();
+
+                const playercam = document.getElementById('playercam');
+                let playercamPos =  playercam.getAttribute('position');
+                let currentPos =  pos;
+                let distanceCheck = playercam.x - currentPos.x;
+                console.log( distanceCheck)
+                // if player in range
+                if (lifeStatus === 'alive' && distanceCheck<=20 ) {
+                    // attack player back - ADD RANGE CHECKS LATER
+                    setTimeout(enemyCombatAttack, 1200);
                 }
+                // enemy gets killed
+             else if (health <= 0) {
+                lifeStatus = 'dead';
+                let deathAudio = document.querySelector("#death");
+                deathAudio.play();
+                console.log('Enemy is dead');
+                el.emit(`enemydead`, null, false);
+                el.remove();
+            }
+             // patrol
+             else{
+
+             }
             }
         });
+    },
+    enemyTurn: function () {
+        const el = this.el;
+
     },
     remove: function () {
         const el = this.el;

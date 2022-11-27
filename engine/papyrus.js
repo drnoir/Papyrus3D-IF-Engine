@@ -1,18 +1,19 @@
 // main js
 // global game vars
-let config;
-let chars;
-let enemies;
-let diag;
-let sceneMetadata;
+let player;
+let player1;
+let config; let chars;
+let enemies;let diag;let sceneMetadata;
+
 let textures;
+
 let currentDiagID = 0;
 let currentScene = 1;
 let currentChar = 0;
 let mapSource = 0;
 let turn= 0;
 
-// combat var
+// combat var defaults
 let CombatDiceNumber = 6;
 let CombatDMGDiceNumber = 6;
 
@@ -23,8 +24,9 @@ const assets = document.querySelector('a-assets');
 // loadData();
 
 async function loadData() {
-// game vars
-//     config and diagloue loading
+//game vars
+//config and diagloue loading
+    await loadPlayer();
     await loadTextures(1);
     await loadConfig();
     await loadChars();
@@ -33,7 +35,8 @@ async function loadData() {
     //scene loading / aFrame loading
     await loadMap(1);
     await loadSceneMetaData(1);
-   // run create scene routine
+    await setupPlayerInfo();
+    // run create scene routine
     await createRooms();
     // await populateScene();
     // await populateDiag(0)
@@ -50,6 +53,11 @@ async function loadConfig() {
     CombatDiceNumber = config.CombatDiceNumber;
     CombatDMGDiceNumber  = config.CombatDMGDiceNumber ;
     console.log('combat dice num'+CombatDiceNumber, CombatDMGDiceNumber )
+}
+
+async function loadPlayer() {
+    const res = await fetch('player.json')
+    player = await res.json();
 }
 
 async function loadChars() {
@@ -97,6 +105,14 @@ async function loadSceneMetaData(metaDataToLoad) {
 //     }
 // }
 
+function setupPlayerInfo(){
+    player1 = {
+        name: player.name,
+        health: player.health,
+        strength : player.strength,
+        constitution : player.strength,
+    }
+}
 function addChar(charID) {
     console.log(chars.characters[charID].id, chars.characters[charID].name);
     let modelRef = chars.characters[charID].id;
@@ -136,6 +152,7 @@ function nextScene() {
         currentDiagID = 0;
     }
 }
+
 // function to clear scene
 function clearScene() {
 
@@ -151,26 +168,12 @@ function populateDiag(passageID, currentChar) {
     dialogueUI.setAttribute('text', 'width:' + 3, 2);
     dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
 }
+
 // make glow component show on specified char indicating char speaking
 function makeCharActive(charID) {
     const charRef = document.getElementById(charID);
     if (charRef.getAttribute('glowfx', 'visible:false;')) {
         charRef.setAttribute('glowfx', 'visible:true;');
-    }
-}
-
-// create room function
-function createRoom(roomType, roomWidth, roomHeight, roomDepth) {
-    let roomArea = roomWidth * roomDepth;
-    switch (roomType) {
-        case 'indoor':
-            // code block
-            break;
-        case 'outdoor':
-            // code block
-            break;
-        default:
-        // code block
     }
 }
 
@@ -233,12 +236,14 @@ function createRooms() {
             if (mapData[i] === 9 ) {
                 const enemy1 = document.createElement('a-entity');
                 const enemyNum = enemies.enemies[0];
+                console.log(enemyNum)
                 enemy1.setAttribute('enemy', 'modelPath:./models/hellknight/hellknightGLB.glb; ' +
                     'format:glb;animated:true;'+'health:'+ enemyNum.health+
                     'id:'+i+'constitution:'+ enemyNum.constitution+'scale:'+ enemyNum.scale);
 
                 enemy1.setAttribute('id',i);
                 enemy1.setAttribute('class', enemyNum.name);
+                enemy1.setAttribute('status', 'alive');
                 // this is for handling enemy death animation
                 enemy1.setAttribute('animation__001', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
                 const floor = document.createElement('a-box');
@@ -404,7 +409,7 @@ function startMeleeCombatAttack(enemyID){
     let playerDicerollDmg = 0;
     let playerDicerollHit = RandomDiceRoll(1,CombatDiceNumber);
     console.log('player hitroll '+playerDicerollHit)
-    let attackAudio= document.querySelector("#attack");
+    let attackAudio= document.querySelector("#playerattack");
     attackAudio.play();
     if (playerDicerollHit>=enemyConst){
         let hitAudio= document.querySelector("#hit");
@@ -416,6 +421,35 @@ function startMeleeCombatAttack(enemyID){
     else{
         console.log(playerDicerollHit / CombatDiceNumber +'You Missed! and caused '+playerDicerollDmg+'damage');
         return playerDicerollDmg;
+    }
+}
+
+// combat functions
+function enemyCombatAttack(enemyID){
+    const currentEnemy = enemies.enemies[enemyID];
+    let playerConst= parseInt(player.constitution);
+    let enemyDicerollDmg = 0;
+    let enemyDicerollHit = RandomDiceRoll(1,CombatDiceNumber);
+    console.log('player hitroll '+enemyDicerollHit)
+    let attackAudio= document.querySelector("#attack");
+    attackAudio.play();
+    if (enemyDicerollHit>=playerConst){
+        let hitAudio= document.querySelector("#playerhit");
+        hitAudio.play();
+        enemyDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber );
+        console.log('The Enemy hit you '+enemyDicerollHit / CombatDiceNumber +' you take'+ enemyDicerollDmg);
+        player1.health=-enemyDicerollDmg;
+        console.log(player1.health);
+    }
+    else{
+        console.log(enemyDicerollHit / CombatDiceNumber +'You Missed! and caused '+enemyDicerollDmg+'damage');
+        return enemyDicerollDmg;
+    }
+}
+
+function getPlayerHealth(){
+    if (player) {
+        return player.health;
     }
 }
 
@@ -434,4 +468,4 @@ function updatePlayerPos(newPlayPos){
    document.querySelector('#player').setAttribute('position', newPlayPos);
 }
 
-export {nextScene, loadData, startMeleeCombatAttack};
+export {nextScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth};
