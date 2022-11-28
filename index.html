@@ -20,6 +20,8 @@
         <a-asset-item id="glow" src="./glow.png"></a-asset-item>
         <a-asset-item id="map" src="./scenes/scene1/map.json"></a-asset-item>
         <a-asset-item id="demonMat" src="./models/Hellknight.mtl"></a-asset-item>
+        <a-asset-item id="facePathID" src="./models/playerhead.glb"></a-asset-item>
+
         <audio id="music" src="./sound/music.mp3" preload="auto"></audio>
         <audio id="hit" src="./sound/hit.wav" preload="auto"></audio>
         <audio id="death" src="./sound/death.wav" preload="auto"></audio>
@@ -59,10 +61,9 @@
                       scale="0.1 0.1 0.1"
             >
             </a-entity>
-                        <a-text turnmonitor height = "0.5" width = "1"position="1 -0.3 -0.8" value="Turn:"></a-text>
                         <a-text playerhealth height = "0.5" width = "1"position="1 -0.5 -0.8" value="Health:"></a-text>
-                        <a-entity id="mapUI" playermap="sourceArrMap:map" scale="0.012 0.012 0.012"
-                                  position="-0.25 -0.1 -0.2"></a-entity>
+                        <a-entity id="playerFace" playerFace scale="0.012 0.012 0.012"
+                      position="1 -0.1 -0.8"></a-entity>
         </a-entity>
     </a-entity>
             <a-entity environment ="preset: volcano; ground:flat; playArea:300;" position="0 0 -20"></a-entity>

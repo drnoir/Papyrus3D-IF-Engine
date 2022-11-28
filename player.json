@@ -2,5 +2,11 @@
   "name": "Demon Slayer",
   "health": 30,
   "strength" : 5,
-  "constitution" : 15
+  "constitution" : 15,
+  "status" : "alive",
+  "playerFace" : "./models/playerHead/head.glb",
+  "playerFaceState25" : "./models/playerHead/head25.glb",
+  "playerFaceState50" : "./models/playerHead/head50.glb",
+  "playerFaceState85" : "./models/playerHead/head85.glb",
+  "playerFaceStateDead" : "./models/playerHead/head.glb"
 }

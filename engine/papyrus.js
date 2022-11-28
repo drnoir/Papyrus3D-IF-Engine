@@ -2,8 +2,11 @@
 // global game vars
 let player;
 let player1;
-let config; let chars;
-let enemies;let diag;let sceneMetadata;
+let config;
+let chars;
+let enemies;
+let diag;
+let sceneMetadata;
 
 let textures;
 
@@ -11,7 +14,7 @@ let currentDiagID = 0;
 let currentScene = 1;
 let currentChar = 0;
 let mapSource = 0;
-let turn= 0;
+let turn = 0;
 
 // combat var defaults
 let CombatDiceNumber = 6;
@@ -42,7 +45,7 @@ async function loadData() {
     // await populateDiag(0)
     // testing dialogue.json UI population
     turn++;
-   const sound = document.querySelector('[sound]');
+    const sound = document.querySelector('[sound]');
     sound.components.sound.playSound();
     console.log(config, chars, enemies, diag, mapSource, textures);
 }
@@ -51,8 +54,8 @@ async function loadConfig() {
     const res = await fetch('config.json')
     config = await res.json();
     CombatDiceNumber = config.CombatDiceNumber;
-    CombatDMGDiceNumber  = config.CombatDMGDiceNumber ;
-    console.log('combat dice num'+CombatDiceNumber, CombatDMGDiceNumber )
+    CombatDMGDiceNumber = config.CombatDMGDiceNumber;
+    console.log('combat dice num' + CombatDiceNumber, CombatDMGDiceNumber)
 }
 
 async function loadPlayer() {
@@ -83,7 +86,7 @@ async function loadMap(mapToLoad) {
 }
 
 async function loadTextures(textureScene) {
-    let fetchURL = './scenes/scene' +textureScene + '/textures.json';
+    let fetchURL = './scenes/scene' + textureScene + '/textures.json';
     const res = await fetch(fetchURL)
     textures = await res.json();
 }
@@ -105,14 +108,21 @@ async function loadSceneMetaData(metaDataToLoad) {
 //     }
 // }
 
-function setupPlayerInfo(){
+function setupPlayerInfo() {
     player1 = {
         name: player.name,
         health: player.health,
-        strength : player.strength,
-        constitution : player.strength,
+        strength: player.strength,
+        constitution: player.strength,
+        // player model face states
+        playerFaceState: player.playerFaceState,
+        playerFaceState25: player.playerFaceState25,
+        playerFaceState50: player.playerFaceState50,
+        playerFaceState85: player.playerFaceState85,
+        playerFaceStateDead: player.playerFaceStateDead,
     }
 }
+
 function addChar(charID) {
     console.log(chars.characters[charID].id, chars.characters[charID].name);
     let modelRef = chars.characters[charID].id;
@@ -128,6 +138,7 @@ function addChar(charID) {
     char.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     return char;
 }
+
 // NEEDS FIX FOR POSITIONING LATER
 function addTorch(torchColor, torchIndex) {
     let torch = document.createElement('a-box');
@@ -157,6 +168,7 @@ function nextScene() {
 function clearScene() {
 
 }
+
 function populateDiag(passageID, currentChar) {
     const dialogueUI = document.getElementById("dialogueID");
     // add button test function
@@ -191,19 +203,20 @@ function createRooms() {
     let floorTexture = textures.textures[1].id;
     let doorTexture = textures.textures[2].id;
     let wallTexture2 = textures.textures[3].id;
-    console.log(typeof  wallTexture);
+    console.log(typeof wallTexture);
 
     const WALL_SIZE = 0.8;
     const WALL_HEIGHT = 5;
     const el = document.getElementById('room')
     // let playerPos;
 
-    let door; let wall;
+    let door;
+    let wall;
     if (roomType === "Indoor") {
         let ceil = document.createElement('a-box');
         let ceilArea = (mapSource.width * mapSource.height);
-        ceil.setAttribute('width', ceilArea );
-        ceil.setAttribute('height', ceilArea );
+        ceil.setAttribute('width', ceilArea);
+        ceil.setAttribute('height', ceilArea);
         ceil.setAttribute('rotation', '-90 0 0');
         ceil.setAttribute('position', '0 5 0');
         ceil.setAttribute('static-body', '');
@@ -213,15 +226,14 @@ function createRooms() {
     }
     for (let x = 0; x < mapSource.height; x++) {
         for (let y = 0; y < mapSource.width; y++) {
-
             const i = (y * mapSource.width) + x;
-            const floorPos= `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-            const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(WALL_HEIGHT/2)} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const floorPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(WALL_HEIGHT / 2)} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const halfYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 1 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const quarterYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const charPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const torchPosition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-            const stairsPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${( y- (mapSource.height)) * WALL_SIZE} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const stairsPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(y - (mapSource.height)) * WALL_SIZE} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             // char
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "h") {
                 console.log("its a char!")
@@ -232,16 +244,66 @@ function createRooms() {
                 el.appendChild(char);
                 charLoopIndex++;
             }
+            // play pos
+            // else if (mapData === 100) {
+            //     const playerFace = document.createElement('a-entity');
+            //     const playerAim= document.createElement('a-entity');
+            //     const camera = document.createElement('a-entity');
+            //     // // this is for handling enemy death animation
+            //     // enemy1.setAttribute('animation__001', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
+            //     const playerStart = document.createElement('a-entity');
+            //     playerStart.setAttribute('playercam', '');
+            //     playerStart.setAttribute('position', position)
+            //     playerStart.setAttribute('static-body', '');
+            //     playerStart.setAttribute('id', i);
+            //     playerStart.setAttribute('class', player.name);
+            //
+            //     camera.setAttribute('camera', '');
+            //     camera.setAttribute('look-controls')
+            //     camera.setAttribute('wasd-controls', '');
+            //
+            //     playerFace.setAttribute('playerface', player.playerFaceState +
+            //         'format:glb;animated:true;' + 'health:' + player.health +
+            //         'id:' + i + 'scale:' + player.scale + 'position:' + player.position);
+            //     playerFace.setAttribute('id', i);
+            //     playerFace.setAttribute('class', player.name);
+            //     playerFace.setAttribute('status', 'alive');
+            //
+            //     playerAim.setAttribute( 'animation__click',"property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1");
+            //     playerAim.setAttribute(  'animation__fusing',"property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1")
+            //     playerAim.setAttribute(' animation__mouseleave', 'property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1');
+            //     playerAim.setAttribute(  'cursor', "fuse: true;")
+            //     playerAim.setAttribute('color', 'white; shader: flat');
+            //     playerAim.setAttribute('position', '0 0 -1');
+            //     playerAim.setAttribute('geometry', "primitive: ring; radiusInner: 0.2; radiusOuter: 0.25;")
+            //     playerAim.setAttribute('scale', "0.1 0.1 0.1")
+            //
+            //     let floor = document.createElement('a-box');
+            //     floor.setAttribute('height', WALL_HEIGHT / 20);
+            //     floor.setAttribute('width', WALL_SIZE);
+            //     floor.setAttribute('depth', WALL_SIZE);
+            //     floor.setAttribute('static-body', '');
+            //     floor.setAttribute('position', floorPos);
+            //     floor.setAttribute('editor-listener', '');
+            //     floor.setAttribute('material', 'src:#' + floorTexture);
+            //     el.appendChild(floor);
+            //
+            //     el.appendChild(playerStart);
+            //     playerStart.appendChild(camera);
+            //     camera.appendChild(playerAim);
+            //     el.appendChild(floor);
+            // }
+
             // enemy slots
-            if (mapData[i] === 9 ) {
+            if (mapData[i] === 9) {
                 const enemy1 = document.createElement('a-entity');
                 const enemyNum = enemies.enemies[0];
                 console.log(enemyNum)
                 enemy1.setAttribute('enemy', 'modelPath:./models/hellknight/hellknightGLB.glb; ' +
-                    'format:glb;animated:true;'+'health:'+ enemyNum.health+
-                    'id:'+i+'constitution:'+ enemyNum.constitution+'scale:'+ enemyNum.scale);
+                    'format:glb;animated:true;' + 'health:' + enemyNum.health +
+                    'id:' + i + 'constitution:' + enemyNum.constitution + 'scale:' + enemyNum.scale);
 
-                enemy1.setAttribute('id',i);
+                enemy1.setAttribute('id', i);
                 enemy1.setAttribute('class', enemyNum.name);
                 enemy1.setAttribute('status', 'alive');
                 // this is for handling enemy death animation
@@ -254,16 +316,16 @@ function createRooms() {
                 floor.setAttribute('position', floorPos);
                 // wall.setAttribute('load-texture', '');
                 floor.setAttribute('editor-listener', '');
-                floor.setAttribute('material', 'src:#'+floorTexture);
+                floor.setAttribute('material', 'src:#' + floorTexture);
                 el.appendChild(floor);
                 floor.appendChild(enemy1);
             }
             // add torch / light
-             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "t") {
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "t") {
                 console.log("its a torch!")
                 let torch = addTorch('yellow', i);
                 console.log('torch ran and char is' + torch)
-                torch.setAttribute('position', torchPosition );
+                torch.setAttribute('position', torchPosition);
                 // let floor = document.createElement('a-entity');
                 // floor.setAttribute('height', WALL_HEIGHT / 20);
                 // floor.setAttribute('static-body', '');
@@ -277,7 +339,7 @@ function createRooms() {
             else if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "a") {
                 const camPoint = document.createElement('a-entity');
                 camPoint.setAttribute('id', 'cam' + [i]);
-                camPoint.setAttribute('player','position:'+position);
+                camPoint.setAttribute('player', 'position:' + position);
                 const camPointDebug = document.createElement('a-box');
                 camPointDebug.setAttribute('visible', false)
                 el.appendChild(camPoint);
@@ -289,8 +351,8 @@ function createRooms() {
                 wall.setAttribute('height', WALL_HEIGHT);
                 wall.setAttribute('depth', WALL_SIZE);
                 wall.setAttribute('position', position);
-                wall.setAttribute('material', 'src:#'+wallTexture);
-         
+                wall.setAttribute('material', 'src:#' + wallTexture);
+
                 // console.log(el, wall'
                 el.appendChild(wall);
 
@@ -302,7 +364,7 @@ function createRooms() {
                     wall.setAttribute('position', floorPos);
                     // wall.setAttribute('load-texture', '');
                     wall.setAttribute('playermovement', '');
-                    wall.setAttribute('material', 'src:#'+floorTexture);
+                    wall.setAttribute('material', 'src:#' + floorTexture);
                 }
                 // full height wall
                 if (mapData[i] === 1) {
@@ -311,7 +373,7 @@ function createRooms() {
                     wall.setAttribute('static-body', '');
                     // wall.setAttribute('load-texture', '');
                     wall.setAttribute('position', position);
-                    wall.setAttribute('material', 'src:#'+wallTexture);
+                    wall.setAttribute('material', 'src:#' + wallTexture);
                 }
                 // 1/2 height wall
                 if (mapData[i] === 2) {
@@ -320,7 +382,7 @@ function createRooms() {
                     wall.setAttribute('static-body', '');
                     // wall.setAttribute('load-texture', '');
                     wall.setAttribute('position', halfYposition);
-                    wall.setAttribute('material', 'src:#'+wallTexture2);
+                    wall.setAttribute('material', 'src:#' + wallTexture2);
                 }
                 //  1/4 height wall
                 if (mapData[i] === 3) {
@@ -328,7 +390,7 @@ function createRooms() {
                     wall.setAttribute('static-body', '');
                     // wall.setAttribute('load-texture', '');
                     wall.setAttribute('position', quarterYposition);
-                    wall.setAttribute('material', 'src:#'+wallTexture2);
+                    wall.setAttribute('material', 'src:#' + wallTexture2);
                 }
                 // door
                 if (mapData[i] === 4) {
@@ -337,17 +399,9 @@ function createRooms() {
                     // wall.setAttribute('load-texture', '');
                     wall.setAttribute('door', 'false');
                     wall.setAttribute('locked', 'false');
-                    wall.setAttribute('material', 'src:#'+doorTexture);
+                    wall.setAttribute('material', 'src:#' + doorTexture);
                 }
 
-                // // play pos
-                // else if (mapData === 8) {
-                //     const playerStart = document.createElement('a-entity');
-                //     playerStart.setAttribute('playercam', '');
-                //     playerStart.setAttribute('position',position)
-                //     playerStart.setAttribute('static-body', '');
-                //     el.appendChild(playerStart);
-                // }
                 // else { // normal walls
                 //     let floor = document.createElement('a-entity');
                 //     floor.setAttribute('height', WALL_HEIGHT / 20);
@@ -365,7 +419,7 @@ function createRooms() {
     MapMaker(mapData);
 }
 
-function MapMaker(mapData){
+function MapMaker(mapData) {
     const playerMap = document.createElement('a-entity');
     playerMap.setAttribute('playermap', '');
     document.querySelector('#mapUI').appendChild(playerMap)
@@ -375,6 +429,7 @@ function MapMaker(mapData){
 function populateChoiceUI() {
 
 }
+
 // show passagebtn relative to character model
 function addButton(activeChar) {
     console.log('charID passed' + activeChar);
@@ -403,57 +458,83 @@ function addButton(activeChar) {
 }
 
 // combat functions
-function startMeleeCombatAttack(enemyID){
+function startMeleeCombatAttack(enemyID) {
     const currentEnemy = enemies.enemies[enemyID];
-    let enemyConst= parseInt(currentEnemy.constitution);
+    let enemyConst = parseInt(currentEnemy.constitution);
     let playerDicerollDmg = 0;
-    let playerDicerollHit = RandomDiceRoll(1,CombatDiceNumber);
-    console.log('player hitroll '+playerDicerollHit)
-    let attackAudio= document.querySelector("#playerattack");
+    let playerDicerollHit = RandomDiceRoll(1, CombatDiceNumber);
+    console.log('player hitroll ' + playerDicerollHit)
+    let attackAudio = document.querySelector("#playerattack");
     attackAudio.play();
-    if (playerDicerollHit>=enemyConst){
-        let hitAudio= document.querySelector("#hit");
+    if (playerDicerollHit >= enemyConst) {
+        let hitAudio = document.querySelector("#hit");
         hitAudio.play();
-        playerDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber );
-        console.log('You hit! '+playerDicerollHit / CombatDiceNumber +'The enemy takes'+ playerDicerollDmg);
+        playerDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber);
+        console.log('You hit! ' + playerDicerollHit / CombatDiceNumber + 'The enemy takes' + playerDicerollDmg);
         return playerDicerollDmg;
-    }
-    else{
-        console.log(playerDicerollHit / CombatDiceNumber +'You Missed! and caused '+playerDicerollDmg+'damage');
+    } else {
+        console.log(playerDicerollHit / CombatDiceNumber + 'You Missed! and caused ' + playerDicerollDmg + 'damage');
         return playerDicerollDmg;
     }
 }
 
 // combat functions
-function enemyCombatAttack(enemyID){
+function enemyCombatAttack(enemyID) {
     const currentEnemy = enemies.enemies[enemyID];
-    let playerConst= parseInt(player.constitution);
+    let playerConst = parseInt(player.constitution);
     let enemyDicerollDmg = 0;
-    let enemyDicerollHit = RandomDiceRoll(1,CombatDiceNumber);
-    console.log('player hitroll '+enemyDicerollHit)
-    let attackAudio= document.querySelector("#attack");
+    let enemyDicerollHit = RandomDiceRoll(1, CombatDiceNumber);
+    console.log('player hitroll ' + enemyDicerollHit)
+    let attackAudio = document.querySelector("#attack");
     attackAudio.play();
-    if (enemyDicerollHit>=playerConst){
-        let hitAudio= document.querySelector("#playerhit");
+    if (enemyDicerollHit >= playerConst) {
+        let hitAudio = document.querySelector("#playerhit");
         hitAudio.play();
-        enemyDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber );
-        console.log('The Enemy hit you '+enemyDicerollHit / CombatDiceNumber +' you take'+ enemyDicerollDmg);
-        player1.health=-enemyDicerollDmg;
+        enemyDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber);
+        console.log('The Enemy hit you ' + enemyDicerollHit / CombatDiceNumber + ' you take' + enemyDicerollDmg);
+        player1.health = -enemyDicerollDmg;
         console.log(player1.health);
-    }
-    else{
-        console.log(enemyDicerollHit / CombatDiceNumber +'You Missed! and caused '+enemyDicerollDmg+'damage');
+    } else {
+        console.log(enemyDicerollHit / CombatDiceNumber + 'You Missed! and caused ' + enemyDicerollDmg + 'damage');
         return enemyDicerollDmg;
     }
 }
 
-function getPlayerHealth(){
-    if (player) {
-        return player.health;
+function getPlayerHealth() {
+    if (player1) {
+        return player1.health;
     }
 }
 
-function RandomDiceRoll(min,max) {
+// function showPlayerFace(playerHealth) {
+//     let playerFace = document.window.getElementById('playerFace');
+//     // add setup assign player face
+//     switch (playerHealth) {
+//         case player1.health = player1.health / 100 + 25:
+//             playerFace = // modelref
+//             break;
+//         case:
+//             player1.health = player1.health / 100 - 50;
+//             playerFace = // modelref
+//             return
+//             break;
+//         case:
+//             player1.health = player1.health / 100 - 75;
+//             playerFace = // modelref
+//             break;
+//         case:
+//             player1.health = player1.health / 100 + 85;
+//             playerFace = // modelref
+//             break;
+//         case:
+//             player1.health = 0;
+//             playerFace = // modelref
+//             break;
+//         default:
+//     }
+// }
+
+function RandomDiceRoll(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
 
@@ -464,8 +545,8 @@ function removeButton() {
     }
 }
 
-function updatePlayerPos(newPlayPos){
-   document.querySelector('#player').setAttribute('position', newPlayPos);
+function updatePlayerPos(newPlayPos) {
+    document.querySelector('#player').setAttribute('position', newPlayPos);
 }
 
 export {nextScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth};

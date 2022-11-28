@@ -119,6 +119,77 @@ AFRAME.registerComponent('glowfx', {
     },
 });
 
+AFRAME.registerComponent('playerface', {
+    schema: {
+        color: {type: 'color', default: 'white'},
+        modelPath: {type: 'string', default: './models/facePathID.glb'},
+        modelID: {type: 'string', default: 'facePathID'},
+        modelMat: {type: 'string', default: 'demonMat'},
+        format: {type: 'string', default: 'glb'},
+        position:{type: 'string', default: '0 0.1 0'},
+        rotation:{type: 'string', default: '0 0 0'},
+        scale:{type: 'string', default: '0.3 0.3 0.3'},
+        animated: {type: 'boolean', default:  false},
+        playerHealth : {type: 'number', default: 100},
+    },
+    init: function () {
+        let data = this.data;
+        const el = this.el;
+
+        const id = data.id;
+        const modelPath = data.modelPath;
+        const modelID = data.modelID;
+        const modelMat = data.modelID;
+        let scale = data.scale;
+        let pos = data.position;
+        let rot = data.rotation;
+        let format = data.format;
+        let animated = data.animated;
+        let glowOn = data.glowOn;
+        let  playerHealth =  getPlayerHealth();
+
+        // create a playerface based on attributes
+        const newFace = document.createElement('a-entity');
+        newFace.setAttribute('position', pos);
+
+        // player health bar UI
+        const PlayerhealthBar = document.createElement('a-box');
+        const PlayerhealthBarTracker= document.createElement('a-box');
+        let PlayerhealthBarVal =  playerHealth / 10 * 3;
+        PlayerhealthBar.setAttribute('height', 0.5);
+        PlayerhealthBar.setAttribute('position', '0 8 0');
+        PlayerhealthBar.setAttribute('width', 3);
+        PlayerhealthBar.setAttribute('depth', 0.1);
+        PlayerhealthBar.setAttribute('material', 'color:white');
+        PlayerhealthBarTracker.setAttribute('height', 0.4);
+        PlayerhealthBarTracker.setAttribute('width', PlayerhealthBarVal.toString());
+        PlayerhealthBarTracker.setAttribute('depth', 0.1);
+        PlayerhealthBarTracker.setAttribute('position', '0 0 0.1');
+        PlayerhealthBarTracker.setAttribute('material', 'color:red');
+        PlayerhealthBarTracker.setAttribute('HealthBarid', id);
+        PlayerhealthBar.appendChild(PlayerhealthBarTracker);
+        newFace.appendChild(PlayerhealthBar);
+
+        // check if model GLB or Obj
+        if (format === "glb") {
+            newFace.setAttribute('gltf-model', modelPath);
+        } else {
+            newFace.setAttribute('obj-model', 'obj:#' + modelID + ';' + 'mtl:#' + modelMat + ';');
+        }
+        newFace.setAttribute('scale', scale);
+        if (animated) {
+            newFace.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
+        }
+        newFace.setAttribute('rotation', rot);
+        el.appendChild( newFace);
+
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+});
+
 // player componenet
 AFRAME.registerComponent('playercam', {
     schema: {
@@ -127,7 +198,9 @@ AFRAME.registerComponent('playercam', {
         rotation:{type: 'string', default: '0 0 0'},
         scale:{type: 'string', default: '1 1 1'},
         camNum: {type: 'number', default: 1},
-        camTestMode:{type: 'boolean', default:  false}
+        camTestMode:{type: 'boolean', default:  false},
+        facePathID: {type: 'string', default: '#playerFace'},
+        facePathMtl: {type: 'string', default: '#playerFaceMat'}
     },
     init: function () {
         const data = this.data;
@@ -137,10 +210,12 @@ AFRAME.registerComponent('playercam', {
         let rot = data.rotation;
         let camnum = data.camNum;
         const elScale = this.el.scale;
+        const facePathID = data.facePathID;
 
         const newCursor= document.createElement('a-entity');
         const newDialogueUI = document.createElement('a-entity');
         const newCam = document.createElement('a-entity');
+        const playerFace = document.createElement('a-entity');
         // create cam
         newCam.setAttribute('position',pos);
         newCam.setAttribute('id','player');
@@ -159,6 +234,20 @@ AFRAME.registerComponent('playercam', {
         newCursor.setAttribute('cursor','fuse: true; fiseTimeout:500');
         newCursor.setAttribute('geometry', 'primitive: ring; radiusInner: 0.02; radiusOuter: 0.03');
         newCursor.setAttribute('material', 'color: black; shader: flat');
+
+        // function to load player face
+        // check if model GLB or Obj - create func for this
+        if (format === "glb") {
+            playerFace.setAttribute('gltf-model', facePathID);
+        } else {
+            playerFace.setAttribute('obj-model', 'obj:#' + facePathID + ';' + 'mtl:#' + playerFaceMat + ';');
+        }
+
+        // create playerFace
+        playerFace.setAttribute('position','-1 0 -1');
+        playerFace.setAttribute('geometry', 'primitive: ring; radiusInner: 0.02; radiusOuter: 0.03');
+        playerFace.setAttribute('material', 'color: black; shader: flat');
+
        // create dialogue box
         newDialogueUI.setAttribute('id','dialogueID');
         newDialogueUI.setAttribute('position','0 -0.45 -1');
@@ -172,100 +261,6 @@ AFRAME.registerComponent('playercam', {
     remove: function () {
         // Do something the component or its entity is detached.
     },
-
-});
-
-// player componenet
-AFRAME.registerComponent('playermap', {
-    schema: {
-        color: {type: 'color', default: 'white'},
-        position:{type: 'string', default: '0 0 -3'},
-        rotation:{type: 'string', default: '0 0 0'},
-        scale:{type: 'string', default: '1 1 1'},
-        mapNum: {type: 'number', default: 1},
-    },
-    init: function () {
-        const data = this.data;
-        const el = this.el;
-        let scale = data.scale;
-        let pos = data.position;
-        let rot = data.rotation;
-        let mapNum = data.mapNum;
-        const elScale = this.el.scale;
-
-        //fetch map JSOn
-        const mapSource = loadMap(mapNum);
-        console.log(mapSource);
-        console.log(mapSource, mapSource.height);
-        // let roomType = sceneMetadata.roomtype;
-
-
-        const WALL_SIZE = 2;
-        const WALL_HEIGHT = 8;
-        const WALL_MAP_SIZE = mapSource.height * mapSource.width / mapSource.length;
-        const mapContainer =  document.createElement('a-plane');
-        mapContainer.setAttribute('height', 10);
-        mapContainer.setAttribute('width', 10);
-        el.appendChild(mapContainer);
-        // let playerPos;
-        let mapWall;
-        for (let x = 0; x < mapSource.height; x++) {
-            for (let y = 0; y < mapSource.width; y++) {
-                const i = (y * mapSource.width) + x;
-                const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-
-                // if the number is 1 - 4, create a wall
-                if (mapSource[i] === 0 || mapSource[i] === 1 ||mapSource[i] == 2 || mapSource[i] === 3) {
-                    // floor
-                    if (mapSource[i] === 0) {
-                        mapWall = document.createElement('a-entity');
-                        mapWall.setAttribute('geometry','primitive: box; width:'+WALL_MAP_SIZE+'height:'+WALL_MAP_SIZE+'depth:'+WALL_MAP_SIZE);
-                        mapWall.setAttribute('position', position);
-                        mapWall.setAttribute('color', 'yellow');
-                        mapWall.setAttribute('color', 'yellow');
-                        mapWall.setAttribute('scale', WALL_MAP_SIZE);
-                        mapContainer.appendChild(mapWall);
-                    }
-                    // 1/2 height wall
-                    if (mapSource[i] === 2) {
-                        mapWall = document.createElement('a-entity');
-                        mapWall.setAttribute('geometry','primitive: box; width:'+WALL_MAP_SIZE+'height:'+WALL_MAP_SIZE+'depth:'+WALL_MAP_SIZE);
-                        mapWall.setAttribute('position', position);
-                        mapWall.setAttribute('color', 'blue');
-                        mapWall.setAttribute('scale', WALL_MAP_SIZE);
-                        mapContainer.appendChild(mapWall);
-                    }
-                    // door
-                    if (mapSource[i] === 3) {
-                        mapWall = document.createElement('a-entity');
-                        mapWall.setAttribute('geometry','primitive: box; width:'+WALL_MAP_SIZE+'height:'+WALL_MAP_SIZE+'depth:'+WALL_MAP_SIZE);
-                        mapWall.setAttribute('position', position);
-                        mapWall.setAttribute('color', 'brown');
-                        mapWall.setAttribute('scale', WALL_MAP_SIZE);
-                        mapContainer.appendChild(mapWall);
-                    }
-                    // play pos
-                    // else if (mapData === 8) {
-                    //     const playerStart = document.createElement('a-entity');
-                    //
-                    // }
-                    else { // normal walls
-                        mapWall = document.createElement('a-entity');
-                        mapWall.setAttribute('geometry','primitive: box; width:'+WALL_MAP_SIZE+'height:'+WALL_MAP_SIZE+'depth:'+WALL_MAP_SIZE);
-                        mapWall.setAttribute('position', position);
-                        mapWall.setAttribute('color', 'blue');
-                        mapWall.setAttribute('scale', WALL_MAP_SIZE);
-                        mapContainer.appendChild(mapWall);
-                    }
-                }
-            }
-        }
-    },
-
-    remove: function () {
-        // Do something the component or its entity is detached.
-    },
-
 });
 
 AFRAME.registerComponent('character', {
@@ -433,29 +428,26 @@ AFRAME.registerComponent('enemy', {
                 healthBarTracker.setAttribute('width', healthBarVal);
 
                 const playercam = document.getElementById('playercam');
-                let playercamPos =  playercam.getAttribute('position');
+                let playercamPos =  el.getAttribute('position')
+
                 let currentPos =  pos;
                 let distanceCheck = playercam.x - currentPos.x;
+                console.log( playercamPos, currentPos )
                 console.log( distanceCheck)
-                // if player in range
-                if (lifeStatus === 'alive' && distanceCheck<=20 ) {
+                // if player in range -
+                if (lifeStatus === 'alive' && distanceCheck<=50 ) {
                     // attack player back - ADD RANGE CHECKS LATER
                     setTimeout(enemyCombatAttack, 1200);
                 }
+                else {
+                    lifeStatus = 'dead';
+                    let deathAudio = document.querySelector("#death");
+                    deathAudio.play();
+                    console.log('Enemy is dead');
+                    el.emit(`enemydead`, null, false);
+                    el.remove();
+                }}
                 // enemy gets killed
-             else if (health <= 0) {
-                lifeStatus = 'dead';
-                let deathAudio = document.querySelector("#death");
-                deathAudio.play();
-                console.log('Enemy is dead');
-                el.emit(`enemydead`, null, false);
-                el.remove();
-            }
-             // patrol
-             else{
-
-             }
-            }
         });
     },
     enemyTurn: function () {
