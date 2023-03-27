@@ -2,6 +2,7 @@
 #### GNU GENERAL PUBLIC LICENSE
 ##### Current Version: 0.1.1
 ![alt text](https://raw.githubusercontent.com/drnoir/Papyrus3D-IF-Engine/main/papyrusscreengrab.jpg)
+
 ### IDEA
 Build an engine for generating 3D interactive Fiction games based on JSON inputs. 
 Edit the json files in the Game folder and then use the preview and export buttons to export your adventure game.
@@ -23,15 +24,21 @@ Multi-Platform support - Desktop, Mobile, VR and (Possibly) AR.
 ### Current Tech Stack / dependencies
 * Rendering / 3D - A-Frame + a-frame component libraries 
 
+## Local testing
+open shell and generate key 
+openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
+
+run 
+npm start
+
+to boot up local server for testing 
+
 ## Documentation (WIP) 
 (Will be added when Engine is in BETA)
 
 * Creating Your Story
-
 * Adding characters and editing story config
-
 * Customizing UI 
-
 * Creating Player Choices
 * Map Creatopm
 * Exporting your project 

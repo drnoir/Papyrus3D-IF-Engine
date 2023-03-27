@@ -4,7 +4,8 @@
   "description": "Build an engine for generating 3D interactive Fiction games based on JSON inputs. ",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "http-server -S -C cert.pem"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
   },
   "homepage": "https://github.com/drnoir/Papyrus3D-IF-Engine#readme",
   "devDependencies": {
+    "http-server": "^14.1.1",
     "make-dir-webpack-plugin": "^0.1.0"
   }
 }
