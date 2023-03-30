@@ -3,23 +3,23 @@
 ##### Current Version: 0.1.1
 ![alt text](https://raw.githubusercontent.com/drnoir/Papyrus3D-IF-Engine/main/papyrusscreengrab.jpg)
 
-### IDEA
-Build an engine for generating 3D interactive Fiction games based on JSON inputs. 
-Edit the json files in the Game folder and then use the preview and export buttons to export your adventure game.
+### SIMPLE OPEN SOURCE GAME ENGINE FOR VR 
+Open source game engine for generating 3D fighting games based on JSON configs.
+Edit the json files in the Game folder and then use the preview and export buttons to export your fighting game.
 Allow for customisation and export of games as a separate html / javascript bundle or an exe.
-Possibly mobile support for exporting as APK /. AB file for android.
+
 Multi-Platform support - Desktop, Mobile, VR and (Possibly) AR.
 
-### Planned Features
-* Component system for characters supporting custom models and associated avatar  
-* Map Editor WIP- Currently working on a map editor for easy export / import  of created maps
-* Dialogue System with branching - Dialogue UI allowing for custom colours / texture etc
+### Features
+* Component system for character loading in enemeies 
+* Map Editor WIP- basic map editor for easy creation of scenes
 * Define 3D Scenes with character components and assets
 * Create unique repayable games that the engine can generate based on easily editable JSON files
 * Customise scenes with different colours textures, background elements etc
+* melee combat system
 
-### Possible Features
-* Further / optional - create interface for creating the branching narratives (similar to Twine) 
+### Possible future Features
+* torch / advanced lighting 
 
 ### Current Tech Stack / dependencies
 * Rendering / 3D - A-Frame + a-frame component libraries 
@@ -28,14 +28,12 @@ Multi-Platform support - Desktop, Mobile, VR and (Possibly) AR.
 open shell and generate key 
 openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
 
-run 
+## Run Local dev server
 npm start
-
 to boot up local server for testing 
 
 ## Documentation (WIP) 
 (Will be added when Engine is in BETA)
-
 * Creating Your Story
 * Adding characters and editing story config
 * Customizing UI 
