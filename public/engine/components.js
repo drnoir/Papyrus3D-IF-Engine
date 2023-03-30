@@ -2,7 +2,7 @@
 // Componenents for papyrus engine VR / AR 
 // Dependency - A-Frame / A-Frame Extras
 
-// ENGINE CORE
+// ENGINE CORE IMPORTS
 import {nextScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth} from "./papyrus.js";
 
 // CURSOR 
@@ -501,13 +501,6 @@ AFRAME.registerComponent('playermovement', {
     }
 });
 
-async function loadMap(mapToLoad) {
-    let fetchURL = './scenes/scene' + mapToLoad + '/map-old.json';
-    const res = await fetch(fetchURL)
-    let mapSource = await res.json();
-    return mapSource;
-}
-
 AFRAME.registerComponent("load-texture", {
     schema: {
         src:{type: 'string', default: 'textures/structures/rocky.JPG'},
@@ -533,7 +526,3 @@ AFRAME.registerComponent("load-texture", {
             });
     }
 })
-
-function RandomDiceRoll(min, max) {
-    return Math.random() * (max - min) + min;
-}

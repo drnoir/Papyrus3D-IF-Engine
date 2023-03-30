@@ -402,8 +402,7 @@ function MapMaker(mapData) {
     document.querySelector('#mapUI').appendChild(playerMap)
 }
 
-// DIALOGUE OPTIONS - WIP 
-
+// DIALOGUE OPTIONS - WIP
 // show passagebtn relative to character model I.E BELOW
 function addButton(activeChar) {
     console.log('charID passed' + activeChar);
@@ -431,8 +430,7 @@ function addButton(activeChar) {
     }
 }
 
-// COMBAT SYSTEM 
-
+// COMBAT SYSTEM
 // MELEE ATTACK PLAYER 
 function startMeleeCombatAttack(enemyID) {
     const currentEnemy = enemies.enemies[enemyID]; let enemyConst = parseInt(currentEnemy.constitution);
