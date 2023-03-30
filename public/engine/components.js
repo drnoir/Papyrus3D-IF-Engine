@@ -28,7 +28,6 @@ AFRAME.registerComponent('turnmonitor', {
         let turnNumber = this.data.turnNumber;
         let turnType = this.data.turnType[0];
         el.setAttribute('value', 'Turn ' + turnNumber)
-
     },
     nextTurn: function () {
         this.turnNumber++;
@@ -53,7 +52,6 @@ AFRAME.registerComponent('playerhealth', {
         const elHeight = this.el.height;
         let health = getPlayerHealth();
         el.setAttribute('value', 'Health ' + health)
-
     },
     updated: function () {
         let health = getPlayerHealth;
@@ -147,11 +145,9 @@ AFRAME.registerComponent('playerface', {
         let animated = data.animated;
         let glowOn = data.glowOn;
         let playerHealth = getPlayerHealth();
-
         // create a playerface based on attributes
         const newFace = document.createElement('a-entity');
         newFace.setAttribute('position', pos);
-
         // player health bar UI
         const PlayerhealthBar = document.createElement('a-box');
         const PlayerhealthBarTracker = document.createElement('a-box');
@@ -293,48 +289,6 @@ AFRAME.registerComponent('character', {
     },
 
 });
-
-// // DOOR - UNTESTEDS - REMOVE FOR NOW , keep it simple in this refactor
-// AFRAME.registerComponent('door', {
-//     schema: {
-//         color: {type: 'color', default: 'white'},
-//         position: {type: 'string', default: '0 0.5 -3'},
-//         rotation: {type: 'string', default: '0 0 0'},
-//         scale: {type: 'string', default: '1 1 1'},
-//         animated: {type: 'boolean', default: false},
-//         glowOn: {type: 'boolean', default: false},
-//         open: {type: 'boolean', default: false},
-//     },
-//     init: function () {
-//         const data = this.data;
-//         const el = this.el;
-//         let scale = data.scale;
-//         let pos = data.position;
-//         let rot = data.rotation;
-//         let animated = data.animated;
-//         let glowOn = data.glowOn;
-
-//         // create a char based on attributes
-//         const newDoor = document.createElement('a-entity');
-//         newDoor.setAttribute('position', pos);
-//         newDoor.setAttribute('glowFX', 'visible:' + glowOn);
-//         newDoor.setAttribute('scale', scale);
-//         if (animated) {
-//             newDoor.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
-//         }
-//         newDoor.setAttribute('rotation', rot);
-//         this.el.appendChild(newDoor);
-//     },
-
-//     openDoor: function () {
-//         // OPEN DOOR 
-//     },
-
-//     remove: function () {
-//         // GENERIC DESTROY 
-//     },
-
-// });
 
 // ENEMY 
 AFRAME.registerComponent('enemy', {

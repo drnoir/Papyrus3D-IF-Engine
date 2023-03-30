@@ -16,5 +16,9 @@
       "id": "orangebrick",
       "path": "textures/walls/orangebrick.JPG"
     }
+    {
+      "id": "exit",
+      "path": "textures/walls/floor.JPG"
+    }
   ]
 }
