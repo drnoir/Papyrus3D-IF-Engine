@@ -502,14 +502,24 @@ AFRAME.registerComponent('exit', {
     init: function () {
         const data = this.data; let src = data.src;
         const textureLoader = new THREE.TextureLoader();
-        // check if model GLB or Obj - this can probably be made into a util function and put into papyrus core
-        if (format === "glb") {
-            this.el.Attribute('gltf-model', modelPath);
-        } else {
-            this.el.setAttribute('obj-model', 'obj:#' + modelID + ';' + 'mtl:#' + modelMat + ';');
-        }
-        this.el.setAttribute('scale', scale);
-        this.el.setAttribute('rotation', rot);
+        const exit = document.createElement('a-entity');
+        exit.setAttribute('geometry', 'primitive: box;');
+        exit.setAttribute('position', pos); exit.setAttribute('color', color);
+        exit.setAttribute('glowFX', 'visible:' + glowOn);
+        exit.setAttribute('scale', scale);
+
+        textureLoader.load(src,
+            // onLoad
+            function (tex) {
+                let mesh = el.getObject3D('mesh')
+                mesh.material.map = tex;
+            },
+            // onProgress
+            undefined,
+            //onError
+            function (err) {
+                console.error('texture load error on exit texture - check texture config and folder');
+            });
     },
     remove: function () {
         const el = this.el;

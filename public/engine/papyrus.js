@@ -310,7 +310,6 @@ function startMeleeCombatAttack(enemyID) {
     console.log('player hitroll ' + playerDicerollHit)
     let attackAudio = document.querySelector("#playerattack");
     attackAudio.play();
-    
     if (playerDicerollHit >= enemyConst) {
         let hitAudio = document.querySelector("#hit");
         hitAudio.play();
