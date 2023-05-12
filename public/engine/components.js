@@ -113,76 +113,10 @@ AFRAME.registerComponent('glowfx', {
         el.appendChild(aImage);
     },
     remove: function () {
-        // Do something the component or its entity is detached.
+        this.el.destroy();
     },
 });
 
-// PLAYER FACE 
-AFRAME.registerComponent('playerface', {
-    schema: {
-        color: {type: 'color', default: 'white'},
-        modelPath: {type: 'string', default: './models/facePathID.glb'},
-        modelID: {type: 'string', default: 'facePathID'},
-        modelMat: {type: 'string', default: 'demonMat'},
-        format: {type: 'string', default: 'glb'},
-        position: {type: 'string', default: '0 0.1 0'},
-        rotation: {type: 'string', default: '0 0 0'},
-        scale: {type: 'string', default: '0.3 0.3 0.3'},
-        animated: {type: 'boolean', default: false},
-        playerHealth: {type: 'number', default: 100},
-    },
-    init: function () {
-        let data = this.data;
-        const el = this.el;
-        const id = data.id;
-        const modelPath = data.modelPath;
-        const modelID = data.modelID;
-        const modelMat = data.modelID;
-        let scale = data.scale;
-        let pos = data.position;
-        let rot = data.rotation;
-        let format = data.format;
-        let animated = data.animated;
-        let glowOn = data.glowOn;
-        let playerHealth = getPlayerHealth();
-        // create a playerface based on attributes
-        const newFace = document.createElement('a-entity');
-        newFace.setAttribute('position', pos);
-        // player health bar UI
-        const PlayerhealthBar = document.createElement('a-box');
-        const PlayerhealthBarTracker = document.createElement('a-box');
-        let PlayerhealthBarVal = playerHealth / 10 * 3;
-        PlayerhealthBar.setAttribute('height', 0.5);
-        PlayerhealthBar.setAttribute('position', '0 8 0');
-        PlayerhealthBar.setAttribute('width', 3);
-        PlayerhealthBar.setAttribute('depth', 0.1);
-        PlayerhealthBar.setAttribute('material', 'color:white');
-        PlayerhealthBarTracker.setAttribute('height', 0.4);
-        PlayerhealthBarTracker.setAttribute('width', PlayerhealthBarVal.toString());
-        PlayerhealthBarTracker.setAttribute('depth', 0.1);
-        PlayerhealthBarTracker.setAttribute('position', '0 0 0.1');
-        PlayerhealthBarTracker.setAttribute('material', 'color:red');
-        PlayerhealthBarTracker.setAttribute('HealthBarid', id);
-        PlayerhealthBar.appendChild(PlayerhealthBarTracker);
-        newFace.appendChild(PlayerhealthBar);
-        // check if model GLB or Obj
-        if (format === "glb") {
-            newFace.setAttribute('gltf-model', modelPath);
-        } else {
-            newFace.setAttribute('obj-model', 'obj:#' + modelID + ';' + 'mtl:#' + modelMat + ';');
-        }
-        newFace.setAttribute('scale', scale);
-        if (animated) {
-            newFace.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
-        }
-        newFace.setAttribute('rotation', rot);
-        el.appendChild(newFace);
-    },
-    remove: function () {
-        const el = this.el;
-        el.destroy();
-    },
-});
 
 // PLAYER CAM componenet
 AFRAME.registerComponent('playercam', {
@@ -224,6 +158,27 @@ AFRAME.registerComponent('playercam', {
         newCursor.setAttribute('cursor', 'fuse: true; fiseTimeout:500');
         newCursor.setAttribute('geometry', 'primitive: ring; radiusInner: 0.02; radiusOuter: 0.03');
         newCursor.setAttribute('material', 'color: black; shader: flat');
+        // create healthbar
+
+        // health bar UI
+        const playerHealthBar = document.createElement('a-box');
+        const playerhealthBarTracker = document.createElement('a-box');
+        this.playerhealthBarTracker = playerhealthBarTracker;
+        let playerhealthBarVal = 100;
+        playerHealthBar.setAttribute('height', 0.5);
+        playerHealthBar.setAttribute('position', '0 8 -0.5');
+        playerHealthBar.setAttribute('width', 3);
+        playerHealthBar.setAttribute('depth', 0.1);
+        playerHealthBar.setAttribute('material', 'color:white');
+        playerhealthBarTracker.setAttribute('height', 0.4);
+        playerhealthBarTracker.setAttribute('width', playerhealthBarVal.toString());
+        playerhealthBarTracker.setAttribute('depth', 0.1);
+        playerhealthBarTracker.setAttribute('position', '0 0 0.1');
+        playerhealthBarTracker.setAttribute('material', 'color:red');
+        playerhealthBarTracker.setAttribute('HealthBarid', 'playerHealthBar');
+        playerhealthBar.appendChild(playerhealthBarTracker);
+        newCam.appendChild(playerhealthBar);
+
         // function to load player face
         // check if model GLB or Obj - create func for this
         if (format === "glb") {
@@ -240,13 +195,11 @@ AFRAME.registerComponent('playercam', {
         newDialogueUI.setAttribute('position', '0 -0.45 -1');
         newDialogueUI.setAttribute('geometry:', "primitive: plane; width: auto; height: auto");
         newDialogueUI.setAttribute('material:', 'alphaTest:0.4; opacity: 0.8; transparent:true; color:black');
-
         newCam.appendChild(newCursor);
-        newCam.appendChild(newDialogueUI);
     },
 
     remove: function () {
-        // Do something the component or its entity is detached.
+        this.el.destroy();
     },
 });
 
@@ -285,7 +238,7 @@ AFRAME.registerComponent('character', {
         charContainer.appendChild(newCharacter);
     },
     remove: function () {
-        // Do something the component or its entity is detached.
+        this.el.destroy();
     },
 
 });
@@ -369,8 +322,6 @@ AFRAME.registerComponent('enemy', {
         el.appendChild(newEnemy);
 
         newEnemy.addEventListener('click', function (evt) {
-            // const data = this.data;
-            // const el = this.el;
             let newMeleeAttack = startMeleeCombatAttack(0);
             if (newMeleeAttack > 0 && lifeStatus === 'alive') {
                 // new health is for UI , health is the enemies health
@@ -381,12 +332,16 @@ AFRAME.registerComponent('enemy', {
 
                 const playercam = document.getElementById('playercam');
                 let playercamPos = el.getAttribute('position')
-
-                let currentPos = pos; let distanceCheck = playercam.x - currentPos.x;
-                // if player in range -
-                if (lifeStatus === 'alive' && distanceCheck <= 50) {
+                //
+                // let distanceCheck = playercam.position.x - pos.x;
+                // // if player in range -
+                // console.log('playerdistancecheck'+playercam.position.x, pos.x,distanceCheck);
+                enemyCombatAttack();
+                if (lifeStatus === 'alive'
+                    // && distanceCheck <= 50
+                ) {
                     // attack player back - ADD RANGE CHECKS LATER
-                    setTimeout(enemyCombatAttack, 1200);
+                    enemyCombatAttack();
                 } else {
                     lifeStatus = 'dead';
                     let deathAudio = document.querySelector("#death");
@@ -423,10 +378,8 @@ AFRAME.registerComponent('intersection-spawn', {
         el.addEventListener(data.event, evt => {
             // Create element.
             const spawnEl = document.createElement('a-entity');
-
             // Snap intersection point to grid and offset from center.
             spawnEl.setAttribute('position', evt.detail.intersection.point);
-
             // Set components and properties.
             Object.keys(data).forEach(name => {
                 if (name === 'event') {
@@ -434,7 +387,6 @@ AFRAME.registerComponent('intersection-spawn', {
                 }
                 AFRAME.utils.entity.setComponentProperty(spawnEl, name, data[name]);
             });
-
             // Append to scene.
             el.sceneEl.appendChild(spawnEl);
         });
@@ -452,7 +404,6 @@ AFRAME.registerComponent('playermovement', {
                 nextScene();
             }
             else{
-            this.setAttribute('material', 'color', 'red');
             let newPos = this.getAttribute('position');
             const playercam = document.getElementById('playercam');
             playercam.setAttribute('position', newPos);
@@ -503,6 +454,7 @@ AFRAME.registerComponent('exit', {
         const data = this.data; let src = data.src;
         const textureLoader = new THREE.TextureLoader();
         const exit = document.createElement('a-entity');
+        
         exit.setAttribute('geometry', 'primitive: box;');
         exit.setAttribute('position', pos); exit.setAttribute('color', color);
         exit.setAttribute('glowFX', 'visible:' + glowOn);
