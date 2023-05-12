@@ -242,25 +242,20 @@ function createRooms() {
                     wall.setAttribute('height', WALL_HEIGHT / 20);
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', floorPos);
-                    // wall.setAttribute('load-texture', '');
                     wall.setAttribute('playermovement', '');
                     wall.setAttribute('material', 'src:#' + floorTexture);
                 }
                 // full height wall
                 if (mapData[i] === 1) {
-                    // wall.setAttribute('color', '#000');
                     wall.setAttribute('height', WALL_HEIGHT);
                     wall.setAttribute('static-body', '');
-                    // wall.setAttribute('load-texture', '');
                     wall.setAttribute('position', position);
                     wall.setAttribute('material', 'src:#' + wallTexture);
                 }
                 // 1/2 height wall
                 if (mapData[i] === 2) {
-                    // wall.setAttribute('color', '#000');
                     wall.setAttribute('height', WALL_HEIGHT / 2);
                     wall.setAttribute('static-body', '');
-                    // wall.setAttribute('load-texture', '');
                     wall.setAttribute('position', halfYposition);
                     wall.setAttribute('material', 'src:#' + wallTexture2);
                 }
@@ -268,7 +263,6 @@ function createRooms() {
                 if (mapData[i] === 3) {
                     wall.setAttribute('height', WALL_HEIGHT / 4);
                     wall.setAttribute('static-body', '');
-                    // wall.setAttribute('load-texture', '');
                     wall.setAttribute('position', quarterYposition);
                     wall.setAttribute('material', 'src:#' + wallTexture2);
                 }
@@ -276,7 +270,7 @@ function createRooms() {
                 if (mapData[i] === 4) {
                     wall.setAttribute('id', 'door');
                     // create component for door / lock
-                    // wall.setAttribute('load-texture', '');
+                    wall.setAttribute('height', WALL_HEIGHT);
                     wall.setAttribute('door', 'false');
                     wall.setAttribute('locked', 'false');
                     wall.setAttribute('material', 'src:#' + doorTexture);
@@ -284,9 +278,11 @@ function createRooms() {
                 // exit
                 if (mapData[i] === 5) {
                 wall.setAttribute('id', 'exit');
+                wall.setAttribute('height', WALL_HEIGHT / 20);
+                wall.setAttribute('static-body', '');
+                wall.setAttribute('position', floorPos);
                 // create component for exit             
                 wall.setAttribute('material', 'src:#' + exitTexture);
-                wall.setAttribute('position', floorPosition);
             }
             }
         }
@@ -301,7 +297,6 @@ function createRooms() {
 //     playerMap.setAttribute('playermap', '');
 //     document.querySelector('#mapUI').appendChild(playerMap)
 // }
-
 // COMBAT SYSTEM
 // MELEE ATTACK PLAYER 
 function startMeleeCombatAttack(enemyID) {
@@ -315,9 +310,11 @@ function startMeleeCombatAttack(enemyID) {
         hitAudio.play();
         playerDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber);
         console.log('You hit! ' + playerDicerollHit / CombatDiceNumber + 'The enemy takes' + playerDicerollDmg);
+        enemyCombatAttack();
         return playerDicerollDmg;
     } else {
         console.log(playerDicerollHit / CombatDiceNumber + 'You Missed! and caused ' + playerDicerollDmg + 'damage');
+        enemyCombatAttack();
         return playerDicerollDmg;
     }
 }
@@ -349,6 +346,26 @@ function getPlayerHealth() {
     if (player1) {
         return player1.health;
     }
+}
+
+function createHealthBar(){
+      // player health bar UI
+      const PlayerhealthBar = document.createElement('a-box');
+      const PlayerhealthBarTracker = document.createElement('a-box');
+      let PlayerhealthBarVal = 100;
+      PlayerhealthBar.setAttribute('height', 0.5);
+      PlayerhealthBar.setAttribute('position', '0 8 0');
+      PlayerhealthBar.setAttribute('width', 3);
+      PlayerhealthBar.setAttribute('depth', 0.1);
+      PlayerhealthBar.setAttribute('material', 'color:white');
+      PlayerhealthBarTracker.setAttribute('height', 0.4);
+      PlayerhealthBarTracker.setAttribute('width', PlayerhealthBarVal.toString());
+      PlayerhealthBarTracker.setAttribute('depth', 0.1);
+      PlayerhealthBarTracker.setAttribute('position', '0 0 0.1');
+      PlayerhealthBarTracker.setAttribute('material', 'color:red');
+      PlayerhealthBarTracker.setAttribute('HealthBarid', id);
+      PlayerhealthBar.appendChild(PlayerhealthBarTracker);
+      newFace.appendChild(PlayerhealthBar);
 }
 
 // simulate random dice roll
