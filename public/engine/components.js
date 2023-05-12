@@ -321,6 +321,7 @@ AFRAME.registerComponent('enemy', {
         newEnemy.setAttribute('rotation', rot);
         el.appendChild(newEnemy);
 
+    
         newEnemy.addEventListener('click', function (evt) {
             let newMeleeAttack = startMeleeCombatAttack(0);
             if (newMeleeAttack > 0 && lifeStatus === 'alive') {
@@ -330,8 +331,8 @@ AFRAME.registerComponent('enemy', {
                 console.log('enemy health reassigned to ' + health)
                 healthBarTracker.setAttribute('width', healthBarVal);
 
-                const playercam = document.getElementById('playercam');
-                let playercamPos = el.getAttribute('position')
+                // const playercam = document.getElementById('playercam');
+                // let playercamPos = playercam.getAttribute('position');
                 //
                 // let distanceCheck = playercam.position.x - pos.x;
                 // // if player in range -
@@ -356,7 +357,27 @@ AFRAME.registerComponent('enemy', {
     },
     enemyTurn: function () {
         const el = this.el;
+    },
 
+    // 
+    tick: function () {
+        const el = this.el;
+        // get elements of player for distance checks 
+        // const playercam = document.getElementById('playercam');
+        // let playercamPos = playercam.getAttribute('position');
+        let enemyPos = this.el.getAttribute('position');
+
+        // // Basic AI pathfinding 
+        // if (playerCamPos - enemyPos < 5)
+        // {
+        //     // init attack 
+        //     enemyCombatAttack();
+        //     // move 
+        //     // test val for now no idea what this will do in execution 
+        //     enemyPos.x ++;
+        //     //retreat 
+        //     enemyPos.z ++;
+        // } 
     },
     remove: function () {
         const el = this.el;
