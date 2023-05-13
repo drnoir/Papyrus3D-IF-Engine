@@ -7,6 +7,7 @@ let player; let player1;
 let config; let chars; let enemies;
 // Diagoloue and scene metadata shit
 let diag; let sceneMetadata;
+let custumEnemyModelPaths = [];
 // STORE TEXTURE INFO
 let textures;
 // diaglog UI Globals / shit 
@@ -189,7 +190,7 @@ function createRooms() {
                 const enemy1 = document.createElement('a-entity');
                 const enemyNum = enemies.enemies[0];
                 console.log(enemyNum)
-                enemy1.setAttribute('enemy', 'modelPath:./models/hellknight/hellknightGLB.glb; ' +
+                enemy1.setAttribute('enemy', 'modelPath:./models/reds/red_01.glb; ' +
                     'format:glb;animated:true;' + 'health:' + enemyNum.health +
                     'id:' + i + 'constitution:' + enemyNum.constitution + 'scale:' + enemyNum.scale);
                 enemy1.setAttribute('id', i);

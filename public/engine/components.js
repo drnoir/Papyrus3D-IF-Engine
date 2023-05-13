@@ -253,7 +253,7 @@ AFRAME.registerComponent('enemy', {
         format: {type: 'string', default: 'glb'},
         position: {type: 'string', default: '0 0.1 0'},
         rotation: {type: 'string', default: '0 0 0'},
-        scale: {type: 'string', default: '0.3 0.3 0.3'},
+        scale: {type: 'string', default: '1 1 1'},
         animated: {type: 'boolean', default: false},
         glowOn: {type: 'boolean', default: false},
         id: {type: 'number', default: 0},
@@ -365,7 +365,7 @@ AFRAME.registerComponent('enemy', {
         // get elements of player for distance checks 
         // const playercam = document.getElementById('playercam');
         // let playercamPos = playercam.getAttribute('position');
-        let enemyPos = this.el.getAttribute('position');
+        moveRandom();
 
         // // Basic AI pathfinding 
         // if (playerCamPos - enemyPos < 5)
@@ -379,6 +379,26 @@ AFRAME.registerComponent('enemy', {
         //     enemyPos.z ++;
         // } 
     },
+    moveRandom: function () {
+        const el = this.el;
+        // get elements of player for distance checks 
+        // const playercam = document.getElementById('playercam');
+        // let playercamPos = playercam.getAttribute('position');
+
+        // walk in x + or - random direction?
+    
+        let randomChance = Math.random() * 2;
+        let randomMovemement =  Math.random() * 1;
+        console.log(randomChance,randomMovemement);
+
+        if (randomChance>1){
+            el.setAttribute('position', { x: pos.x+randomMovemement, y: pos.y, z: pos.z });
+        }
+        else{
+            el.setAttribute('position', { x: pos.x+randomMovemement, y: pos.y, z: pos.z });
+        }
+    },
+
     remove: function () {
         const el = this.el;
         el.destroy();

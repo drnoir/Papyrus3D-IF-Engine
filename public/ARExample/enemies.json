@@ -1,11 +1,11 @@
 {
     "enemies": [
       {
-        "name": "hellknight",
-        "id": "hellknight",
-        "model": "/models/hellknight/hellknightGLB.glb",
+        "name": "red",
+        "id": "red1",
+        "model": "/models/reds/red_01.glb",
         "health": 10,
-        "scale": 0.3,
+        "scale": 80,
         "strength" : 4,
         "constitution" : 12,
         "animations": []

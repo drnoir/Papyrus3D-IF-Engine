@@ -5,7 +5,7 @@
       "id": "hellknight",
       "model": "./models/hellknight/hellknightGLB.glb",
       "health": 10,
-      "scale": 0.3,
+      "scale": 1,
       "strength" : 4,
       "constitution" : 12,
       "animations": []
