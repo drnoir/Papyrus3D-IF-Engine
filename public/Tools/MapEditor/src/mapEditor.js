@@ -1,7 +1,6 @@
 // map editor js - main js scrupt for the map editor for creating maps
 
 // global map editor vars
-
 let sceneMetadata;
 let textures;
 let mapTemplate = [];
@@ -281,6 +280,7 @@ function createRooms() {
                     // create component for door / lock
                     wall.setAttribute('material', 'src:#' + doorTexture);
                 }
+                
             }
         }
     }
