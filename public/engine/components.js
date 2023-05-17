@@ -365,7 +365,7 @@ AFRAME.registerComponent('enemy', {
         // get elements of player for distance checks 
         // const playercam = document.getElementById('playercam');
         // let playercamPos = playercam.getAttribute('position');
-        moveRandom();
+        // moveRandom();
 
         // // Basic AI pathfinding 
         // if (playerCamPos - enemyPos < 5)
