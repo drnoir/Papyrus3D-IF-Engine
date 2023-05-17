@@ -1,7 +1,7 @@
 ## Papyrus 3D - Interactive Fiction Engine by Chris Godber
 #### GNU GENERAL PUBLIC LICENSE
 ##### Current Version: 0.1.1
-![alt text](https://raw.githubusercontent.com/drnoir/Papyrus3D-IF-Engine/main/papytus3D.jpg)
+![alt text](https://raw.githubusercontent.com/drnoir/Papyrus3D-IF-Engine/main/Papyrus3D.jpg)
 
 ### SIMPLE OPEN SOURCE GAME ENGINE FOR VR 
 Open source game engine for generating 3D fighting games based on JSON configs.
