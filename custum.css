@@ -3,8 +3,9 @@
     --spacing-company: 3rem;
     --font-weight: 400;
     --border-radius: 0;
+    --background-color:  lightsteelblue;
   }
-  
+
   /* Typography */
   h2,
   h3,
@@ -19,7 +20,7 @@
   /* Header */
   .hero {
     background-color: #394046;
-    background-image: url("papyrusscreengrab.jpg");
+    background-image: url("papyrusscreengrabjpg");
     background-position: center;
     background-size: cover;
   }
@@ -58,6 +59,7 @@
   aside img {
     margin-bottom: 0.25rem;
   }
+
   
   aside p {
     margin-bottom: var(--spacing-company);
