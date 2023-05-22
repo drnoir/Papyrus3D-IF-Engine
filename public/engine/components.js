@@ -3,7 +3,7 @@
 // Dependency - A-Frame / A-Frame Extras
 
 // ENGINE CORE IMPORTS
-import {nextScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth} from "./papyrus.js";
+import {nextScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth, clearScene} from "./papyrus.js";
 
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
@@ -74,7 +74,7 @@ AFRAME.registerComponent('startgamebtn', {
 
         el.addEventListener('mouseenter', function () {
             el.setAttribute('color', data.color);
-            loadData();
+            loadData(1);
             el.remove();
         });
 
@@ -440,17 +440,11 @@ AFRAME.registerComponent('playermovement', {
     },
     init: function () {
         this.el.addEventListener('click', function (evt) {
-            const checkExit = document.getElementById('exit');
-            if (checkExit) {
-                nextScene();
-            }
-            else{
             let newPos = this.getAttribute('position');
             const playercam = document.getElementById('playercam');
             playercam.setAttribute('position', newPos);
             playercam.object3D.position.y = 1.5;
-            }
-        });
+        })
     }
 });
 
@@ -481,13 +475,13 @@ AFRAME.registerComponent("load-texture", {
 
 AFRAME.registerComponent('exit', {
     schema: {
-        color: {type: 'color', default: 'red'},
-        modelPath: {type: 'string', default: './models/exit.glb'},
+        color: {type: 'color', default: 'green'},
+        // modelPath: {type: 'string', default: './models/exit.glb'},
         modelID: {type: 'string', default: 'exit'},
         modelMat: {type: 'string', default: 'exit'},
         position: {type: 'string', default: '0 0.1 0'},
         rotation: {type: 'string', default: '0 0 0'},
-        scale: {type: 'string', default: '0.3 0.3 0.3'},
+        scale: {type: 'string', default: '0.1 0.1 0.1'},
         status: {type: 'string', default: 'false'}
     },
 
@@ -495,24 +489,28 @@ AFRAME.registerComponent('exit', {
         const data = this.data; let src = data.src;
         const textureLoader = new THREE.TextureLoader();
         const exit = document.createElement('a-entity');
-        
+        let position = data.position;
+        let color = data.color;
+        let scale = data.scale;
+
         exit.setAttribute('geometry', 'primitive: box;');
-        exit.setAttribute('position', pos); exit.setAttribute('color', color);
-        exit.setAttribute('glowFX', 'visible:' + glowOn);
+        exit.setAttribute('position', position); 
+        exit.setAttribute('color', color);
+        exit.setAttribute('glowFX', 'visible:' + true);
         exit.setAttribute('scale', scale);
 
-        textureLoader.load(src,
-            // onLoad
-            function (tex) {
-                let mesh = el.getObject3D('mesh')
-                mesh.material.map = tex;
-            },
-            // onProgress
-            undefined,
-            //onError
-            function (err) {
-                console.error('texture load error on exit texture - check texture config and folder');
-            });
+        // textureLoader.load(src,
+        //     // onLoad
+        //     function (tex) {
+        //         let mesh = el.getObject3D('mesh')
+        //         mesh.material.map = tex;
+        //     },
+        //     // onProgress
+        //     undefined,
+        //     //onError
+        //     function (err) {
+        //         console.error('texture load error on exit texture - check texture config and folder');
+        //     });
     },
     remove: function () {
         const el = this.el;

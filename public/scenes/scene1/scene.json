@@ -4,7 +4,7 @@
   "roomtype": "Indoor",
   "RoomTextures" : "Brick",
   "RoomWidth" : 8,
-  "RoomHeight" : 10,
+  "RoomHeight" : 2,
   "RoomDepth" : 20,
   "skyColor":"blue",
   "foilage": "bush",

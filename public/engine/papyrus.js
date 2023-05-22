@@ -19,17 +19,17 @@ let CombatDMGDiceNumber = 6;
 // dialogueUI Elements Based on a-frame defaults 
 const scene = document.querySelector('a-scene'); const assets = document.querySelector('a-assets');
 
-async function loadData() {
+async function loadData(currentScene) {
 //game vars
 //config and diagloue loading
     await loadPlayer();
-    await loadTextures(1);
+    await loadTextures(currentScene);
     await loadConfig();
     await loadChars();
     await loadEnemies();
     //scene loading / aFrame loading
-    await loadMap(1);
-    await loadSceneMetaData(1);
+    await loadMap(currentScene);
+    await loadSceneMetaData(currentScene);
     await setupPlayerInfo();
     // run create scene routine
     await createRooms();
@@ -147,7 +147,7 @@ function createRooms() {
     let exitTexture = textures.textures[4].id;
 
     const WALL_SIZE = 0.8;
-    const WALL_HEIGHT = 5;
+    const WALL_HEIGHT = 3.5;
     const el = document.getElementById('room')
 
     let door;let wall;
@@ -158,7 +158,7 @@ function createRooms() {
         ceil.setAttribute('width', ceilArea);
         ceil.setAttribute('height', ceilArea);
         ceil.setAttribute('rotation', '-90 0 0');
-        ceil.setAttribute('position', '0 5 0');
+        ceil.setAttribute('position', '0 3.5 0');
         ceil.setAttribute('static-body', '');
         ceil.setAttribute('scale', '0.2 0.2 0.2');
         ceil.setAttribute('material', 'src: #grunge; repeat: 5 5');
@@ -210,6 +210,17 @@ function createRooms() {
                 el.appendChild(floor);
                 floor.appendChild(enemy1);
             }
+            // add exit
+            if (mapData[i] === 5) {
+                wall.setAttribute('id', 'exit');
+                // wall.setAttribute('height', WALL_HEIGHT / 20);
+                wall.setAttribute('static-body', '');
+                // wall.setAttribute('position', floorPos);
+                // create component for exit             
+                wall.setAttribute('exit', '');
+                wall.setAttribute('material', 'src:#' + exitTexture);
+                wall.setAttribute('color', 'green');
+            }
             // add torch / light
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "t") {
                 console.log("its a torch!")
@@ -227,8 +238,8 @@ function createRooms() {
                 camPointDebug.setAttribute('visible', false)
                 el.appendChild(camPoint);
             }
-            // if the number is 1 - 4, create a wall
-            if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
+            // if the number is 1 - 5,  create a wall
+            if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4 || mapData[i] === 5) {
                 wall = document.createElement('a-box');
                 wall.setAttribute('width', WALL_SIZE);
                 wall.setAttribute('height', WALL_HEIGHT);
@@ -276,15 +287,6 @@ function createRooms() {
                     wall.setAttribute('locked', 'false');
                     wall.setAttribute('material', 'src:#' + doorTexture);
                 }
-                // exit
-                if (mapData[i] === 5) {
-                wall.setAttribute('id', 'exit');
-                wall.setAttribute('height', WALL_HEIGHT / 20);
-                wall.setAttribute('static-body', '');
-                wall.setAttribute('position', floorPos);
-                // create component for exit             
-                wall.setAttribute('material', 'src:#' + exitTexture);
-            }
             }
         }
     }
@@ -380,5 +382,10 @@ function updatePlayerPos(newPlayPos) {
     document.querySelector('#player').setAttribute('position', newPlayPos);
 }
 
+function clearScene(){
+    const sceneEl = document.getElementById('room');
+    sceneEl.parentNode.replaceChildren();
+};
+
 // EXPORT JS 
-export {nextScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth};
+export {nextScene, clearScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth};
