@@ -213,10 +213,10 @@ function createRooms() {
             // add exit
             if (mapData[i] === 5) {
                 wall.setAttribute('id', 'exit');
-                // wall.setAttribute('height', WALL_HEIGHT / 20);
+                wall.setAttribute('height', WALL_HEIGHT / 20);
                 wall.setAttribute('static-body', '');
                 // wall.setAttribute('position', floorPos);
-                // create component for exit             
+                // create component for exit  
                 wall.setAttribute('exit', '');
                 wall.setAttribute('material', 'src:#' + exitTexture);
                 wall.setAttribute('color', 'green');

@@ -5,13 +5,13 @@
     <title>Map Editor</title>
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="../libs/aframe-extras.min.js"></script>
     <script src="FileSaver.min.js"></script>
     <link rel="stylesheet" href="css/editor.css">
 </head>
 <body>
-<div id="myEmbeddedScene">
-    <a-scene embedded vr-mode-ui="enabled: false">
+<div>
+    <a-scene  vr-mode-ui="enabled: false">
         <a-assets>
             <img id="brick" src="textures/structures/rocky.JPG">
             <img id="door" src="textures/wood/bigdoor.JPG">
@@ -30,7 +30,7 @@
         </a-assets>
         <a-entity light="type: ambient; color: #CCC;intensity: 0.2;"></a-entity>
         <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
-        <a-entity id="rig" movement-controls="fly: true; speed: 1">
+        <a-entity id="rig" movement-controls="fly: true; speed: 0.8">
             <a-entity camera look-controls position="0 1.6 4" id="player">
                 <a-entity cursor="fuse: true; fuseTimeout: 500"
                           position="0 0 -01"
@@ -39,7 +39,7 @@
                 </a-entity>
             </a-entity>
         </a-entity>
-        <a-entity environment ="preset: volcano; ground:flat; playArea:300;" position="0 0 -20"></a-entity>
+        <a-entity environment ="preset: forest; ground:flat; playArea:300; dressing:none;" position="0 0 -20"></a-entity>
         <!-- Walls (used by map-old.json.js -->)
         <a-entity id="room"></a-entity>
         <!-- Sky -->
@@ -48,15 +48,13 @@
 </div>
 <div id="mySidenav" class="sidenav">
     <a id="closebtn">&times;</a>
-    <h2>Papyrus 3D Map Editor</h2>
+    <h2>Room Creator Map Editor</h2>
     <h4>Paint Mode</h4>
     <select id="paintmode" class="m1 ">
         <option value="0">Walls</option>
-        <option value="1">Enemies</option>
-        <option value="2">Doors</option>
     </select>
     <label for="deletemode">
-        <input type="checkbox" id="deletemode" name="deletemode" value="no"> DELETE MODE
+        <input type="checkbox" id="deletemode" name="deletemode" value="no"> Toggle DELETE MODE
     </label>
     <h4>Wall Type</h4>
     <select id="wallType" class="m1 ">
@@ -64,28 +62,18 @@
         <option value="2">1/2 Height</option>
         <option value="3">1/3 Height</option>
     </select>
-    <h4>Texture Wall Select</h4>
-    <select id="textures" class="m1 ">
-        <option value="1">Wall 1</option>
-        <option value="2">Wall 2</option>
-        <option value="3">Wall 3</option>
-        <option value="4">Wall 4</option>
+    <h4>Map Template Size</h4>
+    <select id="templateSize" class="m1">
+        <option value="25">25 x 25</option>
+        <option value="50">50 x 50</option>
+        <option value="100">100 x 100</option>
     </select>
-    <h4 id = "enemiesTitle">Enemies Select</h4>
-    <select id=enemies" class="m1">
-        <option value="monster1">Enemy 1</option>
-        <option value="monster2">Enemy 2</option>
-        <option value="monster3">Enemy 3</option>
-        <option value="monster4">Enemy 4</option>
-    </select>
-    <h4>Current Texture</h4>
-    <img src="wooddoor.JPG" alt="texture Previewer" class="previewBox">
-
+    <div>
+        <button id="downloadBtn" class="m1">Download Map</button>
+    </div>
 </div>
 <div style="font-size:28px;cursor:pointer" id="openEditor" class="m1">&#9776; Open Editor Menu</div>
-<button id="downloadBtn" class="m1 floatRight">Download Map</button>
 </body>
 <script src="src/UIEditor.js" type="module"></script>
 <script src="src/mapEditor.js" type="module"></script>
-<!--<script src="../../engine/components.js" type="module"></script>-->
 </html>

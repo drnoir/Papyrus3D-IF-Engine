@@ -1,6 +1,6 @@
 // map editor js - main js scrupt for the map editor for creating maps
 
-// global map editor vars
+// global map editor vars 
 let sceneMetadata;
 let textures;
 let mapTemplate = [];
@@ -25,7 +25,7 @@ let paintMode = ['wall','enemies', 'door', 'delete' ];
 let currentPaintMode =  paintMode[0];
 let deleteMode =false;
 
-// dialogueUI Elements
+// scene elements
 const scene = document.querySelector('a-scene');
 const assets = document.querySelector('a-assets');
 
@@ -34,6 +34,12 @@ const downloadBtn = document.getElementById('downloadBtn');
 downloadBtn.addEventListener('mousedown', (event) => {
     exportJSON();
 });
+
+function clearScene(){
+    const el = document.getElementById('room');
+    el.parentNode.removeChild(el);
+
+}
 
 AFRAME.registerComponent('editor-listener', {
     schema: {
@@ -46,19 +52,9 @@ AFRAME.registerComponent('editor-listener', {
         const data = this.data;
         let index = data.index;
         const el = this.el;
-        // this.el.addEventListener('mouseover', function (evt) {
-        //     let lastHoverIndex = (lastHoverIndex + 1) % data.colors.length;
-        //     this.el.setAttribute('material', 'color', data.colors[lastHoverIndex]);
-        // });
-        //
-        // this.el.addEventListener('mouseout', function (evt) {
-        //     let lastHoverIndex = (lastHoverIndex - 1) % data.colors.length;
-        //     this.el.setAttribute('material', 'color', "#fff");
-        // });
         this.el.addEventListener('mousedown', function (evt) {
             const WALL_HEIGHT = wallHeight;
             if (currentPaintMode === "wall" ) {
-                // this.setAttribute('material', 'color', "#000");
                 el.setAttribute('material', 'src:#' + wallTexture);
                 el.setAttribute('height', wallHeight);
                 if (currentEntity === 1 && !deleteMode) {
@@ -68,7 +64,7 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('material', 'src:#' + wallTexture2);
                 }
                 else if (currentEntity === 3 && !deleteMode) {
-                    l.object3D.position.y = 0.5;
+                    el.object3D.position.y = 0.5;
                     el.setAttribute('material', 'src:#' + wallTexture3);
                 }
                 else if (currentEntity === 0 && deleteMode) {
@@ -81,17 +77,6 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('height', WALL_HEIGHT / 20);
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
-                console.log('I was clicked at: ', evt.detail.intersection.point);
-                console.log('I was clicked at: ', evt.detail.intersection);
-                console.log('index Map: ', index);
-                // update the map and show new element
-                updateMap(index, currentEntity);
-            }
-            if (currentPaintMode === "door" ) {
-                el.setAttribute('material', 'src:#' + doorTexture);
-                el.setAttribute('height', wallHeight);
-                el.object3D.position.y = 0.5;
-                el.setAttribute('material',  'src:#' + doorTexture+'repeat:1 1');
                 // update the map and show new element
                 updateMap(index, currentEntity);
             }
@@ -127,15 +112,19 @@ AFRAME.registerComponent('map', {
 //create the blank map scene
 init();
 
+
 async function init() {
-    // await loadChars();
+    let room = document.createElement('a-entity');
+    room.setAttribute('id', 'room');
+    scene.appendChild(room);
     await loadTextures();
     await loadMapTemplateData( templateSize);
     await createRooms();
 }
 
+// function to handle loading of template and textures data 
 async function loadMapTemplateData(templateSize) {
-    let fetchURL
+    let fetchURL;
     if (!templateWalled) {
          fetchURL = './mapTemplates/map' + templateSize + templateSize + '.json';
     }
@@ -148,10 +137,6 @@ async function loadMapTemplateData(templateSize) {
     console.log(mapRes.length);
 }
 
-async function loadChars() {
-    const res = await fetch('../../DemoGame/charecters.json')
-    chars = await res.json();
-}
 
 async function loadTextures(e) {
     let fetchURL = './textures/textures.json';
@@ -165,22 +150,17 @@ async function loadTextures(e) {
    wallTexture3 = textures.textures[4].id;
 }
 
+// function to create room geometry 
 function createRooms() {
     const mapData = mapTemplate;
-    console.log(mapData, mapRes.height);
     let roomType = "Map Editor";
     // char info
-    const chars = mapRes.chars;
-    const charNum = mapRes.charnumber;
+    const chars = mapRes.chars; const charNum = mapRes.charnumber;
     let charLoopIndex = 0;
-
-
-    console.log(typeof wallTexture);
 
     const WALL_SIZE = 0.8;
     const WALL_HEIGHT = wallHeight;
-    const el = document.getElementById('room')
-    // let playerPos;
+    const el = document.getElementById('room');
     let wall;
     let floorIndex = 0;
 
@@ -207,26 +187,6 @@ function createRooms() {
             const charPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 0 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const torchPosition = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 4 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const stairsPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} ${(y - (mapRes.height)) * WALL_SIZE} ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
-
-            if (mapData[i] === 9) {
-                const enemy1 = document.createElement('a-entity');
-                enemy1.setAttribute('enemy', 'modelPath:./models/Hellknight.obj; format:obj;');
-                enemy1.setAttribute('id', 'enemy');
-                enemy1.setAttribute('position', charPos);
-                el.appendChild(enemy1);
-            }
-
-
-            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "d") {
-                const door = document.createElement('a-box');
-                door.setAttribute('width', WALL_SIZE);
-                door.setAttribute('height', WALL_HEIGHT);
-                door.setAttribute('depth', WALL_SIZE);
-                door.setAttribute('position', position);
-                door.setAttribute('material', 'src: #grunge; repeat: 1 2');
-                // create component for door / lock
-                door.setAttribute('locked', 'false');
-            }
 
             // if the number is 1 - 4, create a wall
             if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
@@ -274,19 +234,12 @@ function createRooms() {
                     wall.setAttribute('position', quarterYposition);
                     wall.setAttribute('material', 'src:#' + wallTexture2);
                 }
-                // door
-                if (mapData[i] === 4) {
-                    wall.setAttribute('id', 'door');
-                    // create component for door / lock
-                    wall.setAttribute('material', 'src:#' + doorTexture);
-                }
-                
             }
         }
     }
 }
 
-
+//JSON export function
 function exportJSON() {
     let data = {
         key: 'data'
@@ -295,14 +248,13 @@ function exportJSON() {
     // structure the map for consumption by engine
     // for every width length - add a space - FOR EXAMPLE 25 - ADD NEW LINEBREAK EVERY 25 ARR ELEMENTS
     // let structArr = addNewlines(mapTemplate, templateSize);
-    // console.log('stuctured array'+structArr);
     let JSONBlog = JSON.stringify(mapTemplate);
-    // let JSONParsed = addNewlines(JSONBlog, templateSize);
     // Create a blob of the data
          const fileToSave = new Blob([JSONBlog], {
         type: 'application/json'
     });
-// Save the file
+
+//Save the file
     saveAs(fileToSave, fileName);
     // increment save num for file names
     saveNum++;
@@ -314,10 +266,8 @@ function addNewlines(arr, breakLength) {
         for (let i = 0; i < arr.length; i++) {
         //if increment is divided by 2 and there is not a remainder of 0
          if (i% breakLength===0 && i!== 0){
-            //console log the length
-            console.log(arr[i])
+            // console.log(arr[i])
             //append a line break after every 10th element
-            //     arr.splice(i,0, '\n');
              arr[i] = parseInt(arr[i]+"\n");
         }
     }
@@ -332,10 +282,20 @@ function setOption(id) {
     return parseInt(value);
 }
 
+// UI elements and associated event listeners 
+
 const wallType = document.getElementById('wallType')
 // reassign types for select dropdown UI
 wallType.addEventListener("change", function() {
     currentEntity = setOption('wallType');
+});
+
+const mapTemplateSize = document.getElementById('templateSize')
+// reassign types template size for select dropdown UI
+mapTemplateSize.addEventListener("change", function() {
+    templateSize = setOption('templateSize');
+    clearScene();
+    init();
 });
 
 const paintModeSelect = document.getElementById('paintmode')
@@ -349,9 +309,9 @@ paintModeSelect.addEventListener("change", function() {
 
 const enemyTypeSelect = document.getElementById('enemies"')
 
-
+// Height switching for passed entity 
 function allHeightSwitch(currentEntity){
-    console.log('passed Curr'+currentEntity);
+    // console.log('passed Curr'+currentEntity);
     if (currentEntity == 0){
         wallHeight = 0;
         heightY= wallHeight/2;
@@ -372,16 +332,14 @@ function allHeightSwitch(currentEntity){
         heightY = 0;
         console.log(wallHeight);
     }
-
     else{
         wallHeight = 5;
     }
 }
 
-
+// Painting mode ?
 function switchPaintMode(currentPaintMode){
     const enemyTitle = document.getElementById('enemiesTitle');
-
     if (currentPaintMode === "wall"){
         enemyTypeSelect.setAttribute('hidden', '');
         enemyTitle.setAttribute('hidden', '');
@@ -398,7 +356,7 @@ function switchPaintMode(currentPaintMode){
     }
 }
 
-
+// Check if Delete mode is on and init delete Mode if it is 
 const deleteCheckbox = document.querySelector("input[name=deletemode]");
 deleteCheckbox.addEventListener('change', function() {
     if (this.checked) {
