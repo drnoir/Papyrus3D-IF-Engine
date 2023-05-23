@@ -20,6 +20,7 @@
         <a-asset-item id="glow" src="../glow.png"></a-asset-item>
         <a-asset-item id="map" src="../scenes/scene1/map.json"></a-asset-item>
         <a-asset-item id="demonMat" src="../models/Hellknight.mtl"></a-asset-item>
+        <a-asset-item id="gun" src="./models/fps_gun.glb"></a-asset-item>
         <!-- <a-asset-item id="facePathID" src="./models/playerhead.glb"></a-asset-item> -->
         <audio id="music" src="../sound/music.mp3" preload="auto"></audio>
         <audio id="hit" src="../sound/hit.wav" preload="auto"></audio>
@@ -50,6 +51,7 @@
     <a-circle id="startGame" startgamebtn radius="0.3" depth="0.1" position="1 2 -0.1 " rotation="0 0 0" color="black" ><a-text position="-0.5 0 0.2" value="Start Game"></a-text></a-circle>
     <a-entity id="playercam" position="1 1.5 2">
         <a-entity id="camera" camera look-controls wasd-controls>
+            <a-entity gltf-model="#gun" position="0.2 -0.15 -0.3" rotation = '0 180 0'></a-entity>
             <a-entity animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
                       animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
                       animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
