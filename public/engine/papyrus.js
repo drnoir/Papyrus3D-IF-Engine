@@ -359,6 +359,8 @@ function triggerMuzzleFX(){
     const muzzle = document.getElementById('muzzleFX');
     console.log(muzzle);
     muzzle.setAttribute('visible', true);
+    let shotAudio = document.querySelector("#pistolshot");
+    shotAudio.play();
     setTimeout( stopMuzzle, 300);
     
     function stopMuzzle(){
