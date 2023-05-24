@@ -67,6 +67,17 @@ AFRAME.registerComponent('editor-listener', {
                     el.object3D.position.y = 0.5;
                     el.setAttribute('material', 'src:#' + wallTexture3);
                 }
+                else if (currentEntity === 9 && !deleteMode){
+                    const enemy1 = document.createElement('a-entity');
+                    const enemyNum = enemies.enemies[0];
+                    enemy1.setAttribute('enemy', 'modelPath:./models/reds/red_01.glb; ' +
+                        'format:glb;animated:true;' + 'health:' + enemyNum.health +
+                        'id:' + i + 'constitution:' + enemyNum.constitution + 'scale:' + enemyNum.scale);
+                    enemy1.setAttribute('id', i);
+                    // this is for handling enemy death animation
+                    enemy1.setAttribute('animation__001', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
+                    el.appendChild(enemy1);
+                }
                 else if (currentEntity === 0 && deleteMode) {
                     el.object3D.position.y = 0;
                     el.setAttribute('height', WALL_HEIGHT / 20);
@@ -283,7 +294,6 @@ function setOption(id) {
 }
 
 // UI elements and associated event listeners 
-
 const wallType = document.getElementById('wallType')
 // reassign types for select dropdown UI
 wallType.addEventListener("change", function() {
