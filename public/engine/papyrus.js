@@ -308,6 +308,9 @@ function startMeleeCombatAttack(enemyID) {
     console.log('player hitroll ' + playerDicerollHit)
     let attackAudio = document.querySelector("#playerattack");
     attackAudio.play();
+
+    triggerMuzzleFX();
+
     if (playerDicerollHit >= enemyConst) {
         let hitAudio = document.querySelector("#hit");
         hitAudio.play();
@@ -348,6 +351,18 @@ function enemyCombatAttack(enemyID) {
 function getPlayerHealth() {
     if (player1) {
         return player1.health;
+    }
+}
+
+function triggerMuzzleFX(){
+    console.log('triggerMUZZLE FX');
+    const muzzle = document.getElementById('muzzleFX');
+    console.log(muzzle);
+    muzzle.setAttribute('visible', true);
+    setTimeout( stopMuzzle, 300);
+    
+    function stopMuzzle(){
+        muzzle.setAttribute('visible', false);
     }
 }
 
