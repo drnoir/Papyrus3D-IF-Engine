@@ -3,7 +3,7 @@
 // Dependency - A-Frame / A-Frame Extras
 
 // ENGINE CORE IMPORTS
-import {nextScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth, clearScene} from "./papyrus.js";
+import { nextScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth, clearScene } from "./papyrus.js";
 
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
@@ -15,10 +15,10 @@ AFRAME.registerComponent('cursor-listener', {
 // TURN MONITORING
 AFRAME.registerComponent('turnmonitor', {
     schema: {
-        color: {type: 'color', default: 'white'},
-        visible: {type: 'boolean', default: true},
-        turnNumber: {type: 'number', default: 1},
-        turnType: {type: 'array', default: ['player', 'enemy']}
+        color: { type: 'color', default: 'white' },
+        visible: { type: 'boolean', default: true },
+        turnNumber: { type: 'number', default: 1 },
+        turnType: { type: 'array', default: ['player', 'enemy'] }
     },
     init: function () {
         const data = this.data;
@@ -42,8 +42,8 @@ AFRAME.registerComponent('turnmonitor', {
 // HEALTH UI WITH UPDATES FOR UPDATING UI OF PLAYER HEALTH 
 AFRAME.registerComponent('playerhealth', {
     schema: {
-        color: {type: 'color', default: 'white'},
-        visible: {type: 'boolean', default: true},
+        color: { type: 'color', default: 'white' },
+        visible: { type: 'boolean', default: true },
     },
     init: function () {
         const data = this.data;
@@ -65,7 +65,7 @@ AFRAME.registerComponent('playerhealth', {
 // START GAME BUTTON FOR INIT OF NEW GAME 
 AFRAME.registerComponent('startgamebtn', {
     schema: {
-        color: {default: 'red'}
+        color: { default: 'red' }
     },
     init: function () {
         var data = this.data;
@@ -90,8 +90,8 @@ AFRAME.registerComponent('startgamebtn', {
 // ADD GLOW FX 
 AFRAME.registerComponent('glowfx', {
     schema: {
-        color: {type: 'color', default: 'white'},
-        visible: {type: 'boolean', default: true}
+        color: { type: 'color', default: 'white' },
+        visible: { type: 'boolean', default: true }
     },
     init: function () {
         const data = this.data;
@@ -121,19 +121,19 @@ AFRAME.registerComponent('glowfx', {
 // PLAYER CAM componenet
 AFRAME.registerComponent('playercam', {
     schema: {
-        color: {type: 'color', default: 'white'},
-        position: {type: 'string', default: '0 0 -3'},
-        rotation: {type: 'string', default: '0 0 0'},
-        scale: {type: 'string', default: '1 1 1'},
-        camNum: {type: 'number', default: 1},
-        camTestMode: {type: 'boolean', default: false},
-        facePathID: {type: 'string', default: '#playerFace'},
-        facePathMtl: {type: 'string', default: '#playerFaceMat'}
+        color: { type: 'color', default: 'white' },
+        position: { type: 'string', default: '0 0 -3' },
+        rotation: { type: 'string', default: '0 0 0' },
+        scale: { type: 'string', default: '1 1 1' },
+        camNum: { type: 'number', default: 1 },
+        camTestMode: { type: 'boolean', default: false },
+        facePathID: { type: 'string', default: '#playerFace' },
+        facePathMtl: { type: 'string', default: '#playerFaceMat' }
     },
     init: function () {
         const data = this.data;
         const el = this.el;
-        let scale = data.scale; let pos = data.position;let rot = data.rotation;
+        let scale = data.scale; let pos = data.position; let rot = data.rotation;
         let camnum = data.camNum;
         const elScale = this.el.scale;
         const facePathID = data.facePathID;
@@ -206,13 +206,13 @@ AFRAME.registerComponent('playercam', {
 // CHAR 
 AFRAME.registerComponent('character', {
     schema: {
-        color: {type: 'color', default: 'white'},
-        modelPath: {type: 'string', default: 'models/model.glb'},
-        position: {type: 'string', default: '0 0.5 -3'},
-        rotation: {type: 'string', default: '0 0 0'},
-        scale: {type: 'string', default: '1 1 1'},
-        animated: {type: 'boolean', default: false},
-        glowOn: {type: 'boolean', default: false}
+        color: { type: 'color', default: 'white' },
+        modelPath: { type: 'string', default: 'models/model.glb' },
+        position: { type: 'string', default: '0 0.5 -3' },
+        rotation: { type: 'string', default: '0 0 0' },
+        scale: { type: 'string', default: '1 1 1' },
+        animated: { type: 'boolean', default: false },
+        glowOn: { type: 'boolean', default: false }
     },
     init: function () {
         const data = this.data;
@@ -246,25 +246,27 @@ AFRAME.registerComponent('character', {
 // ENEMY 
 AFRAME.registerComponent('enemy', {
     schema: {
-        color: {type: 'color', default: 'white'},
-        modelPath: {type: 'string', default: './models/demon.glb'},
-        modelID: {type: 'string', default: 'demon'},
-        modelMat: {type: 'string', default: 'demonMat'},
-        format: {type: 'string', default: 'glb'},
-        position: {type: 'string', default: '0 0.1 0'},
-        rotation: {type: 'string', default: '0 0 0'},
-        scale: {type: 'string', default: '1 1 1'},
-        animated: {type: 'boolean', default: false},
-        glowOn: {type: 'boolean', default: false},
-        id: {type: 'number', default: 0},
-        constitution: {type: 'number', default: 10},
-        strength: {type: 'number', default: 5},
-        health: {type: 'number', default: 5},
-        status: {type: 'string', default: 'alive'}
+        color: { type: 'color', default: 'white' },
+        modelPath: { type: 'string', default: './models/demon.glb' },
+        modelID: { type: 'string', default: 'demon' },
+        modelMat: { type: 'string', default: 'demonMat' },
+        format: { type: 'string', default: 'glb' },
+        position: { type: 'string', default: '0 0.1 0' },
+        rotation: { type: 'string', default: '0 0 0' },
+        scale: { type: 'string', default: '1 1 1' },
+        animated: { type: 'boolean', default: false },
+        glowOn: { type: 'boolean', default: false },
+        id: { type: 'number', default: 0 },
+        constitution: { type: 'number', default: 10 },
+        strength: { type: 'number', default: 5 },
+        health: { type: 'number', default: 5 },
+        status: { type: 'string', default: 'alive' },
+        speed: {type: 'number', default: 2}
     },
     init: function () {
         let data = this.data;
         const el = this.el;
+        this.chase = false;
         // this is super important for combat - don't delete it
         const id = data.id;
         const modelPath = data.modelPath;
@@ -284,7 +286,8 @@ AFRAME.registerComponent('enemy', {
 
         // create a char based on attributes
         const newEnemy = document.createElement('a-entity');
-        newEnemy.setAttribute('position', pos);
+        // newEnemy.setAttribute('position', pos);
+        newEnemy.object3D.position.set(pos);
         newEnemy.setAttribute('glowFX', 'visible:' + glowOn);
 
         // health bar UI
@@ -298,7 +301,7 @@ AFRAME.registerComponent('enemy', {
         healthBar.setAttribute('depth', 0.1);
         healthBar.setAttribute('material', 'color:white');
         healthBarTracker.setAttribute('height', 0.2);
-        healthBarTracker.setAttribute('width',1);
+        healthBarTracker.setAttribute('width', 1);
         healthBarTracker.setAttribute('depth', 0.15);
         healthBarTracker.setAttribute('position', '0 0 0.09');
         healthBarTracker.setAttribute('material', 'color:red');
@@ -321,7 +324,7 @@ AFRAME.registerComponent('enemy', {
         newEnemy.setAttribute('rotation', rot);
         el.appendChild(newEnemy);
 
-    
+
         newEnemy.addEventListener('click', function (evt) {
             let newMeleeAttack = startMeleeCombatAttack(0);
             if (newMeleeAttack > 0 && lifeStatus === 'alive') {
@@ -359,52 +362,62 @@ AFRAME.registerComponent('enemy', {
         const el = this.el;
     },
 
-    // 
-    tick: function () {
-        const el = this.el;
-        // get elements of player for distance checks 
-        // const playercam = document.getElementById('playercam');
-        // let playercamPos = playercam.getAttribute('position');
-        // moveRandom();
-
-        // // Basic AI pathfinding 
-        // if (playerCamPos - enemyPos < 5)
-        // {
-        //     // init attack 
-        //     enemyCombatAttack();
-        //     // move 
-        //     // test val for now no idea what this will do in execution 
-        //     enemyPos.x ++;
-        //     //retreat 
-        //     enemyPos.z ++;
-        // } 
+    tick: function (time, timeDelta) {
+        // this.moveRandom();
     },
     moveRandom: function () {
         const el = this.el;
-        // get elements of player for distance checks 
-        // const playercam = document.getElementById('playercam');
-        // let playercamPos = playercam.getAttribute('position');
-
-        // walk in x + or - random direction?
-    
-        let randomChance = Math.random() * 2;
-        let randomMovemement =  Math.random() * 1;
-        console.log(randomChance,randomMovemement);
-
-        if (randomChance>1){
-            el.setAttribute('position', { x: pos.x+randomMovemement, y: pos.y, z: pos.z });
-        }
-        else{
-            el.setAttribute('position', { x: pos.x+randomMovemement, y: pos.y, z: pos.z });
-        }
+        el.setAttribute('animation-mixer', 'clip: Run; loop: repeat; ');
+        let currentPosition = this.el.object3D.position;
+        let randomDirection = Math.floor(Math.random() * 5);
+        let randomYDirection = Math.floor(Math.random() * 5);
+        let randRot = Math.floor(Math.random() * 45); let randomRotChance = Math.floor(Math.random() * 1000);
+        // random direction and movement
+        if (randomDirection < 1) {
+            el.object3D.position.x += 0.04;
+            el.object3D.position.z += 0.01;
+            if (randomRotChance > 950) {
+                el.object3D.rotation.y += randRot
+            }
+        };
+        if (randomDirection < 2) {
+            el.object3D.position.x -= 0.04;
+            el.object3D.position.z -= 0.01;
+            if (randomRotChance > 950) {
+                el.object3D.rotation.y -= randRot
+            }
+        };
+        if (randomDirection > 2 && randomDirection < 3) {
+            el.object3D.position.z -= 0.03;
+        };
+        if (randomDirection > 3 && randomDirection < 4) {
+            el.object3D.position.z += 0.03;
+        };
     },
+    moveToPlayer: function (t,dt){
+        if (!this.chase){
+             const el = this.el;
+            var target = document.getElementById('playercam'); console.log(target.object3D.position);
+            var vec3 = new THREE.Vector3();
+            var currentPosition = el.getAttribute("position"); console.log(currentPosition);
 
+            vec3 = this.el.object3D.worldToLocal(target.object3D.position.clone());
+
+            var  distance = dt*this.data.speed / 1000;      
+                var camFromOrca = currentPosition.distanceTo( target.object3D.position );
+                var obj = this.el.object3D;
+            if (camFromOrca > 1) {
+                this.el.setAttribute("position", target.object3D.position )
+                // sync
+                // this.el.components["dynamic-body"].syncToPhysics();
+            }
+        } 
+    },
     remove: function () {
         const el = this.el;
         el.destroy();
     },
 });
-
 
 AFRAME.registerComponent('intersection-spawn', {
     schema: {
@@ -451,7 +464,7 @@ AFRAME.registerComponent('playermovement', {
 
 AFRAME.registerComponent("load-texture", {
     schema: {
-        src: {type: 'string', default: 'textures/structures/rocky.JPG'},
+        src: { type: 'string', default: 'textures/structures/rocky.JPG' },
     },
     init: function () {
         const data = this.data;
@@ -476,14 +489,14 @@ AFRAME.registerComponent("load-texture", {
 
 AFRAME.registerComponent('exit', {
     schema: {
-        color: {type: 'color', default: 'green'},
+        color: { type: 'color', default: 'green' },
         // modelPath: {type: 'string', default: './models/exit.glb'},
-        modelID: {type: 'string', default: 'exit'},
-        modelMat: {type: 'string', default: 'exit'},
-        position: {type: 'string', default: '0 0.1 0'},
-        rotation: {type: 'string', default: '0 0 0'},
-        scale: {type: 'string', default: '0.1 0.1 0.1'},
-        status: {type: 'string', default: 'false'}
+        modelID: { type: 'string', default: 'exit' },
+        modelMat: { type: 'string', default: 'exit' },
+        position: { type: 'string', default: '0 0.1 0' },
+        rotation: { type: 'string', default: '0 0 0' },
+        scale: { type: 'string', default: '0.1 0.1 0.1' },
+        status: { type: 'string', default: 'false' }
     },
 
     init: function () {
@@ -495,7 +508,7 @@ AFRAME.registerComponent('exit', {
         let scale = data.scale;
 
         exit.setAttribute('geometry', 'primitive: box;');
-        exit.setAttribute('position', position); 
+        exit.setAttribute('position', position);
         exit.setAttribute('color', color);
         exit.setAttribute('glowFX', 'visible:' + true);
         exit.setAttribute('scale', scale);

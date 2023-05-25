@@ -2,11 +2,11 @@
   "textures": [
     {
       "id": "brick",
-      "path": "textures/structures/rocky.JPG"
+      "path": "textures/structures/conrete.JPG"
     },
     {
       "id": "floor",
-      "path": "textures/wood/floor.JPG"
+      "path": "textures/textile/blue.JPG"
     },
     {
       "id": "door",

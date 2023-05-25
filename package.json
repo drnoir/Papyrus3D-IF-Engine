@@ -2,10 +2,11 @@
   "name": "papyrus3dengine",
   "version": "1.0.0",
   "description": "Build an engine for generating 3D interactive Fiction games based on JSON inputs. ",
-  "main": "webpack.config.js",
+  "main": "index.js",
   "scripts": {
     "test": "test",
-    "start": "http-server -S -C cert.pem"
+    "start": "http-server --cors -S -C cert.pem",
+    "buildNav" : "gltf-navmesh-generator navmeshGLTF navmesh Navmesh"
   },
   "repository": {
     "type": "git",
@@ -33,5 +34,12 @@
   "devDependencies": {
     "http-server": "^14.1.1",
     "make-dir-webpack-plugin": "^0.1.0"
+  },
+  "dependencies": {
+    "budo": "^11.8.4",
+    "concurrently": "^8.0.1",
+    "gltf-navmesh-generator": "^0.2.0",
+    "scssify": "^4.0.0",
+    "stringify": "^5.2.0"
   }
 }

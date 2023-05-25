@@ -251,11 +251,13 @@ function createRooms() {
                 // floor
                 if (mapData[i] === 0) {
                     // wall.setAttribute('color', '#000');
+                    wall.setAttribute('class', 'floor');
                     wall.setAttribute('height', WALL_HEIGHT / 20);
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', floorPos);
                     wall.setAttribute('playermovement', '');
                     wall.setAttribute('material', 'src:#' + floorTexture);
+            
                 }
                 // full height wall
                 if (mapData[i] === 1) {
@@ -263,6 +265,7 @@ function createRooms() {
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', position);
                     wall.setAttribute('material', 'src:#' + wallTexture);
+                    wall.setAttribute('material', 'repeat:0.5 0.5');
                 }
                 // 1/2 height wall
                 if (mapData[i] === 2) {
