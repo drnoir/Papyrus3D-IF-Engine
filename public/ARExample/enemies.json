@@ -5,7 +5,7 @@
         "id": "red1",
         "model": "/models/reds/red_01.glb",
         "health": 10,
-        "scale": 80,
+        "scale": 180,
         "strength" : 4,
         "constitution" : 12,
         "animations": []

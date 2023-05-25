@@ -292,15 +292,15 @@ AFRAME.registerComponent('enemy', {
         const healthBarTracker = document.createElement('a-box');
         this.healthBarTracker = healthBarTracker;
         let healthBarVal = health / 10 * 3;
-        healthBar.setAttribute('height', 0.5);
-        healthBar.setAttribute('position', '0 8 0');
-        healthBar.setAttribute('width', 3);
+        healthBar.setAttribute('height', 0.2);
+        healthBar.setAttribute('position', '0 1.5 0');
+        healthBar.setAttribute('width', 1);
         healthBar.setAttribute('depth', 0.1);
         healthBar.setAttribute('material', 'color:white');
-        healthBarTracker.setAttribute('height', 0.4);
-        healthBarTracker.setAttribute('width', healthBarVal.toString());
-        healthBarTracker.setAttribute('depth', 0.1);
-        healthBarTracker.setAttribute('position', '0 0 0.1');
+        healthBarTracker.setAttribute('height', 0.2);
+        healthBarTracker.setAttribute('width',1);
+        healthBarTracker.setAttribute('depth', 0.15);
+        healthBarTracker.setAttribute('position', '0 0 0.09');
         healthBarTracker.setAttribute('material', 'color:red');
         healthBarTracker.setAttribute('HealthBarid', id);
         healthBar.appendChild(healthBarTracker);
@@ -418,6 +418,7 @@ AFRAME.registerComponent('intersection-spawn', {
 
         el.addEventListener(data.event, evt => {
             // Create element.
+            console.log(data.evt);
             const spawnEl = document.createElement('a-entity');
             // Snap intersection point to grid and offset from center.
             spawnEl.setAttribute('position', evt.detail.intersection.point);

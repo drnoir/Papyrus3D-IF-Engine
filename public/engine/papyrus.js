@@ -80,7 +80,7 @@ async function loadSceneMetaData(metaDataToLoad) {
 }
 
 function setupPlayerInfo() {
-    player1 = {
+    player = {
         name: player.name,
         health: player.health,
         strength: player.strength,
@@ -339,8 +339,8 @@ function enemyCombatAttack(enemyID) {
         hitAudio.play();
         enemyDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber);
         console.log('The Enemy hit you ' + enemyDicerollHit / CombatDiceNumber + ' you take' + enemyDicerollDmg);
-        player1.health = -enemyDicerollDmg;
-        console.log(player1.health);
+        player.health = -enemyDicerollDmg;
+        console.log(player.health);
     } else {
         console.log(enemyDicerollHit / CombatDiceNumber + 'You Missed! and caused ' + enemyDicerollDmg + 'damage');
         return enemyDicerollDmg;
@@ -349,8 +349,8 @@ function enemyCombatAttack(enemyID) {
 
 // RETURN player health
 function getPlayerHealth() {
-    if (player1) {
-        return player1.health;
+    if (player) {
+        return player.health;
     }
 }
 
@@ -400,8 +400,8 @@ function updatePlayerPos(newPlayPos) {
 }
 
 function clearScene(){
-    const sceneEl = document.getElementById('room');
-    sceneEl.parentNode.replaceChildren();
+    const el = document.getElementById('room');
+    el.parentNode.removeChild(el);
 };
 
 // EXPORT JS 
