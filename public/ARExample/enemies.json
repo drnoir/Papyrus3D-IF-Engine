@@ -3,7 +3,7 @@
       {
         "name": "red",
         "id": "red1",
-        "model": "/models/reds/red_01.glb",
+        "model": "./models/reds/red_01.glb",
         "health": 10,
         "scale": 10,
         "strength" : 4,
