@@ -261,7 +261,8 @@ AFRAME.registerComponent('enemy', {
         strength: { type: 'number', default: 5 },
         health: { type: 'number', default: 5 },
         status: { type: 'string', default: 'alive' },
-        speed: {type: 'number', default: 2}
+        speed: {type: 'number', default: 2},
+        partrol : {type: 'boolean', default: true}
     },
     init: function () {
         let data = this.data;
@@ -363,7 +364,11 @@ AFRAME.registerComponent('enemy', {
     },
 
     tick: function (time, timeDelta) {
-        // this.moveRandom();
+        let data = this.data;
+        const patrol = data.patrol;
+        if (patrol){
+            this.moveRandom();
+        }
     },
     moveRandom: function () {
         const el = this.el;
@@ -402,7 +407,6 @@ AFRAME.registerComponent('enemy', {
             var currentPosition = el.getAttribute("position"); console.log(currentPosition);
 
             vec3 = this.el.object3D.worldToLocal(target.object3D.position.clone());
-
             var  distance = dt*this.data.speed / 1000;      
                 var camFromOrca = currentPosition.distanceTo( target.object3D.position );
                 var obj = this.el.object3D;
@@ -461,6 +465,34 @@ AFRAME.registerComponent('playermovement', {
         })
     }
 });
+
+
+AFRAME.registerComponent('door', {
+    schema: {
+        default: '',
+        locked: { type: 'boolean', default: false},
+    },
+    init: function () {
+        const el = this.el;
+        this.el.addEventListener('click', function (evt) {
+            const doorPos = el.getAttribute('position');
+            let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
+            let newX = x-1;
+            let newY = y-1;
+            console.log(x,y,z, newX);
+            el.setAttribute('animation', "property: position; to:"+newX+newY+z+"; loop:  false; dur: 8000");
+            setTimeout( resetAnim(),10000);
+                function resetAnim(el){
+                    const doorPos = el.getAttribute('position');
+                    let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
+                    let newX = x+2;
+                    let newY = y-1;
+                    el.setAttribute('animation', "property: position; to:"+newX+newY+z+"; loop:  false; dur: 8000")
+                }
+        })
+    },
+});
+
 
 AFRAME.registerComponent("load-texture", {
     schema: {

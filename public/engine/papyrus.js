@@ -144,7 +144,7 @@ function createRooms() {
     // allocate textures from JSON config
     let wallTexture = textures.textures[0].id; let floorTexture = textures.textures[1].id;
     let doorTexture = textures.textures[2].id; let wallTexture2 = textures.textures[3].id;
-    let exitTexture = textures.textures[4].id;
+    let exitTexture = textures.textures[4].id; let waterTexture = textures.textures[5].id;
 
     const WALL_SIZE = 0.8;
     const WALL_HEIGHT = 3.5;
@@ -213,9 +213,8 @@ function createRooms() {
             // add exit
             if (mapData[i] === 5) {
                 wall.setAttribute('id', 'exit');
-                wall.setAttribute('height', WALL_HEIGHT / 20);
-                wall.setAttribute('static-body', '');
-                // wall.setAttribute('position', floorPos);
+                wall.setAttribute('class', 'floor');
+                wall.setAttribute('playermovement', '');
                 // create component for exit  
                 wall.setAttribute('exit', '');
                 wall.setAttribute('material', 'src:#' + exitTexture);
@@ -239,7 +238,7 @@ function createRooms() {
                 el.appendChild(camPoint);
             }
             // if the number is 1 - 5,  create a wall
-            if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4 || mapData[i] === 5) {
+            if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4 || mapData[i] === 6) {
                 wall = document.createElement('a-box');
                 wall.setAttribute('width', WALL_SIZE);
                 wall.setAttribute('height', WALL_HEIGHT);
@@ -288,7 +287,18 @@ function createRooms() {
                     wall.setAttribute('height', WALL_HEIGHT);
                     wall.setAttribute('door', 'false');
                     wall.setAttribute('locked', 'false');
+                    wall.setAttribute('door', '');
                     wall.setAttribute('material', 'src:#' + doorTexture);
+                }
+                //  water
+                if (mapData[i] === 6) {
+                    wall.setAttribute('height', WALL_HEIGHT / 20);
+                    wall.setAttribute('width', WALL_SIZE);
+                    wall.setAttribute('depth', WALL_SIZE);
+                    wall.setAttribute('static-body', '');
+                    wall.setAttribute('position', floorPos);
+                    wall.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.7; transparent: true');
+  
                 }
             }
         }
