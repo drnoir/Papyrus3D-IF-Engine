@@ -210,6 +210,20 @@ function createRooms() {
                 el.appendChild(floor);
                 floor.appendChild(enemy1);
             }
+            //  water
+            if (mapData[i] === 6) {
+            const water = document.createElement('a-plane');
+            water.setAttribute('height', WALL_HEIGHT / 20);
+            water.setAttribute('width', WALL_SIZE);
+            water.setAttribute('depth', WALL_SIZE);
+            water.setAttribute('static-body', '');
+            water.setAttribute('position', floorPos);
+            water.setAttribute('rotation', '90 0 0');
+            water.setAttribute('scale', '1 4.6 2');
+            water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.7; transparent: true;side: double;');
+            el.appendChild(water);
+
+        }   
             // add exit
             if (mapData[i] === 5) {
                 wall.setAttribute('id', 'exit');
@@ -220,6 +234,7 @@ function createRooms() {
                 wall.setAttribute('material', 'src:#' + exitTexture);
                 wall.setAttribute('color', 'green');
             }
+  
             // add torch / light
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "t") {
                 console.log("its a torch!")
@@ -238,7 +253,7 @@ function createRooms() {
                 el.appendChild(camPoint);
             }
             // if the number is 1 - 5,  create a wall
-            if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4 || mapData[i] === 6) {
+            if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
                 wall = document.createElement('a-box');
                 wall.setAttribute('width', WALL_SIZE);
                 wall.setAttribute('height', WALL_HEIGHT);
@@ -288,18 +303,9 @@ function createRooms() {
                     wall.setAttribute('door', 'false');
                     wall.setAttribute('locked', 'false');
                     wall.setAttribute('door', '');
-                    wall.setAttribute('material', 'src:#' + doorTexture);
+                    wall.setAttribute('material', 'src:#' + doorTexture+';repeat: 1 1');
                 }
-                //  water
-                if (mapData[i] === 6) {
-                    wall.setAttribute('height', WALL_HEIGHT / 20);
-                    wall.setAttribute('width', WALL_SIZE);
-                    wall.setAttribute('depth', WALL_SIZE);
-                    wall.setAttribute('static-body', '');
-                    wall.setAttribute('position', floorPos);
-                    wall.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.7; transparent: true');
-  
-                }
+            
             }
         }
     }
