@@ -161,7 +161,7 @@ function createRooms() {
         ceil.setAttribute('position', '0 3.5 0');
         ceil.setAttribute('static-body', '');
         ceil.setAttribute('scale', '0.2 0.2 0.2');
-        ceil.setAttribute('material', 'src: #grunge; repeat: 5 5');
+        ceil.setAttribute('material', 'src: #grunge; repeat: 10 10');
         el.appendChild(ceil);
     }
     // LOOP to map geometry 
@@ -233,6 +233,17 @@ function createRooms() {
                 wall.setAttribute('exit', '');
                 wall.setAttribute('material', 'src:#' + exitTexture);
                 wall.setAttribute('color', 'green');
+                const floor = document.createElement('a-box');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('width', WALL_SIZE);
+                floor.setAttribute('depth', WALL_SIZE);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', floorPos);
+                // wall.setAttribute('load-texture', '');
+                floor.setAttribute('editor-listener', '');
+                floor.setAttribute('material', 'src:#' + floorTexture);           
+                floor.setAttribute('playermovement', '');
+                el.appendChild(floor);
             }
   
             // add torch / light
@@ -304,6 +315,17 @@ function createRooms() {
                     wall.setAttribute('locked', 'false');
                     wall.setAttribute('door', '');
                     wall.setAttribute('material', 'src:#' + doorTexture+';repeat: 1 1');
+                    const floor = document.createElement('a-box');
+                    floor.setAttribute('height', WALL_HEIGHT / 20);
+                    floor.setAttribute('width', WALL_SIZE);
+                    floor.setAttribute('depth', WALL_SIZE);
+                    floor.setAttribute('static-body', '');
+                    floor.setAttribute('position', floorPos);
+                    // wall.setAttribute('load-texture', '');
+                    floor.setAttribute('editor-listener', '');
+                    floor.setAttribute('material', 'src:#' + floorTexture);
+                    floor.setAttribute('playermovement', '');
+                    el.appendChild(floor);
                 }
             
             }
