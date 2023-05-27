@@ -1,14 +1,15 @@
 {
     "enemies": [
       {
-        "name": "red",
-        "id": "red1",
-        "model": "./models/reds/red_01.glb",
-        "health": 10,
-        "scale": 10,
-        "strength" : 4,
-        "constitution" : 12,
-        "animations": []
+        
+          "name": "deadcop",
+          "id": "enemy1",
+          "model": "./models/deadcop.glb",
+          "health": 10,
+          "scale": 80,
+          "strength" : 4,
+          "constitution" : 12,
+          "animations": []
       }
     ]
   }

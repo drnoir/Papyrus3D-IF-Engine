@@ -34,9 +34,8 @@ async function loadData(currentScene) {
     await setupPlayerInfo();
     // run create scene routine
     await createRooms();
-    await populateDiag(0)
+    await populateDiag(0);
     // testing dialogue.json UI population
-    turn++;
     const sound = document.querySelector('[sound]');
     sound.components.sound.playSound();
 }
@@ -131,6 +130,9 @@ function addTorch(torchColor, torchIndex) {
 
 function populateDiag(passageID, currentChar) {
     // add button test function
+    const dialogueUI = document.getElementById('dialogueID');
+    dialogueUI.setAttribute('visible', true);
+
     addButton(currentChar);
     let newPassage = diag.passage[passageID].text;
     let newCharName = diag.passage[passageID].char;
@@ -162,8 +164,8 @@ function nextScene() {
 }
 
 // show passagebtn relative to character model
-function addButton(activeChar) {
-    console.log('charID passed' + activeChar);
+function addButton() {
+    // console.log('charID passed' + activeChar);
     // check if there is an existing button element firsst before adding a new one
     if (!document.getElementById('nextPassageBtn')) {
         let nextPassageBtn = document.createElement('a-box')
@@ -179,10 +181,11 @@ function addButton(activeChar) {
         nextPassageBtnTxt.setAttribute('value', '>');
         nextPassageBtnTxt.setAttribute('height', '1');
         nextPassageBtnTxt.setAttribute('width', '3');
-        nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1');
+        nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1');  
+        let char = document.getElementById('bobGuy') // FOR TESTING PURPOSES - needs to be passed associated char
+        char.appendChild(nextPassageBtn);
         nextPassageBtn.appendChild(nextPassageBtnTxt);
-        let bobGuy = document.getElementById(activeChar) // FOR TESTING PURPOSES - needs to be passed associated char
-        bobGuy.appendChild(nextPassageBtn);
+    
     } else {
         console.log('Opps something went wrong - There is already a passage btn on the scene')
     }
@@ -261,7 +264,7 @@ function createRooms() {
                 const enemy1 = document.createElement('a-entity');
                 const enemyNum = enemies.enemies[0];
                 console.log(enemyNum )
-                enemy1.setAttribute('enemy', 'modelPath:./models/reds/red_01.glb; ' +
+                enemy1.setAttribute('enemy', 'modelPath:'+enemyNum.model+';'+
                     'format:glb; animated:true;' + 'health:' + enemyNum.health +
                     'id:' + i + 'constitution:' + enemyNum.constitution + 'scale:' + enemyNum.scale);
                 enemy1.setAttribute('id', i);
@@ -412,6 +415,8 @@ function createRooms() {
 //     playerMap.setAttribute('playermap', '');
 //     document.querySelector('#mapUI').appendChild(playerMap)
 // }
+
+
 // COMBAT SYSTEM
 // MELEE ATTACK PLAYER 
 function startMeleeCombatAttack(enemyID) {
@@ -419,8 +424,8 @@ function startMeleeCombatAttack(enemyID) {
     let playerDicerollDmg = 0; let playerDicerollHit = RandomDiceRoll(1, CombatDiceNumber);
     console.log('player hitroll ' + playerDicerollHit)
     let attackAudio = document.querySelector("#playerattack");
-    attackAudio.play();
 
+    attackAudio.play();
     triggerMuzzleFX();
 
     if (playerDicerollHit >= enemyConst) {

@@ -24,7 +24,7 @@
             <a-asset-item id="map" src="./scenes/scene1/map.json"></a-asset-item>
             <a-asset-item id="demonMat" src="./models/Hellknight.mtl"></a-asset-item>
             <a-asset-item id="gun" src="./models/fps_gun.glb"></a-asset-item>
-            <a-asset-item id="red" src="./models/reds/red_01.glb"></a-asset-item>
+            <a-asset-item id="red" src="./models/deadcop.glb"></a-asset-item>
             <!-- <a-asset-item id="facePathID" src="./models/playerhead.glb"></a-asset-item> -->
             <audio id="music" src="./sound/music.mp3" preload="auto"></audio>
             <audio id="hit" src="./sound/hit.wav" preload="auto"></audio>
@@ -74,9 +74,9 @@
                     cursor="fuse: true;" material="color: white; shader: flat" position="0 0 -1"
                     geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" scale="0.1 0.1 0.1">
                 </a-entity>
-                <a-entity dialogueUI id="dialogueID" position="0 -0.45 -1" rotation="0 0 0" depth="0.01"
-                    geometry="primitive: plane; width:3; height: 0.5"
-                    material="alphaTest:0.4; opacity: 0.8; transparent:true; color:black" visible="false">
+                <a-entity dialogueUI id="dialogueID" position="0 0.62 -1" rotation="0 0 0" depth="0.01"
+                    geometry="primitive: plane; width:3; height: 0.35"
+                    material="alphaTest:0.4; opacity: 0.7; transparent:true; color:#d3d3d3" visible="false">
                 </a-entity>
                 <a-text playerhealth height="0.5" width="1" position="1 -0.5 -0.8" value="Health:"></a-text>
                 <a-entity id="playerFace" playerFace scale="0.012 0.012 0.012" position="1 -0.1 -0.8"></a-entity>

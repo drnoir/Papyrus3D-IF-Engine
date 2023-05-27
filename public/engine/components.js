@@ -9,6 +9,13 @@ import { nextScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlay
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
         let lastIndex = -1;
+        const COLORS = ['red', 'green', 'blue'];
+        this.el.addEventListener('click', function (evt) {
+            lastIndex = (lastIndex + 1) % COLORS.length;
+            this.setAttribute('material', 'color', COLORS[lastIndex]);
+            console.log('I was clicked at: ', evt.detail.intersection.point);
+            nextScene();
+        });
     }
 });
 
@@ -117,7 +124,6 @@ AFRAME.registerComponent('glowfx', {
     },
 });
 
-
 // PLAYER CAM componenet
 AFRAME.registerComponent('playercam', {
     schema: {
@@ -197,7 +203,6 @@ AFRAME.registerComponent('playercam', {
         newDialogueUI.setAttribute('material:', 'alphaTest:0.4; opacity: 0.8; transparent:true; color:black');
         newCam.appendChild(newCursor);
     },
-
     remove: function () {
         this.el.destroy();
     },
@@ -236,6 +241,10 @@ AFRAME.registerComponent('character', {
         }
         newCharacter.setAttribute('rotation', rot);
         charContainer.appendChild(newCharacter);
+
+        newCharacter.addEventListener('click', function (evt) {
+            populateDiag(1,0)
+        });
     },
     remove: function () {
         this.el.destroy();
@@ -247,8 +256,8 @@ AFRAME.registerComponent('character', {
 AFRAME.registerComponent('enemy', {
     schema: {
         color: { type: 'color', default: 'white' },
-        modelPath: { type: 'string', default: './models/reds/red_01.glb' },
-        modelID: { type: 'string', default: 'red' },
+        modelPath: { type: 'string', default: './models/deadcop.glb' },
+        modelID: { type: 'string', default: 'enemy1' },
         modelMat: { type: 'string', default: 'demonMat'},
         format: { type: 'string', default: 'glb' },
         position: { type: 'string', default: '0 0.1 0' },
