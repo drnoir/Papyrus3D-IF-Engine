@@ -1,88 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Papyrus - Example Map</title>
     <script src="https://aframe.io/releases/1.3.0/aframe.js"></script>
-    <script src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"></script>
+    <script
+        src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
 </head>
-<body>
-<a-scene>
-    <a-assets>
-        <!-- models -->
-        <a-asset-item id="bobGuy" src='./models/geek.glb'></a-asset-item>
-        <a-asset-item id="lady" src="./models/lady.glb"></a-asset-item>
-        <a-asset-item id="ninja" src="./models/bob/scene.gltf"></a-asset-item>
-        <a-asset-item id="hellknight" src="./models/hellknight/hellknightGLB.glb"></a-asset-item>
-        <a-asset-item id="demon" src="./models/zombie.obj"></a-asset-item>
-        <a-asset-item id="zombie" src="./models/zombie.obj"></a-asset-item>
-        <a-asset-item id="glow" src="./glow.png"></a-asset-item>
-        <a-asset-item id="map" src="./scenes/scene1/map.json"></a-asset-item>
-        <a-asset-item id="demonMat" src="./models/Hellknight.mtl"></a-asset-item>
-        <a-asset-item id="gun" src="./models/fps_gun.glb"></a-asset-item>
-        <a-asset-item id="red" src="./models/reds/red_01.glb"></a-asset-item>
-        <!-- <a-asset-item id="facePathID" src="./models/playerhead.glb"></a-asset-item> -->
-        <audio id="music" src="./sound/music.mp3" preload="auto"></audio>
-        <audio id="hit" src="./sound/hit.wav" preload="auto"></audio>
-        <audio id="death" src="./sound/death.wav" preload="auto"></audio>
-        <audio id="attack" src="./sound/attack.wav" preload="auto"></audio>
-        <audio id="playerhit" src="./sound/playerpain.wav" preload="auto"></audio>
-        <audio id="playerdeath" src="./sound/playerdeath.wav" preload="auto"></audio>
-        <audio id="playerattack" src="./sound/playerpunch.wav" preload="auto"></audio>
-        <audio id="pistolshot" src="./sound/pistolshot.mp3" preload="auto"></audio>
-        <!--textures-->
-        <img id="brick" src="./textures/structures/concrete.JPG">
-        <img id="door" src="./textures/wood/wooddoor.jpg">
-        <img id="floorboards" src="./textures/wood/floorboards.jpg">
-        <img id="floor" src="./textures/structures/brownmarble.JPG">
-        <img id="wooddoor" src="./textures/wood/wooddoor.jpg">
-        <img id="grunge" src="textures/structures/whiterock.jpg">
-        <img id="orangebrick" src="./textures/walls/orangebrick.jpg">
-        <img id="muzzle" src="./textures/gun/muzzle.png">
-        <img id="water" src="./textures/nature/water.jpeg">
-    </a-assets>
-    <!-- // sound fx -->
-    <a-entity sound="src: #music" autoplay="true" volume="1.5" loop="true" positional="false" refDistance="1000"></a-entity>
-    <a-entity sound="src: #hit" autoplay="false" volume="1.5" loop="false" positional="true" ></a-entity>
-    <a-entity sound="src: #death" autoplay="false" volume="1.5" loop="false" positional="true" ></a-entity>
-    <a-entity sound="src: #attack" autoplay="false" volume="1.5" loop="false" positional="true" ></a-entity>
-    <a-entity sound="src: #playerhit" autoplay="false" volume="1.5" loop="false" positional="true" ></a-entity>
-    <a-entity sound="src: #playerdeath" autoplay="false" volume="1.5" loop="false" positional="true" ></a-entity>
-    <a-entity sound="src: #playerattack" autoplay="false" volume="1.5" loop="false" positional="true" ></a-entity>
-    <a-entity sound="src: #pistolshot" autoplay="false" volume="1.5" loop="false" positional="true" ></a-entity>
 
-    <a-entity light="type: ambient; color: #CCC;intensity: 0.3;"></a-entity>
-    <a-light type="point" color="#CCC" position="0 5 0"></a-light>
-    <a-circle id="startGame" startgamebtn radius="0.3" depth="0.1" position="1 2 -0.1 " rotation="0 0 0" color="black" ><a-text position="-0.5 0 0.2" value="Start Game"></a-text></a-circle>
-    <a-entity id="playercam" position="1 1.5 2">
-        <a-entity id="camera" camera look-controls wasd-controls>
-            <a-entity gltf-model="#gun" position="0.2 -0.15 -0.3" rotation = '0 180 0'>
-                <a-entity id = 'muzzleFX' visible="false">
-                    <a-image src="#muzzle" position="0.05 0.1 0.19"></a-image>
+<body>
+    <a-scene>
+        <a-assets>
+            <!-- models -->
+            <a-asset-item id="bob" src='./models/geek.glb'></a-asset-item>
+            <a-asset-item id="lady" src="./models/lady.glb"></a-asset-item>
+            <a-asset-item id="ninja" src="./models/bob/scene.gltf"></a-asset-item>
+            <a-asset-item id="hellknight" src="./models/hellknight/hellknightGLB.glb"></a-asset-item>
+            <a-asset-item id="demon" src="./models/zombie.obj"></a-asset-item>
+            <a-asset-item id="zombie" src="./models/zombie.obj"></a-asset-item>
+            <a-asset-item id="glow" src="./glow.png"></a-asset-item>
+            <a-asset-item id="map" src="./scenes/scene1/map.json"></a-asset-item>
+            <a-asset-item id="demonMat" src="./models/Hellknight.mtl"></a-asset-item>
+            <a-asset-item id="gun" src="./models/fps_gun.glb"></a-asset-item>
+            <a-asset-item id="red" src="./models/reds/red_01.glb"></a-asset-item>
+            <!-- <a-asset-item id="facePathID" src="./models/playerhead.glb"></a-asset-item> -->
+            <audio id="music" src="./sound/music.mp3" preload="auto"></audio>
+            <audio id="hit" src="./sound/hit.wav" preload="auto"></audio>
+            <audio id="death" src="./sound/death.wav" preload="auto"></audio>
+            <audio id="attack" src="./sound/attack.wav" preload="auto"></audio>
+            <audio id="playerhit" src="./sound/playerpain.wav" preload="auto"></audio>
+            <audio id="playerdeath" src="./sound/playerdeath.wav" preload="auto"></audio>
+            <audio id="playerattack" src="./sound/playerpunch.wav" preload="auto"></audio>
+            <audio id="pistolshot" src="./sound/pistolshot.mp3" preload="auto"></audio>
+            <!--textures-->
+            <img id="brick" src="./textures/structures/concrete.JPG">
+            <img id="door" src="./textures/wood/wooddoor.jpg">
+            <img id="floorboards" src="./textures/wood/floorboards.jpg">
+            <img id="floor" src="./textures/structures/brownmarble.JPG">
+            <img id="wooddoor" src="./textures/wood/wooddoor.jpg">
+            <img id="grunge" src="textures/structures/whiterock.jpg">
+            <img id="orangebrick" src="./textures/walls/orangebrick.jpg">
+            <img id="muzzle" src="./textures/gun/muzzle.png">
+            <img id="water" src="./textures/nature/water.jpeg">
+        </a-assets>
+        <!-- // sound fx -->
+        <a-entity sound="src: #music" autoplay="true" volume="1.5" loop="true" positional="false"
+            refDistance="1000"></a-entity>
+        <a-entity sound="src: #hit" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
+        <a-entity sound="src: #death" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
+        <a-entity sound="src: #attack" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
+        <a-entity sound="src: #playerhit" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
+        <a-entity sound="src: #playerdeath" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
+        <a-entity sound="src: #playerattack" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
+        <a-entity sound="src: #pistolshot" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
+
+        <a-entity light="type: ambient; color: #CCC;intensity: 0.3;"></a-entity>
+        <a-light type="point" color="#CCC" position="0 5 0"></a-light>
+        <a-circle id="startGame" startgamebtn radius="0.3" depth="0.1" position="1 2 -0.1 " rotation="0 0 0"
+            color="black"><a-text position="-0.5 0 0.2" value="Start Game"></a-text></a-circle>
+        <a-entity id="playercam" position="1 1.5 2">
+            <a-entity id="camera" camera look-controls wasd-controls>
+                <a-entity gltf-model="#gun" position="0.2 -0.15 -0.3" rotation='0 180 0'>
+                    <a-entity id='muzzleFX' visible="false">
+                        <a-image src="#muzzle" position="0.05 0.1 0.19"></a-image>
+                    </a-entity>
                 </a-entity>
+                <a-entity
+                    animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+                    animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 500; from: 1 1 1; to: 0.1 0.1 0.1"
+                    animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+                    cursor="fuse: true;" material="color: white; shader: flat" position="0 0 -1"
+                    geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" scale="0.1 0.1 0.1">
+                </a-entity>
+                <a-entity dialogueUI id="dialogueID" position="0 -0.45 -1" rotation="0 0 0" depth="0.01"
+                    geometry="primitive: plane; width:3; height: 0.5"
+                    material="alphaTest:0.4; opacity: 0.8; transparent:true; color:black" visible="false">
+                </a-entity>
+                <a-text playerhealth height="0.5" width="1" position="1 -0.5 -0.8" value="Health:"></a-text>
+                <a-entity id="playerFace" playerFace scale="0.012 0.012 0.012" position="1 -0.1 -0.8"></a-entity>
             </a-entity>
-            <a-entity animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
-                      animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 500; from: 1 1 1; to: 0.1 0.1 0.1"
-                      animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
-                      cursor="fuse: true;"
-                      material="color: white; shader: flat"
-                      position="0 0 -1"
-                      geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-                      scale="0.1 0.1 0.1"
-            >
-            </a-entity>
-                        <a-text playerhealth height = "0.5" width = "1" position="1 -0.5 -0.8" value="Health:"></a-text>
-                        <a-entity id="playerFace" playerFace scale="0.012 0.012 0.012"position="1 -0.1 -0.8"></a-entity>
         </a-entity>
-    </a-entity>
-    <!-- <a-entity environment ="preset: threetowers; ground:flat; playArea:300;" position="0 0 -20"></a-entity> -->
-    <!-- Rooms-->
-    <a-entity id="room"></a-entity>
-    <!-- Sky -->
-       <a-sky id="sky" color="lightblue"></a-sky>
-</a-scene>
+        <!-- <a-entity environment ="preset: threetowers; ground:flat; playArea:300;" position="0 0 -20"></a-entity> -->
+        <!-- Rooms-->
+        <a-entity id="room"></a-entity>
+        <!-- Sky -->
+        <a-sky id="sky" color="lightblue"></a-sky>
+    </a-scene>
 </body>
 <script src="./engine/components.js" type="module"></script>
 <script src="./engine/papyrus.js" type="module"></script>
+
 </html>

@@ -1,0 +1,13 @@
+
+{
+    "choices": [
+      {
+        "text": "Tell him the truth",
+        "linksToPassageIndex": 2
+      },
+      {
+        "text": "Tell him a lie",
+        "linksToPassageIndex": 3
+      }
+    ]
+  },

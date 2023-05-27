@@ -12,7 +12,7 @@ let custumEnemyModelPaths = [];
 let textures;
 // diaglog UI Globals / shit 
 let currentDiagID = 0; let currentScene = 1;
-let currentChar = 0;let mapSource = 0;let turn = 0;
+let currentChar = 0;let mapSource = 0;
 // combat var defaults SIMULATED DICE - Combat system is based on D and D - INIT vals / max 
 let CombatDiceNumber = 6;
 let CombatDMGDiceNumber = 6;
@@ -27,12 +27,14 @@ async function loadData(currentScene) {
     await loadConfig();
     await loadChars();
     await loadEnemies();
+    await loadDiag(1);
     //scene loading / aFrame loading
     await loadMap(currentScene);
     await loadSceneMetaData(currentScene);
     await setupPlayerInfo();
     // run create scene routine
     await createRooms();
+    await populateDiag(0)
     // testing dialogue.json UI population
     turn++;
     const sound = document.querySelector('[sound]');
@@ -54,6 +56,13 @@ async function loadPlayer() {
 async function loadChars() {
     const res = await fetch('characters.json')
     chars = await res.json();
+}
+
+async function loadDiag(sceneToLoad) {
+    let fetchURL = './scenes/scene'  + sceneToLoad + '/dialogue.json';
+    const res = await fetch(fetchURL)
+    diag = await res.json();
+    console.log(diag);
 }
 
 async function loadEnemies() {
@@ -104,7 +113,7 @@ function addChar(charID) {
     char.setAttribute('id', chars.characters[charID].name);
     char.setAttribute('name', chars.characters[charID].name);
     char.setAttribute('gltf-model', modelID);
-    char.setAttribute('scale', "3 3 3");
+    char.setAttribute('scale', "1 1 1");
     char.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     return char;
 }
@@ -120,6 +129,24 @@ function addTorch(torchColor, torchIndex) {
     return torch;
 }
 
+function populateDiag(passageID, currentChar) {
+    // add button test function
+    addButton(currentChar);
+    let newPassage = diag.passage[passageID].text;
+    let newCharName = diag.passage[passageID].char;
+    currentDiagID = passageID;
+    dialogueUI.setAttribute('text', 'wrapCount:' + 125);
+    dialogueUI.setAttribute('text', 'width:' + 3, 2);
+    dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
+}
+// make glow component show on specified char indicating char speaking
+function makeCharActive(charID) {
+    const charRef = document.getElementById(charID);
+    if (charRef.getAttribute('glowfx', 'visible:false;')) {
+        charRef.setAttribute('glowfx', 'visible:true;');
+    }
+}
+
 //Move to next dialogue passage  
 function nextScene() {
     if (diag.passage.length - 1 !== currentDiagID) {
@@ -131,6 +158,40 @@ function nextScene() {
     } else {
         // reset for now
         currentDiagID = 0;
+    }
+}
+
+// show passagebtn relative to character model
+function addButton(activeChar) {
+    console.log('charID passed' + activeChar);
+    // check if there is an existing button element firsst before adding a new one
+    if (!document.getElementById('nextPassageBtn')) {
+        let nextPassageBtn = document.createElement('a-box')
+        nextPassageBtn.setAttribute('id', 'nextPassageBtn');
+        nextPassageBtn.setAttribute('cursor-listener', '');
+        nextPassageBtn.setAttribute('depth', '0.01');
+        nextPassageBtn.setAttribute('height', '0.15');
+        nextPassageBtn.setAttribute('width', '0.15');
+        nextPassageBtn.setAttribute('material', 'color: red');
+        nextPassageBtn.setAttribute('position', '0.2 1.6 0.1');
+        // addtext
+        let nextPassageBtnTxt = document.createElement('a-text');
+        nextPassageBtnTxt.setAttribute('value', '>');
+        nextPassageBtnTxt.setAttribute('height', '1');
+        nextPassageBtnTxt.setAttribute('width', '3');
+        nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1');
+        nextPassageBtn.appendChild(nextPassageBtnTxt);
+        let bobGuy = document.getElementById(activeChar) // FOR TESTING PURPOSES - needs to be passed associated char
+        bobGuy.appendChild(nextPassageBtn);
+    } else {
+        console.log('Opps something went wrong - There is already a passage btn on the scene')
+    }
+}
+
+function removeButton() {
+    const passageBtn = document.getElementById('nextPassageBtn');
+    if (passageBtn != null) {
+        bobGuy.removeChild(passageBtn);
     }
 }
 
@@ -182,6 +243,16 @@ function createRooms() {
                 console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
                 char.setAttribute('static-body', '');
+                const floor = document.createElement('a-box');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('width', WALL_SIZE);
+                floor.setAttribute('depth', WALL_SIZE);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', floorPos);
+                // wall.setAttribute('load-texture', '');
+                floor.setAttribute('editor-listener', '');
+                floor.setAttribute('material', 'src:#' + floorTexture);
+                el.appendChild(floor);
                 el.appendChild(char);
                 charLoopIndex++;
             }
@@ -189,9 +260,9 @@ function createRooms() {
             if (mapData[i] === 9) {
                 const enemy1 = document.createElement('a-entity');
                 const enemyNum = enemies.enemies[0];
-                console.log(enemyNum)
+                console.log(enemyNum )
                 enemy1.setAttribute('enemy', 'modelPath:./models/reds/red_01.glb; ' +
-                    'format:glb;animated:true;' + 'health:' + enemyNum.health +
+                    'format:glb; animated:true;' + 'health:' + enemyNum.health +
                     'id:' + i + 'constitution:' + enemyNum.constitution + 'scale:' + enemyNum.scale);
                 enemy1.setAttribute('id', i);
                 enemy1.setAttribute('class', enemyNum.name);

@@ -247,9 +247,9 @@ AFRAME.registerComponent('character', {
 AFRAME.registerComponent('enemy', {
     schema: {
         color: { type: 'color', default: 'white' },
-        modelPath: { type: 'string', default: './models/demon.glb' },
-        modelID: { type: 'string', default: 'demon' },
-        modelMat: { type: 'string', default: 'demonMat' },
+        modelPath: { type: 'string', default: './models/reds/red_01.glb' },
+        modelID: { type: 'string', default: 'red' },
+        modelMat: { type: 'string', default: 'demonMat'},
         format: { type: 'string', default: 'glb' },
         position: { type: 'string', default: '0 0.1 0' },
         rotation: { type: 'string', default: '0 0 0' },
@@ -262,7 +262,7 @@ AFRAME.registerComponent('enemy', {
         health: { type: 'number', default: 5 },
         status: { type: 'string', default: 'alive' },
         speed: {type: 'number', default: 2},
-        partrol : {type: 'boolean', default: true}
+        patrol : {type: 'boolean', default: true}
     },
     init: function () {
         let data = this.data;
