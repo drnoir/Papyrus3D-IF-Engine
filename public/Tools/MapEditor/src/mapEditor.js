@@ -20,8 +20,13 @@ let doorTexture;
 let wallTexture2;
 let wallTexture3;
 
+// custum height mode
+let heightMode = false;
+let custumHeightY =1;
+let currentEntityCustom=0;
+
 // possible options - wall, door, enemies
-let paintMode = ['wall','enemies', 'door', 'delete' ];
+let paintMode = ['wall','enemies', 'door', 'delete', 'height' ];
 let currentPaintMode =  paintMode[0];
 let deleteMode =false;
 
@@ -78,9 +83,16 @@ AFRAME.registerComponent('editor-listener', {
                     enemy1.setAttribute('animation__001', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
                     el.appendChild(enemy1);
                 }
-                else if (currentEntity === 0 && deleteMode) {
+                else if (currentEntity === 0 && deleteMode && !heightMode) {
                     el.object3D.position.y = 0;
                     el.setAttribute('height', WALL_HEIGHT / 20);
+                    el.setAttribute('material', 'src:#' + floorTexture);
+                }
+                else if (currentEntity === 0 && !deleteMode && heightMode) {
+                    let floorHeight = custumHeightY;
+                    el.setAttribute('class', 'floor');
+                    el.setAttribute('height', floorHeight);
+                    el.setAttribute('static-body', '');
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
                 else {
@@ -89,7 +101,7 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
                 // update the map and show new element
-                updateMap(index, currentEntity);
+                updateMap(index, !heightMode ? currentEntity : currentEntityCustom);
             }
         });
     },
@@ -200,7 +212,7 @@ function createRooms() {
             const stairsPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} ${(y - (mapRes.height)) * WALL_SIZE} ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
 
             // if the number is 1 - 4, create a wall
-            if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0"  || mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
                 wall = document.createElement('a-box');
                 wall.setAttribute('width', WALL_SIZE);
                 wall.setAttribute('height', WALL_HEIGHT);
@@ -218,6 +230,17 @@ function createRooms() {
                     wall.setAttribute('position', floorPos);
                     // wall.setAttribute('index', y);
                     // wall.setAttribute('load-texture', '');
+                    wall.setAttribute('material', 'src:#' + floorTexture);
+                }
+                // floor with custom height
+                if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0"){
+                    let floorHeight1 = mapData[i].charAt(1) ?  mapData[i].charAt(1) : 0 ;
+                    let floorHeight2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
+                    let floorHeight = mapData[i].charAt(1) && mapData[i].charAt(2) ? floorHeight1 + floorHeight2 : floorHeight1;
+                    wall.setAttribute('class', 'floor');
+                    wall.setAttribute('height', floorHeight);
+                    wall.setAttribute('static-body', '');
+                    wall.setAttribute('position', floorPos);
                     wall.setAttribute('material', 'src:#' + floorTexture);
                 }
                 // full height wall
@@ -326,6 +349,11 @@ function allHeightSwitch(currentEntity){
         wallHeight = 0;
         heightY= wallHeight/2;
     }
+    if (currentEntity == 0 && heightMode){
+        wallHeight = custumHeightY;
+        currentEntityCustom = currentEntity+custumHeightY;
+        console.log(currentEntityCustom);
+    }
     if (currentEntity == 1){
         wallHeight = 5;
         heightY= wallHeight/2;
@@ -380,3 +408,28 @@ deleteCheckbox.addEventListener('change', function() {
         console.log(deleteMode)
     }
 });
+
+
+// Check if Height mode is on and init delete Mode if it is 
+const heightCheckbox = document.querySelector("input[name=heightmode]");
+heightCheckbox.addEventListener('change', function() {
+    if (this.checked) {
+        heightMode = true;
+        custumHeightY  = 0;
+        console.log(heightMode);
+    }
+    if (!this.checked) {
+        heightMode = false;
+        console.log(heightMode);
+    }
+});
+
+// slider for height mode
+const slider = document.getElementById("myRange");
+const output = document.getElementById("demo");
+output.innerHTML = slider.value;
+
+slider.oninput = function() {
+  output.innerHTML = this.value;
+  custumHeightY = this.value;
+}

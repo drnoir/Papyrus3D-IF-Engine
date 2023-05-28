@@ -338,7 +338,7 @@ function createRooms() {
                 el.appendChild(camPoint);
             }
             // if the number is 1 - 5,  create a wall
-            if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0"|| mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
                 wall = document.createElement('a-box');
                 wall.setAttribute('width', WALL_SIZE);
                 wall.setAttribute('height', WALL_HEIGHT);
@@ -347,7 +347,7 @@ function createRooms() {
                 wall.setAttribute('material', 'src:#' + wallTexture);
                 // console.log(el, wall'
                 el.appendChild(wall);
-                // floor
+                floor
                 if (mapData[i] === 0) {
                     // wall.setAttribute('color', '#000');
                     wall.setAttribute('class', 'floor');
@@ -356,8 +356,17 @@ function createRooms() {
                     wall.setAttribute('position', floorPos);
                     wall.setAttribute('playermovement', '');
                     wall.setAttribute('material', 'src:#' + floorTexture);
-            
                 }
+               if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0"){
+                        let floorHeight1 = mapData[i].charAt(1) ?  mapData[i].charAt(1) : 0 ;
+                        let floorHeight2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
+                        let floorHeight = mapData[i].charAt(1) && mapData[i].charAt(2) ? floorHeight1 + floorHeight2 : floorHeight1;
+                        wall.setAttribute('class', 'floor');
+                        wall.setAttribute('height', floorHeight);
+                        wall.setAttribute('static-body', '');
+                        wall.setAttribute('position', floorPos);
+                        wall.setAttribute('material', 'src:#' + floorTexture);
+                    }
                 // full height wall
                 if (mapData[i] === 1) {
                     wall.setAttribute('height', WALL_HEIGHT);
