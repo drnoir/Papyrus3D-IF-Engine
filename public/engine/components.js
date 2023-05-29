@@ -3,7 +3,7 @@
 // Dependency - A-Frame / A-Frame Extras
 
 // ENGINE CORE IMPORTS
-import { nextScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth, clearScene } from "./papyrus.js";
+import { nextScene, loadData,  populateDiag, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth, clearScene } from "./papyrus.js";
 
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
@@ -111,12 +111,12 @@ AFRAME.registerComponent('glowfx', {
         aImage.setAttribute('look-at', '#player');
         aImage.setAttribute('material', 'transparent: true; opacity: 1.0; alphaTest: 0.01;');
         aImage.setAttribute('color', data.color);
-        aImage.setAttribute('position', '0 0.1 0');
+        aImage.setAttribute('position', '0 0.55 0');
         aImage.setAttribute('rotation', '-90 0 0');
-        aImage.setAttribute('scale', '0.5 0.5 0.5');
+        aImage.setAttribute('scale', '0.3 0.3 0.3');
         aImage.setAttribute('geometry', 'primitive: circle;');
         aImage.setAttribute('visible', visible);
-        aImage.setAttribute('animation__pulse', 'property: material.opacity; from: 1.0; to: 0.0; dur: 6000; loop: true; dir: alternate; easing: linear;');
+        aImage.setAttribute('animation__pulse', 'property: material.opacity; from: 1.0; to: 0.0; dur: 4000; loop: true; dir: alternate; easing: linear;');
         el.appendChild(aImage);
     },
     remove: function () {
@@ -474,6 +474,19 @@ AFRAME.registerComponent('playermovement', {
         })
     }
 });
+
+AFRAME.registerComponent('triggerdiagfloor', {
+    schema: {
+        default: '',
+    },
+    init: function () {
+        this.el.addEventListener('click', function (evt) {
+            console.log('Dialogue would trigger here TEST');
+            populateDiag(5,0)
+        })
+    }
+});
+
 
 
 AFRAME.registerComponent('door', {

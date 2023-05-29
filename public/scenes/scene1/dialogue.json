@@ -24,6 +24,11 @@
       "char": "bobGuy",
       "position": "-1, 0, -4",
       "text": "For now enjoy exploring this space and testing out the exsisting functionality. Type /tools/MapEditor to try out the map editor too and creating new maps "
+    },
+    {
+      "char": "Holy Brick",
+      "position": "-1, 0, -4",
+      "text": "I am the holy brick"
     }
   ]
 }

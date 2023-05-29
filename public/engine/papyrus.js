@@ -379,6 +379,17 @@ function createRooms() {
                         let floorHeight1 = mapData[i].charAt(1) ?  mapData[i].charAt(1) : 0 ;
                         let floorHeight2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
                         let floorHeight = mapData[i].charAt(1) && mapData[i].charAt(2) ? floorHeight1 + floorHeight2 : floorHeight1;
+                        let floorTrigger = floorHeight >9 ? mapData[i].charAt(3) :   mapData[i].charAt(2);
+                        let triggerCheck = floorTrigger === 'T' ? true : false;
+
+                        console.log(triggerCheck);
+
+                        if (triggerCheck){
+                            console.log(floorTrigger, triggerCheck)
+                            wall.setAttribute('triggerdiagfloor', '' );
+                            wall.setAttribute('glowfx','color:#ffde85;');
+                        }
+
                         wall.setAttribute('class', 'floor');
                         wall.setAttribute('height', floorHeight);
                         wall.setAttribute('static-body', '');
@@ -571,4 +582,4 @@ function clearScene(){
 };
 
 // EXPORT JS 
-export {nextScene, clearScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth};
+export {nextScene, populateDiag, clearScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth};
