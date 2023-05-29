@@ -480,28 +480,65 @@ AFRAME.registerComponent('door', {
     schema: {
         default: '',
         locked: { type: 'boolean', default: false},
+        doorLockNum: {type: 'number', default: 0},
     },
     init: function () {
         const el = this.el;
+        const data = this.data;
+        let locked = data.locked;
+        this.closeDoor = AFRAME.utils.bind(this.closeDoor, this);
+
+        const doorPos = el.getAttribute('position');
         this.el.addEventListener('click', function (evt) {
-            const doorPos = el.getAttribute('position');
-            let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
-            let newX = x-1;
-            let newY = y-1;
+            if (!locked){
+            let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;let newX = x-1;
             console.log(x,y,z, newX);
-            el.setAttribute('animation', "property: position; to:"+newX+newY+z+"; loop:  false; dur: 8000");
-            setTimeout( resetAnim(),10000);
-                function resetAnim(el){
-                    const doorPos = el.getAttribute('position');
-                    let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
-                    let newX = x+2;
-                    let newY = y-1;
-                    el.setAttribute('animation', "property: position; to:"+newX+newY+z+"; loop:  false; dur: 8000")
-                }
+            el.setAttribute('animation', "property: position; to:"+newX+y+z+"; loop:  false; dur: 5000");
+            this.closeDoor;
+            }
+            // locked door checks
+            else{
+                
+            }
         })
+    },
+    closeDoor: function () {
+        const el = this.el;
+        setTimeout( resetAnim(el), 8000);
+            function resetAnim(el){
+                console.log(el, 'triggered door close')
+                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
+                let newX = x+3;
+                this.el.setAttribute('animation', "property: position; to:"+newX+y+z+"; loop:  false; dur: 5000")
+            }
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
     },
 });
 
+
+AFRAME.registerComponent('key', {
+    schema: {
+        default: '',
+        color: { type: 'string', default: 'blue',
+        keyNumber: { type: 'number', default: 1,
+    },
+
+    init: function () {
+        const el = this.el;
+        const data = this.data;
+        const keyNumber = data.keyNumber;
+        this.el.addEventListener('click', function (evt) {
+            gotKey(keyNumber)
+        })
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+}}});
 
 AFRAME.registerComponent("load-texture", {
     schema: {

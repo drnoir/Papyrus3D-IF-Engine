@@ -8,7 +8,6 @@
     {
       "char": "bobGuy",
       "position": "0, 0, -6",
-      "moveToCam": "2",
       "text": "Papyrus 3D is an open source game engine built with A-Frame for VR and AR for building interactive games and enviroments. This is a demo and this enviroment is currently under development."
     },
     {

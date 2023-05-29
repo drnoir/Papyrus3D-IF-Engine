@@ -8,6 +8,7 @@ let config; let chars; let enemies;
 // Diagoloue and scene metadata shit
 let diag; let sceneMetadata;
 let custumEnemyModelPaths = [];
+let lockedDoors = [];
 // STORE TEXTURE INFO
 let textures;
 // diaglog UI Globals / shit 
@@ -129,9 +130,9 @@ function addTorch(torchColor, torchIndex) {
 }
 
 function populateDiag(passageID, currentChar) {
-    // add button test function
     const dialogueUI = document.getElementById('dialogueID');
-    dialogueUI.setAttribute('visible', true);
+    // add button test function
+    showDialogueUI();
 
     addButton(currentChar);
     let newPassage = diag.passage[passageID].text;
@@ -157,10 +158,23 @@ function nextScene() {
         currentDiagID++;
         populateDiag(currentDiagID, currentChar);
         makeCharActive(currentChar);
+        // hide after certain time
+        setTimeout(hideDialogueUI, 10000);
+
     } else {
         // reset for now
         currentDiagID = 0;
     }
+}
+
+function showDialogueUI(){
+    const dialogueUI = document.getElementById('dialogueID');
+    dialogueUI.setAttribute('visible', true);
+}
+
+function hideDialogueUI(){
+    const dialogueUI = document.getElementById('dialogueID')
+    dialogueUI.setAttribute('visible', false);
 }
 
 // show passagebtn relative to character model
@@ -196,6 +210,10 @@ function removeButton() {
     if (passageBtn != null) {
         bobGuy.removeChild(passageBtn);
     }
+}
+
+function gotKey(keyNum){
+    doors.push
 }
 
 // Create rooms loop - called at init
@@ -296,7 +314,6 @@ function createRooms() {
             water.setAttribute('scale', '1 4.6 2');
             water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.7; transparent: true;side: double;');
             el.appendChild(water);
-
         }   
             // add exit
             if (mapData[i] === 5) {
@@ -347,7 +364,7 @@ function createRooms() {
                 wall.setAttribute('material', 'src:#' + wallTexture);
                 // console.log(el, wall'
                 el.appendChild(wall);
-                floor
+                // floor standard
                 if (mapData[i] === 0) {
                     // wall.setAttribute('color', '#000');
                     wall.setAttribute('class', 'floor');
@@ -357,6 +374,7 @@ function createRooms() {
                     wall.setAttribute('playermovement', '');
                     wall.setAttribute('material', 'src:#' + floorTexture);
                 }
+                // custom floor height
                if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0"){
                         let floorHeight1 = mapData[i].charAt(1) ?  mapData[i].charAt(1) : 0 ;
                         let floorHeight2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
@@ -397,6 +415,7 @@ function createRooms() {
                     wall.setAttribute('door', 'false');
                     wall.setAttribute('locked', 'false');
                     wall.setAttribute('door', '');
+                    wall.setAttribute('scale', '1 1 0.89');
                     wall.setAttribute('material', 'src:#' + doorTexture+';repeat: 1 1');
                     const floor = document.createElement('a-box');
                     floor.setAttribute('height', WALL_HEIGHT / 20);
@@ -404,13 +423,34 @@ function createRooms() {
                     floor.setAttribute('depth', WALL_SIZE);
                     floor.setAttribute('static-body', '');
                     floor.setAttribute('position', floorPos);
-                    // wall.setAttribute('load-texture', '');
                     floor.setAttribute('editor-listener', '');
                     floor.setAttribute('material', 'src:#' + floorTexture);
                     floor.setAttribute('playermovement', '');
                     el.appendChild(floor);
                 }
-            
+                // door locked
+                if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "4" && mapData[i].charAt(1) === "_") {
+                let doorNum2  = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
+                let doorNum = doorNum2;
+
+                wall.setAttribute('id', 'door');
+                // door locked set num 
+                wall.setAttribute('height', WALL_HEIGHT);
+                wall.setAttribute('door', 'doorLockNum:'+doorNum);
+                wall.setAttribute('locked', 'true');
+                wall.setAttribute('material', 'src:#' + doorTexture+';repeat: 1 1');
+                
+                const floor = document.createElement('a-box');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('width', WALL_SIZE);
+                floor.setAttribute('depth', WALL_SIZE);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', floorPos);
+                floor.setAttribute('editor-listener', '');
+                floor.setAttribute('material', 'src:#' + floorTexture);
+                floor.setAttribute('playermovement', '');
+                el.appendChild(floor);
+            }
             }
         }
     }
