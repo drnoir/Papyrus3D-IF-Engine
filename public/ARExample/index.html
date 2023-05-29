@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Papyrus - Example AR Map</title>
-    <script src="https://aframe.io/releases/1.3.0/aframe.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js" integrity="sha512-rVwZ9RF3FKH6TH80cvAnWssdlHPvHfOFDXW0empc5E9gkzD1B7CiySJb4SCC8SgBILhTg7AFM8m3TR1wesZ6FQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- include ar.js for A-Frame -->
+<script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
 </head>
 <body>
-    <a-scene>
+    <a-scene  vr-mode-ui="enabled: false;"
+    renderer="logarithmicDepthBuffer: true;"
+    embedded
+    arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;">
         <a-assets>
         <!-- models -->
         <a-asset-item id="bobGuy" src='../models/geek.glb'></a-asset-item>
@@ -37,6 +42,7 @@
         <img id="wooddoor" src="../textures/wood/wooddoor.jpg">
         <img id="grunge" src="../textures/structures/whiterock.jpg">
         <img id="orangebrick" src="../textures/walls/orangebrick.jpg">
+        <img id="water" src="./textures/nature/water.jpeg">
     </a-assets>
     <!-- // sound fx -->
     <a-entity sound="src: #music" autoplay="true" volume="1.5" loop="true" positional="false" refDistance="1000"></a-entity>
@@ -50,7 +56,8 @@
 
     <a-circle id="startGame" startgamebtn radius="0.3" depth="0.1" position="1 2 -0.1 " rotation="0 0 0" color="black" ><a-text position="-0.5 0 0.2" value="Start Game"></a-text></a-circle>
     <a-entity id="playercam" position="1 1.5 2">
-        <a-entity id="camera" camera look-controls wasd-controls>
+        <!-- <a-entity id="camera" camera look-controls wasd-controls>
+            <a-marker-camera preset='hiro'></a-marker-camera>
             <a-entity gltf-model="#gun" position="0.2 -0.15 -0.3" rotation = '0 180 0'></a-entity>
             <a-entity animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
                       animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
@@ -64,10 +71,11 @@
             </a-entity>
                         <a-text playerhealth height = "0.5" width = "1" position="1 -0.5 -0.8" value="Health:"></a-text>
                         <a-entity id="playerFace" playerFace scale="0.012 0.012 0.012"position="1 -0.1 -0.8"></a-entity>
-        </a-entity>
-    </a-entity>
+      
+    </a-entity> -->
     <!-- Walls (used by map-old.json.js -->
     <a-entity id="room"></a-entity>
+    <a-marker-camera preset='hiro'><a-marker-camera></a-marker-camera>
     <!-- Sky -->
     <!--    <a-sky id="sky" color="#fff"></a-sky>-->
 </a-scene>
