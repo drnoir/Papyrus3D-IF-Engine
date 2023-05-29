@@ -19,6 +19,10 @@
     {
       "id": "exit",
       "path": "textures/walls/floor.JPG"
+    },
+    {
+      "id": "water",
+      "path": "textures/nature/water.jpeg"
     }
   ]
 }
