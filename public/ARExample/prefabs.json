@@ -1,0 +1,18 @@
+{
+    "prefabs": [
+      {
+        "name": "chest",
+        "id": "chest",
+        "model": "./models/chest.glb",
+        "scale": 1,
+        "animations": []
+      },
+       {
+        "name":"computer",
+         "id":"computer",
+         "model": "./models/computer.glb",
+         "scale": 1,
+         "animations": []
+       }
+    ]
+  }

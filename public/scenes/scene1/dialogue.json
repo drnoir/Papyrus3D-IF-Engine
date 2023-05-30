@@ -29,6 +29,11 @@
       "char": "Holy Brick",
       "position": "-1, 0, -4",
       "text": "I am the holy brick"
+    },
+    {
+      "char": "Old Computer",
+      "position": "-1, 0, -4",
+      "text": "Damn what a classic computer this is...."
     }
   ]
 }

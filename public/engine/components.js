@@ -488,6 +488,30 @@ AFRAME.registerComponent('triggerdiagfloor', {
 });
 
 
+AFRAME.registerComponent('prefab', {
+    schema: {
+        default: '',
+        triggerDialogue: { type: 'boolean', default: false},
+        diaglogueNum: {type: 'number', default: 0},
+    },
+    init: function () {
+        const el = this.el;
+        const data = this.data;
+        const triggerDialogue = data.triggerDialogue;
+        const diaglogueNum = data.diaglogueNum;
+        if (triggerDialogue){
+            this.el.addEventListener('click', function (evt) {
+                populateDiag(diaglogueNum,0)
+            })
+        }
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+});
+
+
 
 AFRAME.registerComponent('door', {
     schema: {

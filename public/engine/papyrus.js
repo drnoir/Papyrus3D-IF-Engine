@@ -10,10 +10,10 @@ let diag; let sceneMetadata;
 let custumEnemyModelPaths = [];
 let lockedDoors = [];
 // STORE TEXTURE INFO
-let textures;
+let textures; let prefabs;
 // diaglog UI Globals / shit 
 let currentDiagID = 0; let currentScene = 1;
-let currentChar = 0;let mapSource = 0;
+let currentChar = 0; let mapSource = 0;
 // combat var defaults SIMULATED DICE - Combat system is based on D and D - INIT vals / max 
 let CombatDiceNumber = 6;
 let CombatDMGDiceNumber = 6;
@@ -21,13 +21,14 @@ let CombatDMGDiceNumber = 6;
 const scene = document.querySelector('a-scene'); const assets = document.querySelector('a-assets');
 
 async function loadData(currentScene) {
-//game vars
-//config and diagloue loading
+    //game vars
+    //config and diagloue loading
     await loadPlayer();
     await loadTextures(currentScene);
     await loadConfig();
     await loadChars();
     await loadEnemies();
+    await loadPrefabs();
     await loadDiag(1);
     //scene loading / aFrame loading
     await loadMap(currentScene);
@@ -35,7 +36,7 @@ async function loadData(currentScene) {
     await setupPlayerInfo();
     // run create scene routine
     await createRooms();
-    await populateDiag(0);
+    // await populateDiag(0);
     // testing dialogue.json UI population
     const sound = document.querySelector('[sound]');
     sound.components.sound.playSound();
@@ -44,7 +45,7 @@ async function loadData(currentScene) {
 // Load engine Config file (JSON) - As the engine relies on configurable json there can be custum values 
 async function loadConfig() {
     const res = await fetch('config.json'); config = await res.json();
-    CombatDiceNumber = config.CombatDiceNumber;CombatDMGDiceNumber = config.CombatDMGDiceNumber;
+    CombatDiceNumber = config.CombatDiceNumber; CombatDMGDiceNumber = config.CombatDMGDiceNumber;
     console.log('combat dice num' + CombatDiceNumber, CombatDMGDiceNumber)
 }
 
@@ -59,7 +60,7 @@ async function loadChars() {
 }
 
 async function loadDiag(sceneToLoad) {
-    let fetchURL = './scenes/scene'  + sceneToLoad + '/dialogue.json';
+    let fetchURL = './scenes/scene' + sceneToLoad + '/dialogue.json';
     const res = await fetch(fetchURL)
     diag = await res.json();
     console.log(diag);
@@ -69,6 +70,13 @@ async function loadEnemies() {
     const res = await fetch('enemies.json')
     enemies = await res.json();
 }
+
+async function loadPrefabs() {
+    const res = await fetch('prefabs.json')
+    prefabs = await res.json();
+    console.log(prefabs);
+}
+
 
 async function loadMap(mapToLoad) {
     let fetchURL = './scenes/scene' + mapToLoad + '/map.json';
@@ -131,6 +139,7 @@ function addTorch(torchColor, torchIndex) {
 
 function populateDiag(passageID, currentChar) {
     const dialogueUI = document.getElementById('dialogueID');
+
     // add button test function
     showDialogueUI();
 
@@ -138,8 +147,8 @@ function populateDiag(passageID, currentChar) {
     let newPassage = diag.passage[passageID].text;
     let newCharName = diag.passage[passageID].char;
     currentDiagID = passageID;
-    dialogueUI.setAttribute('text', 'wrapCount:' + 125);
-    dialogueUI.setAttribute('text', 'width:' + 3, 2);
+    dialogueUI.setAttribute('text', 'wrapCount:' + 80);
+    dialogueUI.setAttribute('text', 'width:' + 3, 4);
     dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
 }
 // make glow component show on specified char indicating char speaking
@@ -167,12 +176,12 @@ function nextScene() {
     }
 }
 
-function showDialogueUI(){
+function showDialogueUI() {
     const dialogueUI = document.getElementById('dialogueID');
     dialogueUI.setAttribute('visible', true);
 }
 
-function hideDialogueUI(){
+function hideDialogueUI() {
     const dialogueUI = document.getElementById('dialogueID')
     dialogueUI.setAttribute('visible', false);
 }
@@ -195,11 +204,11 @@ function addButton() {
         nextPassageBtnTxt.setAttribute('value', '>');
         nextPassageBtnTxt.setAttribute('height', '1');
         nextPassageBtnTxt.setAttribute('width', '3');
-        nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1');  
+        nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1');
         let char = document.getElementById('bobGuy') // FOR TESTING PURPOSES - needs to be passed associated char
         char.appendChild(nextPassageBtn);
         nextPassageBtn.appendChild(nextPassageBtnTxt);
-    
+
     } else {
         console.log('Opps something went wrong - There is already a passage btn on the scene')
     }
@@ -212,7 +221,7 @@ function removeButton() {
     }
 }
 
-function gotKey(keyNum){
+function gotKey(keyNum) {
     doors.push
 }
 
@@ -232,7 +241,7 @@ function createRooms() {
     const WALL_HEIGHT = 3.5;
     const el = document.getElementById('room')
 
-    let door;let wall;
+    let door; let wall;
 
     if (roomType === "Indoor") {
         let ceil = document.createElement('a-box');
@@ -277,12 +286,44 @@ function createRooms() {
                 el.appendChild(char);
                 charLoopIndex++;
             }
+            // prefabs
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "7") {
+                let prefabNum1 = mapData[i].charAt(1) ? mapData[i].charAt(1) : 0;
+                let prefabNum2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
+                let prefabNum = mapData[i].charAt(1) && mapData[i].charAt(2) ? prefabNum1 + prefabNum2 : prefabNum1;
+                let prefabTrigger = prefabNum > 9 ? mapData[i].charAt(3) : mapData[i].charAt(2);
+                let dataLegth = mapData[i].length;
+                let diagTrigger = prefabTrigger === 'T' ? true : false;
+                let triggerNum = prefabTrigger === 'T' ? mapData[i].charAt(dataLegth - 1) : null;
+
+                const prefabElm = document.createElement('a-entity');
+                const prefabElmNum = prefabs.prefabs[1];
+                console.log(prefabElmNum)
+               
+                prefabElm.setAttribute('gltf-model', prefabElmNum.id);
+                prefabElm.setAttribute('scale', "1 1 1");
+                prefabElm.setAttribute('animation-mixer', "clip: *; loop: repeat;");
+                prefabElm.setAttribute('prefab', 'triggerDialogue:' + diagTrigger + 'diaglogueNum:' + triggerNum);
+                prefabElm.setAttribute('id', 'prefab'+prefabElmNum.ID);
+
+                const floor = document.createElement('a-box');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('width', WALL_SIZE);
+                floor.setAttribute('depth', WALL_SIZE);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', floorPos);
+                // wall.setAttribute('load-texture', '');
+                floor.setAttribute('editor-listener', '');
+                floor.setAttribute('material', 'src:#' + floorTexture);
+                el.appendChild(floor);
+                el.appendChild(prefabElm);
+            }
             // enemy slots
             if (mapData[i] === 9) {
                 const enemy1 = document.createElement('a-entity');
                 const enemyNum = enemies.enemies[0];
-                console.log(enemyNum )
-                enemy1.setAttribute('enemy', 'modelPath:'+enemyNum.model+';'+
+                console.log(enemyNum)
+                enemy1.setAttribute('enemy', 'modelPath:' + enemyNum.model + ';' +
                     'format:glb; animated:true;' + 'health:' + enemyNum.health +
                     'id:' + i + 'constitution:' + enemyNum.constitution + 'scale:' + enemyNum.scale);
                 enemy1.setAttribute('id', i);
@@ -304,17 +345,17 @@ function createRooms() {
             }
             //  water
             if (mapData[i] === 6) {
-            const water = document.createElement('a-plane');
-            water.setAttribute('height', WALL_HEIGHT / 20);
-            water.setAttribute('width', WALL_SIZE);
-            water.setAttribute('depth', WALL_SIZE);
-            water.setAttribute('static-body', '');
-            water.setAttribute('position', floorPos);
-            water.setAttribute('rotation', '90 0 0');
-            water.setAttribute('scale', '1 4.6 2');
-            water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.7; transparent: true;side: double;');
-            el.appendChild(water);
-        }   
+                const water = document.createElement('a-plane');
+                water.setAttribute('height', WALL_HEIGHT / 20);
+                water.setAttribute('width', WALL_SIZE);
+                water.setAttribute('depth', WALL_SIZE);
+                water.setAttribute('static-body', '');
+                water.setAttribute('position', floorPos);
+                water.setAttribute('rotation', '90 0 0');
+                water.setAttribute('scale', '1 4.6 2');
+                water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
+                el.appendChild(water);
+            }
             // add exit
             if (mapData[i] === 5) {
                 wall.setAttribute('id', 'exit');
@@ -332,11 +373,11 @@ function createRooms() {
                 floor.setAttribute('position', floorPos);
                 // wall.setAttribute('load-texture', '');
                 floor.setAttribute('editor-listener', '');
-                floor.setAttribute('material', 'src:#' + floorTexture);           
+                floor.setAttribute('material', 'src:#' + floorTexture);
                 floor.setAttribute('playermovement', '');
                 el.appendChild(floor);
             }
-  
+
             // add torch / light
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "t") {
                 console.log("its a torch!")
@@ -355,7 +396,7 @@ function createRooms() {
                 el.appendChild(camPoint);
             }
             // if the number is 1 - 5,  create a wall
-            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0"|| mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0" || mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
                 wall = document.createElement('a-box');
                 wall.setAttribute('width', WALL_SIZE);
                 wall.setAttribute('height', WALL_HEIGHT);
@@ -375,35 +416,52 @@ function createRooms() {
                     wall.setAttribute('material', 'src:#' + floorTexture);
                 }
                 // custom floor height
-               if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0"){
-                        let floorHeight1 = mapData[i].charAt(1) ?  mapData[i].charAt(1) : 0 ;
-                        let floorHeight2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
-                        let floorHeight = mapData[i].charAt(1) && mapData[i].charAt(2) ? floorHeight1 + floorHeight2 : floorHeight1;
-                        let floorTrigger = floorHeight >9 ? mapData[i].charAt(3) :   mapData[i].charAt(2);
-                        let triggerCheck = floorTrigger === 'T' ? true : false;
+                if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0") {
+                    let floorHeight1 = mapData[i].charAt(1) ? mapData[i].charAt(1) : 0;
+                    let floorHeight2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
+                    let floorHeight = mapData[i].charAt(1) && mapData[i].charAt(2) ? floorHeight1 + floorHeight2 : floorHeight1;
+                    let floorTrigger = floorHeight > 9 ? mapData[i].charAt(3) : mapData[i].charAt(2);
+                    let triggerCheck = floorTrigger === 'T' ? true : false;
 
-                        console.log(triggerCheck);
+                    console.log(triggerCheck);
 
-                        if (triggerCheck){
-                            console.log(floorTrigger, triggerCheck)
-                            wall.setAttribute('triggerdiagfloor', '' );
-                            wall.setAttribute('glowfx','color:#ffde85;');
-                        }
-
-                        wall.setAttribute('class', 'floor');
-                        wall.setAttribute('height', floorHeight);
-                        wall.setAttribute('static-body', '');
-                        wall.setAttribute('position', floorPos);
-                        wall.setAttribute('material', 'src:#' + floorTexture);
+                    if (triggerCheck) {
+                        console.log(floorTrigger, triggerCheck)
+                        wall.setAttribute('triggerdiagfloor', '');
+                        wall.setAttribute('glowfx', 'color:#ffde85;');
                     }
+
+                    wall.setAttribute('class', 'floor');
+                    wall.setAttribute('height', floorHeight);
+                    wall.setAttribute('static-body', '');
+                    wall.setAttribute('position', floorPos);
+                    wall.setAttribute('material', 'src:#' + floorTexture);
+                }
                 // full height wall
                 if (mapData[i] === 1) {
                     wall.setAttribute('height', WALL_HEIGHT);
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', position);
                     wall.setAttribute('material', 'src:#' + wallTexture);
-                    wall.setAttribute('material', 'repeat:0.5 0.5');
+                    wall.setAttribute('material', 'repeat:0.5 1');
                 }
+                // Posterwall
+                if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "1") {
+                let posterNum = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
+                wall.setAttribute('height', WALL_HEIGHT);
+                wall.setAttribute('static-body', '');
+                wall.setAttribute('position', position);
+                wall.setAttribute('material', 'src:#' + wallTexture);
+                wall.setAttribute('material', 'repeat:0.5 1');
+                let poster = document.createElement('a-box');
+                let posterZ = position.z+0.5; let x = position.x; let y = position.y;
+                poster.setAttribute('width', WALL_SIZE - 1.2);
+                poster.setAttribute('height', WALL_HEIGHT - 1);
+                poster.setAttribute('depth', WALL_SIZE-0);
+                poster.setAttribute('position', x,y,posterZ);
+                poster.setAttribute('material', 'src:#' + 'poster');
+                wall.appendChild(poster);          
+              }
                 // 1/2 height wall
                 if (mapData[i] === 2) {
                     wall.setAttribute('height', WALL_HEIGHT / 2);
@@ -427,7 +485,7 @@ function createRooms() {
                     wall.setAttribute('locked', 'false');
                     wall.setAttribute('door', '');
                     wall.setAttribute('scale', '1 1 0.89');
-                    wall.setAttribute('material', 'src:#' + doorTexture+';repeat: 1 1');
+                    wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
                     const floor = document.createElement('a-box');
                     floor.setAttribute('height', WALL_HEIGHT / 20);
                     floor.setAttribute('width', WALL_SIZE);
@@ -441,27 +499,27 @@ function createRooms() {
                 }
                 // door locked
                 if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "4" && mapData[i].charAt(1) === "_") {
-                let doorNum2  = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
-                let doorNum = doorNum2;
+                    let doorNum2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
+                    let doorNum = doorNum2;
 
-                wall.setAttribute('id', 'door');
-                // door locked set num 
-                wall.setAttribute('height', WALL_HEIGHT);
-                wall.setAttribute('door', 'doorLockNum:'+doorNum);
-                wall.setAttribute('locked', 'true');
-                wall.setAttribute('material', 'src:#' + doorTexture+';repeat: 1 1');
-                
-                const floor = document.createElement('a-box');
-                floor.setAttribute('height', WALL_HEIGHT / 20);
-                floor.setAttribute('width', WALL_SIZE);
-                floor.setAttribute('depth', WALL_SIZE);
-                floor.setAttribute('static-body', '');
-                floor.setAttribute('position', floorPos);
-                floor.setAttribute('editor-listener', '');
-                floor.setAttribute('material', 'src:#' + floorTexture);
-                floor.setAttribute('playermovement', '');
-                el.appendChild(floor);
-            }
+                    wall.setAttribute('id', 'door');
+                    // door locked set num 
+                    wall.setAttribute('height', WALL_HEIGHT);
+                    wall.setAttribute('door', 'doorLockNum:' + doorNum);
+                    wall.setAttribute('locked', 'true');
+                    wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
+
+                    const floor = document.createElement('a-box');
+                    floor.setAttribute('height', WALL_HEIGHT / 20);
+                    floor.setAttribute('width', WALL_SIZE);
+                    floor.setAttribute('depth', WALL_SIZE);
+                    floor.setAttribute('static-body', '');
+                    floor.setAttribute('position', floorPos);
+                    floor.setAttribute('editor-listener', '');
+                    floor.setAttribute('material', 'src:#' + floorTexture);
+                    floor.setAttribute('playermovement', '');
+                    el.appendChild(floor);
+                }
             }
         }
     }
@@ -531,38 +589,38 @@ function getPlayerHealth() {
     }
 }
 
-function triggerMuzzleFX(){
+function triggerMuzzleFX() {
     console.log('triggerMUZZLE FX');
     const muzzle = document.getElementById('muzzleFX');
     console.log(muzzle);
     muzzle.setAttribute('visible', true);
     let shotAudio = document.querySelector("#pistolshot");
     shotAudio.play();
-    setTimeout( stopMuzzle, 300);
-    
-    function stopMuzzle(){
+    setTimeout(stopMuzzle, 300);
+
+    function stopMuzzle() {
         muzzle.setAttribute('visible', false);
     }
 }
 
-function createHealthBar(){
-      // player health bar UI
-      const PlayerhealthBar = document.createElement('a-box');
-      const PlayerhealthBarTracker = document.createElement('a-box');
-      let PlayerhealthBarVal = 100;
-      PlayerhealthBar.setAttribute('height', 0.5);
-      PlayerhealthBar.setAttribute('position', '0 8 0');
-      PlayerhealthBar.setAttribute('width', 3);
-      PlayerhealthBar.setAttribute('depth', 0.1);
-      PlayerhealthBar.setAttribute('material', 'color:white');
-      PlayerhealthBarTracker.setAttribute('height', 0.4);
-      PlayerhealthBarTracker.setAttribute('width', PlayerhealthBarVal.toString());
-      PlayerhealthBarTracker.setAttribute('depth', 0.1);
-      PlayerhealthBarTracker.setAttribute('position', '0 0 0.1');
-      PlayerhealthBarTracker.setAttribute('material', 'color:red');
-      PlayerhealthBarTracker.setAttribute('HealthBarid', id);
-      PlayerhealthBar.appendChild(PlayerhealthBarTracker);
-      newFace.appendChild(PlayerhealthBar);
+function createHealthBar() {
+    // player health bar UI
+    const PlayerhealthBar = document.createElement('a-box');
+    const PlayerhealthBarTracker = document.createElement('a-box');
+    let PlayerhealthBarVal = 100;
+    PlayerhealthBar.setAttribute('height', 0.5);
+    PlayerhealthBar.setAttribute('position', '0 8 0');
+    PlayerhealthBar.setAttribute('width', 3);
+    PlayerhealthBar.setAttribute('depth', 0.1);
+    PlayerhealthBar.setAttribute('material', 'color:white');
+    PlayerhealthBarTracker.setAttribute('height', 0.4);
+    PlayerhealthBarTracker.setAttribute('width', PlayerhealthBarVal.toString());
+    PlayerhealthBarTracker.setAttribute('depth', 0.1);
+    PlayerhealthBarTracker.setAttribute('position', '0 0 0.1');
+    PlayerhealthBarTracker.setAttribute('material', 'color:red');
+    PlayerhealthBarTracker.setAttribute('HealthBarid', id);
+    PlayerhealthBar.appendChild(PlayerhealthBarTracker);
+    newFace.appendChild(PlayerhealthBar);
 }
 
 // simulate random dice roll
@@ -576,10 +634,10 @@ function updatePlayerPos(newPlayPos) {
     document.querySelector('#player').setAttribute('position', newPlayPos);
 }
 
-function clearScene(){
+function clearScene() {
     const el = document.getElementById('room');
     el.parentNode.removeChild(el);
 };
 
 // EXPORT JS 
-export {nextScene, populateDiag, clearScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth};
+export { nextScene, populateDiag, clearScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth };
