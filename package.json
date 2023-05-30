@@ -2,11 +2,41 @@
   "name": "papyrus3dengine",
   "version": "1.0.0",
   "description": "Build an engine for generating 3D interactive Fiction games based on JSON inputs. ",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
+    "postinstall": "install-app-deps",
     "test": "test",
-    "start": "http-server --cors -S -C cert.pem",
-    "buildNav" : "gltf-navmesh-generator navmeshGLTF navmesh Navmesh"
+    "dev": "http-server --cors -S -C cert.pem",
+    "start": "electron ./main.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "yourappid",
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "squirrel",
+      "icon": "build/icon.ico"
+    }
   },
   "repository": {
     "type": "git",
@@ -25,13 +55,15 @@
     "papyus",
     "interactive"
   ],
-  "author": "Christopher Godber",
+  "author": "Chris Godber <chrispgodber@gmail.com> (http://www.chrisgodber.co.uk/)",
   "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/drnoir/Papyrus3D-IF-Engine/issues"
   },
   "homepage": "https://github.com/drnoir/Papyrus3D-IF-Engine#readme",
   "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-builder": "^23.6.0",
     "http-server": "^14.1.1",
     "make-dir-webpack-plugin": "^0.1.0"
   },
