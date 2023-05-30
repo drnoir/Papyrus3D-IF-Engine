@@ -174,6 +174,13 @@ function nextScene() {
     }
 }
 
+async function loadNewLevel(mapToLoad){
+    await clearScene();
+    await loadMap(mapToLoad);
+    await loadSceneMetaData(mapToLoad);
+    await createRooms();
+}
+
 function showDialogueUI() {
     const dialogueUI = document.getElementById('dialogueID');
     dialogueUI.setAttribute('visible', true);
@@ -633,8 +640,13 @@ function updatePlayerPos(newPlayPos) {
 
 function clearScene() {
     const el = document.getElementById('room');
+    const scene = document.querySelector('a-scene');
     el.parentNode.removeChild(el);
+    // ADD ENTITY BACK
+    const newRoom = document.createElement('a-entity');
+    newRoom.setAttribute('id', 'room');
+    scene.appendChild(newRoom)
 };
 
 // EXPORT JS 
-export { nextScene, populateDiag, clearScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth };
+export { nextScene, loadNewLevel, populateDiag, clearScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth };
