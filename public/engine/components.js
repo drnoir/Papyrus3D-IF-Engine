@@ -3,7 +3,7 @@
 // Dependency - A-Frame / A-Frame Extras
 
 // ENGINE CORE IMPORTS
-import { nextScene, loadData,  populateDiag, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth, clearScene } from "./papyrus.js";
+import { nextScene, loadData,  populateDiag, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth, clearScene, loadNewLevel } from "./papyrus.js";
 
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
@@ -636,6 +636,10 @@ AFRAME.registerComponent('exit', {
         exit.setAttribute('color', color);
         exit.setAttribute('glowFX', 'visible:' + true);
         exit.setAttribute('scale', scale);
+
+        this.el.addEventListener('click', function (evt) {
+           loadNewLevel(2);
+        })
 
         // textureLoader.load(src,
         //     // onLoad
