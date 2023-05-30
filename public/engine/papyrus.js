@@ -292,16 +292,17 @@ function createRooms() {
                 let prefabNum2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
                 let prefabNum = mapData[i].charAt(1) && mapData[i].charAt(2) ? prefabNum1 + prefabNum2 : prefabNum1;
                 let prefabTrigger = prefabNum > 9 ? mapData[i].charAt(3) : mapData[i].charAt(2);
-                let dataLegth = mapData[i].length;
+                let dataLength = mapData[i].length;
                 let diagTrigger = prefabTrigger === 'T' ? true : false;
-                let triggerNum = prefabTrigger === 'T' ? mapData[i].charAt(dataLegth - 1) : null;
+                let triggerNum = prefabTrigger === 'T' ? mapData[i].charAt(dataLength - 1) : null;
 
                 const prefabElm = document.createElement('a-entity');
                 const prefabElmNum = prefabs.prefabs[1];
                 console.log(prefabElmNum)
                
-                prefabElm.setAttribute('gltf-model', prefabElmNum.id);
-                prefabElm.setAttribute('scale', "1 1 1");
+                prefabElm.setAttribute('gltf-model', '#'+prefabElmNum.id);
+                prefabElm.setAttribute('scale', prefabElmNum.scale);
+                prefabElm.setAttribute('rotation', prefabElmNum.rotation);
                 prefabElm.setAttribute('animation-mixer', "clip: *; loop: repeat;");
                 prefabElm.setAttribute('prefab', 'triggerDialogue:' + diagTrigger + 'diaglogueNum:' + triggerNum);
                 prefabElm.setAttribute('id', 'prefab'+prefabElmNum.ID);
@@ -316,7 +317,7 @@ function createRooms() {
                 floor.setAttribute('editor-listener', '');
                 floor.setAttribute('material', 'src:#' + floorTexture);
                 el.appendChild(floor);
-                el.appendChild(prefabElm);
+                floor.appendChild(prefabElm);
             }
             // enemy slots
             if (mapData[i] === 9) {
@@ -424,13 +425,11 @@ function createRooms() {
                     let triggerCheck = floorTrigger === 'T' ? true : false;
 
                     console.log(triggerCheck);
-
                     if (triggerCheck) {
                         console.log(floorTrigger, triggerCheck)
                         wall.setAttribute('triggerdiagfloor', '');
                         wall.setAttribute('glowfx', 'color:#ffde85;');
                     }
-
                     wall.setAttribute('class', 'floor');
                     wall.setAttribute('height', floorHeight);
                     wall.setAttribute('static-body', '');
@@ -445,7 +444,7 @@ function createRooms() {
                     wall.setAttribute('material', 'src:#' + wallTexture);
                     wall.setAttribute('material', 'repeat:0.5 1');
                 }
-                // Posterwall
+                // Posterwall - WIP
                 if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "1") {
                 let posterNum = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
                 wall.setAttribute('height', WALL_HEIGHT);
@@ -455,12 +454,12 @@ function createRooms() {
                 wall.setAttribute('material', 'repeat:0.5 1');
                 let poster = document.createElement('a-box');
                 let posterZ = position.z+0.5; let x = position.x; let y = position.y;
-                poster.setAttribute('width', WALL_SIZE - 1.2);
-                poster.setAttribute('height', WALL_HEIGHT - 1);
-                poster.setAttribute('depth', WALL_SIZE-0);
+                poster.setAttribute('width', WALL_SIZE);
+                poster.setAttribute('height', WALL_HEIGHT);
+                poster.setAttribute('depth', WALL_SIZE);
                 poster.setAttribute('position', x,y,posterZ);
                 poster.setAttribute('material', 'src:#' + 'poster');
-                wall.appendChild(poster);          
+                el.appendChild(poster);          
               }
                 // 1/2 height wall
                 if (mapData[i] === 2) {

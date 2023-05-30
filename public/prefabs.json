@@ -11,7 +11,8 @@
         "name":"computer",
          "id":"computer",
          "model": "./models/computer.glb",
-         "scale": 1,
+         "scale": "0.6 0.6 0.6",
+         "rotation": "0 260 0",
          "animations": []
        }
     ]
