@@ -2,7 +2,7 @@
   "enemies": [
     {
       "name": "deadcop",
-      "id": "enemy1",
+      "id": "deadcop",
       "model": "./models/deadcop.glb",
       "health": 10,
       "scale": 80,

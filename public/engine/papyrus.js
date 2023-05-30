@@ -36,7 +36,7 @@ async function loadData(currentScene) {
     await setupPlayerInfo();
     // run create scene routine
     await createRooms();
-    // await populateDiag(0);
+    await populateDiag(0);
     // testing dialogue.json UI population
     const sound = document.querySelector('[sound]');
     sound.components.sound.playSound();
@@ -139,10 +139,8 @@ function addTorch(torchColor, torchIndex) {
 
 function populateDiag(passageID, currentChar) {
     const dialogueUI = document.getElementById('dialogueID');
-
     // add button test function
     showDialogueUI();
-
     addButton(currentChar);
     let newPassage = diag.passage[passageID].text;
     let newCharName = diag.passage[passageID].char;
@@ -295,7 +293,7 @@ function createRooms() {
                 let dataLength = mapData[i].length;
                 let diagTrigger = prefabTrigger === 'T' ? true : false;
                 let triggerNum = prefabTrigger === 'T' ? mapData[i].charAt(dataLength - 1) : null;
-
+                console.log('diaglogue trigger:'+diagTrigger+'dialogueNum'+ triggerNum);
                 const prefabElm = document.createElement('a-entity');
                 const prefabElmNum = prefabs.prefabs[1];
                 console.log(prefabElmNum)
@@ -324,7 +322,7 @@ function createRooms() {
                 const enemy1 = document.createElement('a-entity');
                 const enemyNum = enemies.enemies[0];
                 console.log(enemyNum)
-                enemy1.setAttribute('enemy', 'modelPath:' + enemyNum.model + ';' +
+                enemy1.setAttribute('enemy', 'modelID:' + enemyNum.model + ';' +
                     'format:glb; animated:true;' + 'health:' + enemyNum.health +
                     'id:' + i + 'constitution:' + enemyNum.constitution + 'scale:' + enemyNum.scale);
                 enemy1.setAttribute('id', i);
@@ -445,22 +443,22 @@ function createRooms() {
                     wall.setAttribute('material', 'repeat:0.5 1');
                 }
                 // Posterwall - WIP
-                if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "1") {
-                let posterNum = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
-                wall.setAttribute('height', WALL_HEIGHT);
-                wall.setAttribute('static-body', '');
-                wall.setAttribute('position', position);
-                wall.setAttribute('material', 'src:#' + wallTexture);
-                wall.setAttribute('material', 'repeat:0.5 1');
-                let poster = document.createElement('a-box');
-                let posterZ = position.z+0.5; let x = position.x; let y = position.y;
-                poster.setAttribute('width', WALL_SIZE);
-                poster.setAttribute('height', WALL_HEIGHT);
-                poster.setAttribute('depth', WALL_SIZE);
-                poster.setAttribute('position', x,y,posterZ);
-                poster.setAttribute('material', 'src:#' + 'poster');
-                el.appendChild(poster);          
-              }
+            //     if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "1") {
+            //     let posterNum = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
+            //     wall.setAttribute('height', WALL_HEIGHT);
+            //     wall.setAttribute('static-body', '');
+            //     wall.setAttribute('position', position);
+            //     wall.setAttribute('material', 'src:#' + wallTexture);
+            //     wall.setAttribute('material', 'repeat:0.5 1');
+            //     let poster = document.createElement('a-box');
+            //     let posterZ = position.z+0.5; let x = position.x; let y = position.y;
+            //     poster.setAttribute('width', WALL_SIZE);
+            //     poster.setAttribute('height', WALL_HEIGHT);
+            //     poster.setAttribute('depth', WALL_SIZE);
+            //     poster.setAttribute('position', x,y,posterZ);
+            //     poster.setAttribute('material', 'src:#' + 'poster');
+            //     el.appendChild(poster);          
+            //   }
                 // 1/2 height wall
                 if (mapData[i] === 2) {
                     wall.setAttribute('height', WALL_HEIGHT / 2);

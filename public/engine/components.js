@@ -61,7 +61,7 @@ AFRAME.registerComponent('playerhealth', {
         el.setAttribute('value', 'Health ' + health)
     },
     updated: function () {
-        let health = getPlayerHealth;
+        let health = getPlayerHealth();
         el.setAttribute('value', 'Health ' + health)
     },
     remove: function () {
@@ -321,7 +321,7 @@ AFRAME.registerComponent('enemy', {
 
         // check if model GLB or Obj - this can probably be made into a util function and put into papyrus core
         if (format === "glb") {
-            newEnemy.setAttribute('gltf-model', modelPath);
+            newEnemy.setAttribute('gltf-model', '#'+modelID );
         } else {
             newEnemy.setAttribute('obj-model', 'obj:#' + modelID + ';' + 'mtl:#' + modelMat + ';');
         }
@@ -478,13 +478,21 @@ AFRAME.registerComponent('playermovement', {
 AFRAME.registerComponent('triggerdiagfloor', {
     schema: {
         default: '',
+        selfdestruct : {type: 'boolean', default:  false}
     },
     init: function () {
         this.el.addEventListener('click', function (evt) {
             console.log('Dialogue would trigger here TEST');
-            populateDiag(5,0)
+            populateDiag(5,0);
+            if (this.data.selfdestruct){
+                this.remove();
+            }
         })
-    }
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
 });
 
 
@@ -496,9 +504,10 @@ AFRAME.registerComponent('prefab', {
     },
     init: function () {
         const el = this.el;
-        const data = this.data;
+        let data = this.data;
         const triggerDialogue = data.triggerDialogue;
         const diaglogueNum = data.diaglogueNum;
+        console.log(triggerDialogue,diaglogueNum)
         if (triggerDialogue){
             this.el.addEventListener('click', function (evt) {
                 populateDiag(diaglogueNum,0)

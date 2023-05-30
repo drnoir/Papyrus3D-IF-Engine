@@ -2,37 +2,37 @@
   "passage": [
     {
       "char": "bobGuy",
-      "position": "0, 0, -4",
+      "position": "-1.5, 0, -4",
       "text": "Ahhh hello to you and welcome to the Papyrus 3D Demo. Come and find me in the next room. Open that door in front of you by staring at it"
     },
     {
       "char": "bobGuy",
-      "position": "0, 0, -6",
+      "position": "-1.5, 0, -6",
       "text": "Papyrus 3D is an open source game engine built with A-Frame for VR and AR for building interactive games and enviroments. This is a demo and this enviroment is currently under development."
     },
     {
       "char": "bobGuy",
-      "position": "0, 0, -4",
+      "position": "-1.5, 0, -4",
       "text": "Soon Papyrus 3D will feature a combat system and a more sophistacted interaction system for dialogue"
     },
     {
       "char": "bobGuy",
-      "position": "-1, 0, -4",
+      "position": "-1.5, 0, -4",
       "text": "Keep an eye on this demo for further developments. Hopefully soon Papyrus 3D will be ready for its beta release. "
     },
     {
       "char": "bobGuy",
-      "position": "-1, 0, -4",
+      "position": "-1.5, 0, -4",
       "text": "For now enjoy exploring this space and testing out the exsisting functionality. Type /tools/MapEditor to try out the map editor too and creating new maps "
     },
     {
       "char": "Holy Brick",
-      "position": "-1, 0, -4",
+      "position": "-1.5, 0, -4",
       "text": "I am the holy brick"
     },
     {
       "char": "Old Computer",
-      "position": "-1, 0, -4",
+      "position": "-1.5, 0, -4",
       "text": "Damn what a classic computer this is...."
     }
   ]
