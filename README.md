@@ -13,11 +13,11 @@ Multi-Platform support - Desktop, Mobile, VR / AR.
 Game build in the public folder. Currently a test game but will be replaced with a generic template you can build on.
 Soon there will be a demos folder for example games once Alpha is ready for release.
 
-## A note on GNU licensing / Licensing for any games built with  Papyrus3D
+### A note on GNU licensing / Licensing for any games built with  Papyrus3D
 All the code for this project is released under a GNU3 licence and you can read the full licence for the software in the licence file. You are free to charge for or distrubute any games you make with the Papyrus3D framework however you want but the source code of anything you release will also be GNU3. It does not allow for you to download the engine code, claim is as your own and start charging for it. Any code that is based upon the source code MUST be released under GNU3 with the same conditions. This project is already built upon A-Frame which is itself an open source project.
 
-## Donating to the Papyrus3D project
-If you appriciate the work I have put into this project for free and want to donate to it. Please donate via buymeacoffee.com/noirnerd or sponser the project on GitHub. This is a work of passion and for my own self learning but to maintain it long term and to ensure its long term maintenance it helps to get donations from people. All the source code for this project is released to the public for free and with GNU 3 licence which you can find out more about here at https://www.gnu.org/licenses/gpl-3.0.en.html
+### Donating to the Papyrus3D project
+If you appriciate the work I have put into this project for free and want to donate to it. Please donate via https://www.buymeacoffee.com/noirnerd or sponser the project on GitHub. This is a work of passion and for my own self learning but to maintain it long term and to ensure its long term maintenance it helps to get donations from people. All the source code for this project is released to the public for free and with GNU 3 licence which you can find out more about here at https://www.gnu.org/licenses/gpl-3.0.en.html
 
 ### Features
 * Component system for character loading and enemy loading
@@ -49,6 +49,7 @@ check node version with
 
 ## Install Packages 
 > npm install 
+
 to install required packages in the root directory for building from /public
 
 ## Local testing
@@ -57,14 +58,16 @@ open shell and generate key. This genearates a key for ssl for a year. To regene
 
 ## Run Local dev server
 > npm run dev
+
 to boot up local server for testing with pacakge http-server
 
 # Trigger builds
 > npm run dist
+
 To create a distrubtion build with electron (Windows, Linux, Mobile App (Android / Apple))
 Not fully tested for all build types yet. Build is of the public folder with entry point index.html (The entry point for your game)
 
-# screengrabs o currnet version
+# screengrabs of currnet version
 ![alt text](https://github.com/drnoir/Papyrus3D-IF-Engine/blob/main/screengrab.png?raw=true)
 
 ## Documentation (WIP) 
