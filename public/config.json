@@ -6,5 +6,6 @@
   "UIBackgroundTexture":null,
   "CombatDiceNumber": 20,
   "ChecksDiceNumber": 4,
-  "CombatDMGDiceNumber": 6
+  "CombatDMGDiceNumber": 6,
+  "Gun" : false
 }

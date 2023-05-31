@@ -4,7 +4,7 @@
 // Reassignable global game stare vars
 let player; let player1;
 // CONFIG CHARECTERS AND ENEMIES STORE
-let config; let chars; let enemies;
+let config; let chars; let enemies; let gun = true;
 // Diagoloue and scene metadata shit
 let diag; let sceneMetadata;
 let custumEnemyModelPaths = [];
@@ -46,6 +46,11 @@ async function loadData(currentScene) {
 async function loadConfig() {
     const res = await fetch('config.json'); config = await res.json();
     CombatDiceNumber = config.CombatDiceNumber; CombatDMGDiceNumber = config.CombatDMGDiceNumber;
+    gun = config.Gun;
+    if (gun){
+        const gunModel = document.getElementById('gun');
+        gunModel.setAttribute('visible:', true)
+    }
     console.log('combat dice num' + CombatDiceNumber, CombatDMGDiceNumber)
 }
 
@@ -158,7 +163,7 @@ function populateDiag(passageID, currentChar) {
     // add button test function
     showDialogueUI();
     const passageBtn = document.getElementById('nextPassageBtn');
-    if (passageBtn){
+    if (!passageBtn){
         addButton(currentChar);
     }
 
