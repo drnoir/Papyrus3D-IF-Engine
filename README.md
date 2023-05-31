@@ -3,12 +3,12 @@
 ##### Current Version: 0.1.1
 ![alt text](https://raw.githubusercontent.com/drnoir/Papyrus3D-IF-Engine/main/Papyrus3D.jpg)
 
-### SIMPLE OPEN SOURCE GAME ENGINE FOR VR 
-Open source game engine for generating 3D fighting games based on JSON configs.
-Edit the json files in the Game folder and then use the preview and export buttons to export your fighting game.
+### SIMPLE OPEN SOURCE WebGL GAME ENGINE / FRAMEWORK FOR VR / AR / Web
+Open source game engine for generating 3D FIrst Person Interactive Fiction games based on JSON configs.
+Edit the json files in the public folder and then use the preview and export buttons to export your game.
 Allow for customisation and export of games as a separate html / javascript bundle or an exe.
 
-Multi-Platform support - Desktop, Mobile, VR and (Possibly) AR.
+Multi-Platform support - Desktop, Mobile, VR / AR.
 
 ### Features
 * Component system for character loading in enemeies 
@@ -23,14 +23,18 @@ Multi-Platform support - Desktop, Mobile, VR and (Possibly) AR.
 
 ### Current Tech Stack / dependencies
 * Rendering / 3D - A-Frame + a-frame component libraries 
+* Electron for generating builds
 
 ## Local testing
 open shell and generate key 
 openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
 
 ## Run Local dev server
-npm start
+npm run dev
 to boot up local server for testing 
+
+# Trigger builds
+npm run dist
 
 ## Documentation (WIP) 
 (Will be added when Engine is in BETA)
