@@ -498,15 +498,14 @@ AFRAME.registerComponent('triggerdiagfloor', {
 
 AFRAME.registerComponent('prefab', {
     schema: {
-        default: '',
         triggerDialogue: { type: 'boolean', default: false},
-        diaglogueNum: {type: 'number', default: 0},
+        diagNum: {type: 'number', default: 0},
     },
     init: function () {
+        var data = this.data; 
         const el = this.el;
-        let data = this.data;
-        const triggerDialogue = data.triggerDialogue;
-        const diaglogueNum = data.diaglogueNum;
+        const triggerDialogue = this.data.triggerDialogue;
+        const diaglogueNum = this.data.diagNum;
         console.log(triggerDialogue,diaglogueNum)
         if (triggerDialogue){
             this.el.addEventListener('click', function (evt) {
@@ -524,13 +523,12 @@ AFRAME.registerComponent('prefab', {
 
 AFRAME.registerComponent('door', {
     schema: {
-        default: '',
         locked: { type: 'boolean', default: false},
         doorLockNum: {type: 'number', default: 0},
     },
     init: function () {
         const el = this.el;
-        const data = this.data;
+       var data = this.data;
         let locked = data.locked;
         this.closeDoor = AFRAME.utils.bind(this.closeDoor, this);
 
@@ -544,7 +542,7 @@ AFRAME.registerComponent('door', {
             }
             // locked door checks
             else{
-                
+                console.log('This door is locked, Find a Key to unlock it');
             }
         })
     },

@@ -309,7 +309,7 @@ function createRooms() {
                 prefabElm.setAttribute('scale', prefabElmNum.scale);
                 prefabElm.setAttribute('rotation', prefabElmNum.rotation);
                 prefabElm.setAttribute('animation-mixer', "clip: *; loop: repeat;");
-                prefabElm.setAttribute('prefab', 'triggerDialogue:' + diagTrigger + 'diaglogueNum:' + triggerNum);
+                prefabElm.setAttribute('prefab', 'triggerDialogue:'+diagTrigger+';diagNum:'+triggerNum+';');
                 prefabElm.setAttribute('id', 'prefab'+prefabElmNum.ID);
 
                 const floor = document.createElement('a-box');
@@ -370,7 +370,7 @@ function createRooms() {
                 // create component for exit  
                 wall.setAttribute('exit', '');
                 wall.setAttribute('material', 'src:#' + exitTexture);
-                wall.setAttribute('color', 'green');
+                // wall.setAttribute('color', 'green');
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
                 floor.setAttribute('width', WALL_SIZE);
