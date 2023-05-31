@@ -126,6 +126,22 @@ function addChar(charID) {
     return char;
 }
 
+//Add chareceter to scene function 
+function addEnemy(enemyID) {
+    console.log(enemies.enemies[enemyID].id, enemies.enemies[enemyID].name);
+    let modelRef = enemies.enemies[enemyID].id;
+    let modelID = '#' + modelRef;
+    console.log(modelRef);
+    let enemy = document.createElement('a-entity');
+    enemy.setAttribute('id', chars.characters[charID].name);
+    enemy.setAttribute('name', chars.characters[charID].name);
+    enemy.setAttribute('gltf-model', modelID);
+    enemy.setAttribute('scale', "1 1 1");
+    enemy.setAttribute('animation-mixer', "clip: *; loop: repeat;");
+    return enemy;
+}
+
+
 // Add a torch to geometry 
 function addTorch(torchColor, torchIndex) {
     let torch = document.createElement('a-box');
@@ -141,7 +157,11 @@ function populateDiag(passageID, currentChar) {
     const dialogueUI = document.getElementById('dialogueID');
     // add button test function
     showDialogueUI();
-    addButton(currentChar);
+    const passageBtn = document.getElementById('nextPassageBtn');
+    if (passageBtn){
+        addButton(currentChar);
+    }
+
     let newPassage = diag.passage[passageID].text;
     let newCharName = diag.passage[passageID].char;
     currentDiagID = passageID;
@@ -149,6 +169,7 @@ function populateDiag(passageID, currentChar) {
     dialogueUI.setAttribute('text', 'width:' + 3, 4);
     dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
 }
+
 // make glow component show on specified char indicating char speaking
 function makeCharActive(charID) {
     const charRef = document.getElementById(charID);
