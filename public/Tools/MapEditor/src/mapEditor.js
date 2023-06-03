@@ -1,9 +1,10 @@
 // map editor js - main js scrupt for the map editor for creating maps
 
 // global map editor vars 
-let sceneMetadata;
-let textures;
-let mapTemplate = [];
+let sceneMetadata;let textures; let mapTemplate = [];
+// prefabs are represented just by dummy models I think is best?
+
+let prefabNew = '71T1';
 let templateSize = 25;
 let templateWalled = true;
 let chars;
@@ -26,7 +27,8 @@ let custumHeightY =1;
 let currentEntityCustom=0;
 
 // possible options - wall, door, enemies
-let paintMode = ['wall','enemies', 'door', 'delete', 'height' ];
+let paintMode = ['wall','enemies', 'door', 'delete', 'height', 'prefabs']; 
+let currentPrefab = 0; const prefabs = [1,2,3,4,5,6,7,8,9,10];
 let currentPaintMode =  paintMode[0];
 let deleteMode =false;
 
@@ -43,7 +45,6 @@ downloadBtn.addEventListener('mousedown', (event) => {
 function clearScene(){
     const el = document.getElementById('room');
     el.parentNode.removeChild(el);
-
 }
 
 AFRAME.registerComponent('editor-listener', {
@@ -94,18 +95,41 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('height', floorHeight);
                     el.setAttribute('static-body', '');
                     el.setAttribute('material', 'src:#' + floorTexture);
-                }
+                } 
+                else if (currentEntity === 7 && currentPaintMode === "prefab" ) {
+                    // prefabs - 71T6 7:type prefav 1 number prefav T trigger flag 6 number dialog to trigger
+                    // setup dummy box model with a text number on it 
+                      const prefabBox = document.createElement('a-box');
+                      const prefabElmNum = prefabs[currentPrefab];
+                      prefabBox.setAttribute('text:', 'value'+prefabElmNum);
+                      let triggerCheck = triggerPrefab ? 'T' : null;
+                      
+                      // create string for referencing prefab info with associated trigger and diag ref 
+                      prefabNew = 7+prefabElmNum+triggerCheck+DiagTriggerNum;;
+                      console.log(prefabNew);
+      
+                      el.setAttribute('class', 'floor');
+                      el.setAttribute('height', floorHeight);
+                      el.setAttribute('static-body', '');
+                      el.setAttribute('material', 'src:#' + floorTexture);
+                      el.appendChild(prefabBox);
+                     // set up different rotation presets?
+                  //    prefabBox.setAttribute('rotation', prefabElmNum.rotation);
+                  }
                 else {
                     el.object3D.position.y = 0;
                     el.setAttribute('height', WALL_HEIGHT / 20);
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
-                // update the map and show new element
-                updateMap(index, !heightMode ? currentEntity : currentEntityCustom);
+    
+                if (currentPaintMode === "prefab"){
+                    updateMap(index, prefabNew );
+                    }else{
+                    updateMap(index, !heightMode ? currentEntity : currentEntityCustom);
+                    }
             }
         });
     },
-
 });
 
 
