@@ -141,6 +141,7 @@ function addEnemy(enemyID) {
     enemy.setAttribute('name', enemies.enemies[enemyID].name);
     enemy.setAttribute('gltf-model', modelID);
     enemy.setAttribute('scale', "0.05 0.05 0.05");
+    enemy.setAttribute('enemy', '');
     enemy.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     return enemy;
 }

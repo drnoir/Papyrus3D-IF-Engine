@@ -1,8 +1,8 @@
 {
   "enemies": [
     {
-      "name": "zombie",
-      "id": "zombie",
+      "name": "ant",
+      "id": "ant",
       "model": "./models/reds/red_01.glb",
       "health": 10,
       "scale": 2,

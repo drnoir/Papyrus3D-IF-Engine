@@ -538,6 +538,8 @@ AFRAME.registerComponent('door', {
             let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;let newX = x-1;
             console.log(x,y,z, newX);
             el.setAttribute('animation', "property: position; to:"+newX+y+z+"; loop:  false; dur: 5000");
+            let doorAudio = document.querySelector("#dooropen");
+            doorAudio.play();
             this.closeDoor;
             }
             // locked door checks
