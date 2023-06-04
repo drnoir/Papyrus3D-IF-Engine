@@ -137,10 +137,10 @@ function addEnemy(enemyID) {
     let modelID = '#' + modelRef;
     console.log(modelRef);
     let enemy = document.createElement('a-entity');
-    enemy.setAttribute('id', chars.characters[charID].name);
-    enemy.setAttribute('name', chars.characters[charID].name);
+    enemy.setAttribute('id', enemies.enemies[enemyID].name);
+    enemy.setAttribute('name', enemies.enemies[enemyID].name);
     enemy.setAttribute('gltf-model', modelID);
-    enemy.setAttribute('scale', "1 1 1");
+    enemy.setAttribute('scale', "0.05 0.05 0.05");
     enemy.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     return enemy;
 }
@@ -286,28 +286,33 @@ function createRooms() {
         el.appendChild(ceil);
     } else {
         // scene data 
+        const newRoom = document.createElement('a-entity');
+        newRoom.setAttribute('id', 'room');
+        scene.appendChild(newRoom);
         const enviroment = document.createElement('a-entity');
-        let playArea = 50; // test val
-        enviroment.setAttribute('environment', "preset: threetowers; ground:flat; playArea:50;");
-        mapSource = createOutdoorFloor(playArea);
-        el.appendChild(enviroment);
+        console.log('Mapsource pre loop outdoor'+mapSource);
         for (let x = 0; x < mapSource.height; x++) {
             for (let y = 0; y < mapSource.width; y++) {
-                const i = (y * mapSource.width) + x;
-                const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(WALL_HEIGHT / 2)} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+                const i = (y * mapSource.height) + x;
+                const floorPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
                 // flat floor for outdoor
                 if (mapSource[i] === 0) {
-                    wall = document.createElement('a-box');
-                    wall.setAttribute('width', WALL_SIZE);
-                    wall.setAttribute('height', WALL_HEIGHT);
-                    wall.setAttribute('depth', WALL_SIZE);
-                    wall.setAttribute('position', position);
-                    wall.setAttribute('material', 'src:#' + wallTexture);
-                    // console.log(el, wall'
-                    enviroment.appendChild(wall);
+                    console.log('loop', mapSource[i])
+                    const floor = document.createElement('a-box');
+                    floor.setAttribute('height', WALL_HEIGHT / 20);
+                    floor.setAttribute('width', WALL_SIZE);
+                    floor.setAttribute('depth', WALL_SIZE);
+                    floor.setAttribute('static-body', '');
+                    floor.setAttribute('position', floorPos );
+                    // wall.setAttribute('load-texture', '');
+                    floor.setAttribute('editor-listener', '');
+                    floor.setAttribute('material', 'src:#' + floorTexture);
+                    newRoom.appendChild(floor);
                 }
             }
         }
+        enviroment.setAttribute('environment', "preset: arches; ground:hills; groundYScale:1; playArea:300;  dressingAmount: 10; dressingVariance:1 2 1; shadow:true;");
+        newRoom.appendChild(enviroment);
     }
     // LOOP to map geometry 
     for (let x = 0; x < mapSource.height; x++) {
@@ -333,7 +338,6 @@ function createRooms() {
                 floor.setAttribute('depth', WALL_SIZE);
                 floor.setAttribute('static-body', '');
                 floor.setAttribute('position', floorPos);
-                // wall.setAttribute('load-texture', '');
                 floor.setAttribute('editor-listener', '');
                 floor.setAttribute('material', 'src:#' + floorTexture);
                 el.appendChild(floor);
@@ -353,14 +357,12 @@ function createRooms() {
                 const prefabElm = document.createElement('a-entity');
                 const prefabElmNum = prefabs.prefabs[1];
                 console.log(prefabElmNum)
-
                 prefabElm.setAttribute('gltf-model', '#' + prefabElmNum.id);
                 prefabElm.setAttribute('scale', prefabElmNum.scale);
                 prefabElm.setAttribute('rotation', prefabElmNum.rotation);
                 prefabElm.setAttribute('animation-mixer', "clip: *; loop: repeat;");
                 prefabElm.setAttribute('prefab', 'triggerDialogue:' + diagTrigger + ';diagNum:' + triggerNum + ';');
                 prefabElm.setAttribute('id', 'prefab' + prefabElmNum.ID);
-
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
                 floor.setAttribute('width', WALL_SIZE);
@@ -375,28 +377,26 @@ function createRooms() {
             }
             // enemy slots
             if (mapData[i] === 9) {
-                const enemy1 = document.createElement('a-entity');
-                const enemyNum = enemies.enemies[0];
-                console.log(enemyNum)
-                enemy1.setAttribute('enemy', 'modelID:' + enemyNum.model + ';' +
-                    'format:glb; animated:true;' + 'health:' + enemyNum.health +
-                    'id:' + i + 'constitution:' + enemyNum.constitution + 'scale:' + enemyNum.scale);
+                let enemy1 = addEnemy(0);
+                console.log('char ran and char is' +  enemy1)
                 enemy1.setAttribute('id', i);
-                enemy1.setAttribute('class', enemyNum.name);
                 enemy1.setAttribute('status', 'alive');
-                // this is for handling enemy death animation
                 enemy1.setAttribute('animation__001', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
+                enemy1.setAttribute('position', charPos);
+                enemy1.setAttribute('static-body', '');
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
+                enemy1.setAttribute('enemy', 'modelID:' +  enemy1.model + ';' +
+                    'format:glb; animated:true;' + 'health:' +  enemy1.health +
+                    'id:' + i + 'constitution:' +  enemy1.constitution);
                 floor.setAttribute('width', WALL_SIZE);
                 floor.setAttribute('depth', WALL_SIZE);
                 floor.setAttribute('static-body', '');
                 floor.setAttribute('position', floorPos);
-                // wall.setAttribute('load-texture', '');
                 floor.setAttribute('editor-listener', '');
                 floor.setAttribute('material', 'src:#' + floorTexture);
                 el.appendChild(floor);
-                floor.appendChild(enemy1);
+                el.appendChild(enemy1);
             }
             //  water
             if (mapData[i] === 6) {
@@ -476,7 +476,6 @@ function createRooms() {
                     let floorHeight = mapData[i].charAt(1) && mapData[i].charAt(2) ? floorHeight1 + floorHeight2 : floorHeight1;
                     let floorTrigger = floorHeight > 9 ? mapData[i].charAt(3) : mapData[i].charAt(2);
                     let triggerCheck = floorTrigger === 'T' ? true : false;
-
                     console.log(triggerCheck);
                     if (triggerCheck) {
                         console.log(floorTrigger, triggerCheck)
@@ -536,7 +535,6 @@ function createRooms() {
                 if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "4" && mapData[i].charAt(1) === "_") {
                     let doorNum2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
                     let doorNum = doorNum2;
-
                     wall.setAttribute('id', 'door');
                     // door locked set num 
                     wall.setAttribute('height', WALL_HEIGHT);
@@ -680,10 +678,10 @@ function clearScene() {
     const el = document.getElementById('room');
     const scene = document.querySelector('a-scene');
     el.parentNode.removeChild(el);
-    // ADD ENTITY BACK
-    const newRoom = document.createElement('a-entity');
-    newRoom.setAttribute('id', 'room');
-    scene.appendChild(newRoom)
+    // // ADD ENTITY BACK
+    // const newRoom = document.createElement('a-entity');
+    // newRoom.setAttribute('id', 'room');
+    // scene.appendChild(newRoom)
 };
 
 // EXPORT JS 
