@@ -636,7 +636,7 @@ AFRAME.registerComponent('exit', {
         exit.setAttribute('scale', scale);
 
         this.el.addEventListener('click', function (evt) {
-           loadNewLevel(2);
+           loadNewLevel(3);
         })
 
         // textureLoader.load(src,

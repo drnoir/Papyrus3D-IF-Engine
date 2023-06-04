@@ -13,6 +13,7 @@ let saveNum = 1;
 let wallHeight = 5;
 let heightY = 2.5
 let currentEntity= 1;
+let custumHeightString = '01'
 
 // textures
 let wallTexture;
@@ -90,27 +91,31 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
                 else if (currentEntity === 0 && !deleteMode && heightMode) {
+                   
+                    custumHeightString = '0'+currentEntityCustom.toString();;
+                      
                     let floorHeight = custumHeightY;
                     el.setAttribute('class', 'floor');
                     el.setAttribute('height', floorHeight);
                     el.setAttribute('static-body', '');
                     el.setAttribute('material', 'src:#' + floorTexture);
                 } 
-                else if (currentEntity === 7 && currentPaintMode === "prefab" ) {
+                else if (currentEntity === 5  && !deleteMode && !heightMode) {
                     // prefabs - 71T6 7:type prefav 1 number prefav T trigger flag 6 number dialog to trigger
                     // setup dummy box model with a text number on it 
-                      const prefabBox = document.createElement('a-box');
-                      const prefabElmNum = prefabs[currentPrefab];
+                      let prefabBox = document.createElement('a-box');
+                      let prefabElmNum = prefabs[currentPrefab];
+                      console.log('prefab num'+prefabElmNum )
                       prefabBox.setAttribute('text:', 'value'+prefabElmNum);
+                      let triggerPrefab = true;  // test val
                       let triggerCheck = triggerPrefab ? 'T' : null;
                       
                       // create string for referencing prefab info with associated trigger and diag ref 
-                      prefabNew = 7+prefabElmNum+triggerCheck+DiagTriggerNum;;
-                      console.log(prefabNew);
+                      prefabNew = 7+prefabElmNum+triggerCheck+DiagTriggerNum.toString();
+                      console.log('prefab string now'+prefabNew);
       
                       el.setAttribute('class', 'floor');
                       el.setAttribute('height', floorHeight);
-                      el.setAttribute('static-body', '');
                       el.setAttribute('material', 'src:#' + floorTexture);
                       el.appendChild(prefabBox);
                      // set up different rotation presets?
@@ -121,13 +126,12 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('height', WALL_HEIGHT / 20);
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
-    
-                if (currentPaintMode === "prefab"){
-                    updateMap(index, prefabNew );
-                    }else{
-                    updateMap(index, !heightMode ? currentEntity : currentEntityCustom);
-                    }
             }
+            if (currentEntity === 5 ){
+                updateMap(index, prefabNew );
+                }else{
+                updateMap(index, !heightMode ? currentEntity : custumHeightString);
+                }
         });
     },
 });
@@ -137,7 +141,7 @@ AFRAME.registerComponent('editor-listener', {
 function updateMap(indexToReplace, mapNumType) {
     console.log('update map index'+indexToReplace, mapNumType)
     mapTemplate.splice(indexToReplace, 1, mapNumType);
-    console.log('map arr is now' + mapTemplate)
+    console.log('map arr is now' + mapTemplate, mapNumType+'replaced'+indexToReplace);
 }
 
 AFRAME.registerComponent('map', {
@@ -394,6 +398,12 @@ function allHeightSwitch(currentEntity){
         heightY = 0;
         console.log(wallHeight);
     }
+    // prefabs
+    else if (currentEntity == 5) {
+        console.log("current entity matched"+currentEntity);
+        wallHeight = 0;
+        console.log(wallHeight);
+    }
     else{
         wallHeight = 5;
     }
@@ -415,6 +425,12 @@ function switchPaintMode(currentPaintMode){
         enemyTitle.setAttribute('hidden', '');
         wallHeight = 2.5;
         heightY = 1;
+    }
+    if (currentPaintMode === "prefabs"){
+        enemyTypeSelect.setAttribute('hidden', '');
+        enemyTitle.setAttribute('hidden', '');
+        wallHeight = 0;
+        heightY = 0;
     }
 }
 

@@ -1,5 +1,5 @@
 // main js 
-// ENGINE CODE 
+// PAPYRUS 3D ENGINE CODE 
 
 // Reassignable global game stare vars
 let player; let player1;
@@ -21,7 +21,6 @@ let CombatDMGDiceNumber = 6;
 const scene = document.querySelector('a-scene'); const assets = document.querySelector('a-assets');
 
 async function loadData(currentScene) {
-    //game vars
     //config and diagloue loading
     await loadPlayer();
     await loadTextures(currentScene);
@@ -47,7 +46,7 @@ async function loadConfig() {
     const res = await fetch('config.json'); config = await res.json();
     CombatDiceNumber = config.CombatDiceNumber; CombatDMGDiceNumber = config.CombatDMGDiceNumber;
     gun = config.Gun;
-    if (gun){
+    if (gun) {
         const gunModel = document.getElementById('gun');
         gunModel.setAttribute('visible:', true)
     }
@@ -146,7 +145,6 @@ function addEnemy(enemyID) {
     return enemy;
 }
 
-
 // Add a torch to geometry 
 function addTorch(torchColor, torchIndex) {
     let torch = document.createElement('a-box');
@@ -163,7 +161,7 @@ function populateDiag(passageID, currentChar) {
     // add button test function
     showDialogueUI();
     const passageBtn = document.getElementById('nextPassageBtn');
-    if (!passageBtn){
+    if (!passageBtn) {
         addButton(currentChar);
     }
 
@@ -193,17 +191,18 @@ function nextScene() {
         makeCharActive(currentChar);
         // hide after certain time
         setTimeout(hideDialogueUI, 10000);
-
     } else {
         // reset for now
         currentDiagID = 0;
     }
 }
 
-async function loadNewLevel(mapToLoad){
+async function loadNewLevel(mapToLoad) {
     await clearScene();
-    await loadMap(mapToLoad);
     await loadSceneMetaData(mapToLoad);
+    if (sceneMetadata.roomType === "Indoor") {
+        await loadMap(mapToLoad);
+    }
     await createRooms();
 }
 
@@ -285,6 +284,30 @@ function createRooms() {
         ceil.setAttribute('scale', '0.2 0.2 0.2');
         ceil.setAttribute('material', 'src: #grunge; repeat: 10 10');
         el.appendChild(ceil);
+    } else {
+        // scene data 
+        const enviroment = document.createElement('a-entity');
+        let playArea = 50; // test val
+        enviroment.setAttribute('environment', "preset: threetowers; ground:flat; playArea:50;");
+        mapSource = createOutdoorFloor(playArea);
+        el.appendChild(enviroment);
+        for (let x = 0; x < mapSource.height; x++) {
+            for (let y = 0; y < mapSource.width; y++) {
+                const i = (y * mapSource.width) + x;
+                const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(WALL_HEIGHT / 2)} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+                // flat floor for outdoor
+                if (mapSource[i] === 0) {
+                    wall = document.createElement('a-box');
+                    wall.setAttribute('width', WALL_SIZE);
+                    wall.setAttribute('height', WALL_HEIGHT);
+                    wall.setAttribute('depth', WALL_SIZE);
+                    wall.setAttribute('position', position);
+                    wall.setAttribute('material', 'src:#' + wallTexture);
+                    // console.log(el, wall'
+                    enviroment.appendChild(wall);
+                }
+            }
+        }
     }
     // LOOP to map geometry 
     for (let x = 0; x < mapSource.height; x++) {
@@ -326,17 +349,17 @@ function createRooms() {
                 let dataLength = mapData[i].length;
                 let diagTrigger = prefabTrigger === 'T' ? true : false;
                 let triggerNum = prefabTrigger === 'T' ? mapData[i].charAt(dataLength - 1) : null;
-                console.log('diaglogue trigger:'+diagTrigger+'dialogueNum'+ triggerNum);
+                console.log('diaglogue trigger:' + diagTrigger + 'dialogueNum' + triggerNum);
                 const prefabElm = document.createElement('a-entity');
                 const prefabElmNum = prefabs.prefabs[1];
                 console.log(prefabElmNum)
-               
-                prefabElm.setAttribute('gltf-model', '#'+prefabElmNum.id);
+
+                prefabElm.setAttribute('gltf-model', '#' + prefabElmNum.id);
                 prefabElm.setAttribute('scale', prefabElmNum.scale);
                 prefabElm.setAttribute('rotation', prefabElmNum.rotation);
                 prefabElm.setAttribute('animation-mixer', "clip: *; loop: repeat;");
-                prefabElm.setAttribute('prefab', 'triggerDialogue:'+diagTrigger+';diagNum:'+triggerNum+';');
-                prefabElm.setAttribute('id', 'prefab'+prefabElmNum.ID);
+                prefabElm.setAttribute('prefab', 'triggerDialogue:' + diagTrigger + ';diagNum:' + triggerNum + ';');
+                prefabElm.setAttribute('id', 'prefab' + prefabElmNum.ID);
 
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
@@ -409,7 +432,6 @@ function createRooms() {
                 floor.setAttribute('playermovement', '');
                 el.appendChild(floor);
             }
-
             // add torch / light
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "t") {
                 console.log("its a torch!")
@@ -475,23 +497,6 @@ function createRooms() {
                     wall.setAttribute('material', 'src:#' + wallTexture);
                     wall.setAttribute('material', 'repeat:0.5 1');
                 }
-                // Posterwall - WIP
-            //     if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "1") {
-            //     let posterNum = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
-            //     wall.setAttribute('height', WALL_HEIGHT);
-            //     wall.setAttribute('static-body', '');
-            //     wall.setAttribute('position', position);
-            //     wall.setAttribute('material', 'src:#' + wallTexture);
-            //     wall.setAttribute('material', 'repeat:0.5 1');
-            //     let poster = document.createElement('a-box');
-            //     let posterZ = position.z+0.5; let x = position.x; let y = position.y;
-            //     poster.setAttribute('width', WALL_SIZE);
-            //     poster.setAttribute('height', WALL_HEIGHT);
-            //     poster.setAttribute('depth', WALL_SIZE);
-            //     poster.setAttribute('position', x,y,posterZ);
-            //     poster.setAttribute('material', 'src:#' + 'poster');
-            //     el.appendChild(poster);          
-            //   }
                 // 1/2 height wall
                 if (mapData[i] === 2) {
                     wall.setAttribute('height', WALL_HEIGHT / 2);
@@ -538,7 +543,6 @@ function createRooms() {
                     wall.setAttribute('door', 'doorLockNum:' + doorNum);
                     wall.setAttribute('locked', 'true');
                     wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
-
                     const floor = document.createElement('a-box');
                     floor.setAttribute('height', WALL_HEIGHT / 20);
                     floor.setAttribute('width', WALL_SIZE);
@@ -564,6 +568,14 @@ function createRooms() {
 //     document.querySelector('#mapUI').appendChild(playerMap)
 // }
 
+function createOutdoorFloor(floorNum) {
+    let floorPanels = [];
+    for (var i = 0; i < floorNum; i++) {
+        floorPanels.push(0);
+    }
+    console.log(floorPanels)
+    return floorPanels;
+}
 
 // COMBAT SYSTEM
 // MELEE ATTACK PLAYER 

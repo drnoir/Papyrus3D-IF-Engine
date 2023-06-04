@@ -1,25 +1,9 @@
 {
   "passage": [
     {
-      "char": "bobGuy",
+      "char": "Tree",
       "position": "0, 0, -4",
       "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et varius libero, vel fermentum nulla. Pellentesque gravida nibh eu dui molestie eleifend. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque varius lacus elit, a dignissim elit scelerisque et. Suspendisse turpis urna, vulputate at ligula sit amet, dignissim varius mauris. Nulla hendrerit elit ultrices, scelerisque enim ut, malesuada ligula. Nulla rhoncus luctus sapien vitae porta. Morbi tincidunt mi eget ligula hendrerit, dignissim feugiat mi eleifend."
-    },
-    {
-      "char": "bobGuy",
-      "position": "0, 0, -6",
-      "moveToCam": "2",
-      "text": "Suspendisse quis tincidunt tellus. Nullam est ligula, auctor et purus in, viverra congue augue. Donec erat dolor, venenatis eget nulla ut, eleifend dapibus arcu. Fusce imperdiet turpis sed enim auctor congue. Nulla non odio euismod, tincidunt urna ut, maximus nisl. Curabitur ornare tellus non augue convallis aliquam. Sed ultricies felis vel orci dapibus pellentesque. Integer ultrices quam a odio eleifend pretium. Aliquam nec leo iaculis, auctor nisl ut, facilisis eros. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus"
-    },
-    {
-      "char": "bobGuy",
-      "position": "0, 0, -4",
-      "text": "Ahh hello Mr Smith"
-    },
-    {
-      "char": "bobGuy",
-      "position": "-1, 0, -4",
-      "text": "What a weird name!"
     }
   ]
 }
