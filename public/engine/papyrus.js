@@ -6,7 +6,7 @@ let player; let player1;
 // CONFIG CHARECTERS AND ENEMIES STORE
 let config; let chars; let enemies; let gun = true;
 // Diagoloue and scene metadata shit
-let diag; let sceneMetadata;
+let diag; let sceneMetadata; let interactions;
 let custumEnemyModelPaths = [];
 let lockedDoors = [];
 // STORE TEXTURE INFO
@@ -29,6 +29,7 @@ async function loadData(currentScene) {
     await loadEnemies();
     await loadPrefabs();
     await loadDiag(1);
+    await loadInteractions(1);
     //scene loading / aFrame loading
     await loadMap(currentScene);
     await loadSceneMetaData(currentScene);
@@ -70,6 +71,13 @@ async function loadDiag(sceneToLoad) {
     console.log(diag);
 }
 
+async function loadInteractions(sceneToLoad) {
+    let fetchURL = './scenes/scene' + sceneToLoad + '/interactions.json';
+    const res = await fetch(fetchURL)
+    interactions = await res.json();
+    console.log(interactions);
+}
+
 async function loadEnemies() {
     const res = await fetch('enemies.json')
     enemies = await res.json();
@@ -80,7 +88,6 @@ async function loadPrefabs() {
     prefabs = await res.json();
     console.log(prefabs);
 }
-
 
 async function loadMap(mapToLoad) {
     let fetchURL = './scenes/scene' + mapToLoad + '/map.json';
@@ -166,19 +173,45 @@ function populateDiag(passageID, currentChar) {
         addButton(currentChar);
     }
 
+    const choicesCheck = diag.passage[passageID].choices;
+    console.log(choicesCheck);
+    if (choicesCheck){
+    createChoiceButtons(choicesCheck.length)
+    }
+
     let newPassage = diag.passage[passageID].text;
     let newCharName = diag.passage[passageID].char;
     currentDiagID = passageID;
-    dialogueUI.setAttribute('text', 'wrapCount:' + 80);
-    dialogueUI.setAttribute('text', 'width:' + 3, 4);
+    dialogueUI.setAttribute('text', 'wrapCount:' + 100);
+    dialogueUI.setAttribute('text', 'width:' + 3, 2);
     dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
 }
+
+function populateInteractions(interactionID, currentChar) {
+    const dialogueUI = document.getElementById('dialogueID');
+    // add button test function
+    showDialogueUI();
+    const passageBtn = document.getElementById('nextPassageBtn');
+    if (!passageBtn) {
+        addButton(currentChar);
+    }
+
+    let newPassage =  interactions.interactions[interactionID].text;
+    let newCharName =  interactions. interactions[interactionID].char;
+    currentDiagID = interactionID;
+    dialogueUI.setAttribute('text', 'wrapCount:' + 100);
+    dialogueUI.setAttribute('text', 'width:' + 3, 2);
+    dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
+}
+
 
 // make glow component show on specified char indicating char speaking
 function makeCharActive(charID) {
     const charRef = document.getElementById(charID);
     if (charRef.getAttribute('glowfx', 'visible:false;')) {
         charRef.setAttribute('glowfx', 'visible:true;');
+        charName = charRef.getAttribute('id')
+        console.log('check current'+ charName);
     }
 }
 
@@ -228,20 +261,54 @@ function addButton() {
         nextPassageBtn.setAttribute('depth', '0.01');
         nextPassageBtn.setAttribute('height', '0.15');
         nextPassageBtn.setAttribute('width', '0.15');
-        nextPassageBtn.setAttribute('material', 'color: red');
+        nextPassageBtn.setAttribute('material', 'color: white');
         nextPassageBtn.setAttribute('position', '0.2 1.6 0.1');
         // addtext
         let nextPassageBtnTxt = document.createElement('a-text');
         nextPassageBtnTxt.setAttribute('value', '>');
         nextPassageBtnTxt.setAttribute('height', '1');
         nextPassageBtnTxt.setAttribute('width', '3');
-        nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1');
-        let char = document.getElementById('bobGuy') // FOR TESTING PURPOSES - needs to be passed associated char
+        nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1')
+        nextPassageBtnTxt.setAttribute('material', 'color: black');
+        let char = document.getElementById('Bob') // FOR TESTING PURPOSES - needs to be passed associated char
         char.appendChild(nextPassageBtn);
         nextPassageBtn.appendChild(nextPassageBtnTxt);
 
     } else {
         console.log('Opps something went wrong - There is already a passage btn on the scene')
+    }
+}
+
+
+function createChoiceButtons(amount) {
+    // check if there is an existing button element firsst before adding a new one
+    if (!document.getElementById('choiceButtons')) {
+        let char = document.getElementById('Bob');// FOR TESTING PURPOSES - needs to be passed associated char
+        let choiceButtons= document.createElement('a-entity')
+        char.appendChild(choiceButtons);
+        let initX = -0.06
+        for (let x = 0; x < choiceButtons.length; x++) {
+        let nextChoiceBtn = document.createElement('a-box')
+        nextChoiceBtn.setAttribute('id', 'choiceButton'+x);
+        nextChoiceBtn.setAttribute('cursor-listener', '');
+        nextChoiceBtn.setAttribute('depth', '0.01');
+        nextChoiceBtn.setAttribute('height', '0.15');
+        nextChoiceBtn.setAttribute('width', '0.15');
+        nextChoiceBtn.setAttribute('material', 'color: white');
+        nextChoiceBtn.setAttribute('position', initX+0.02+'1.6 0.1');
+        // addtext
+        let nextChoiceBtnTxt = document.createElement('a-text');
+        nextChoiceBtnTxt.setAttribute('value'+x);
+        nextChoiceBtnTxt.setAttribute('height', '1');
+        nextChoiceBtnTxt.setAttribute('width', '3');
+        nextChoiceBtnTxt.setAttribute('position', '0 0.015 0.1')
+        nextChoiceBtnTxt.setAttribute('material', 'color: black');
+        char.appendChild( nextChoiceBtn);
+        nextChoiceBtn.appendChild(nextChoiceBtnTxt);
+        choiceButtons.appendChild(nextChoiceBtn);
+        }
+    } else {
+        console.log('Opps something went wrong - There must already be some choice buttons on screen or the engine could not find the choices')
     }
 }
 
@@ -333,6 +400,7 @@ function createRooms() {
                 console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
                 char.setAttribute('static-body', '');
+                char.setAttribute('glowfx', 'visible:true;');
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
                 floor.setAttribute('width', WALL_SIZE);
@@ -684,4 +752,4 @@ function clearScene() {
 };
 
 // EXPORT JS 
-export { nextScene, loadNewLevel, populateDiag, clearScene, loadData, shootAt, enemyCombatAttack, getPlayerHealth };
+export { nextScene, loadNewLevel, populateDiag, populateInteractions, clearScene, loadData, shootAt, enemyCombatAttack, getPlayerHealth };

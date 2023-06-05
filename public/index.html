@@ -57,13 +57,13 @@
         <a-entity sound="src: #playerdeath" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
         <a-entity sound="src: #playerattack" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
         <a-entity sound="src: #pistolshot" autoplay="false" volume="0.4" loop="false" positional="false"></a-entity>
-        <a-entity light="type: ambient; color: #CCC;intensity: 0.2;"></a-entity>
-        <a-light type="point" color="#dd5003"  intensity='0.7' distance="5" position="-2 1 -0.2"></a-light>
+        <a-entity light="type: ambient; color: #CCC;intensity: 0.34;"></a-entity>
+        <a-light type="point" color="#dd5003"  intensity='0.75' distance="8" position="-2 1 -0.2"></a-light>
         <a-circle id="startGame" startgamebtn radius="0.5" depth="0.1" position="1 2 -0.1 " rotation="0 0 0"
             color="black"><a-text position="-0.5 0 0.2" value="Start Game"></a-text></a-circle>
         <a-entity id="playercam" position="1 1.5 2">
             <a-entity id="camera" camera look-controls>
-                <a-entity gltf-model="#gun" position="0.2 -0.15 -0.3" rotation='0 180 0' visible = 'true'>
+                <a-entity gltf-model="#gun" position="0.28 -0.15 -0.3" rotation='0 180 0' visible = 'true'>
                     <a-entity id='muzzleFX' visible="false">
                         <a-image src="#muzzle" position="0.05 0.1 0.19">
                             <a-light type="point" color="#dd5003"  intensity='0.4' distance="8" position="-2 1 -0.2"></a-light>
@@ -78,9 +78,9 @@
                     cursor="fuse: true;" material="color: white; shader: flat" position="0 0 -1"
                     geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" scale="0.1 0.1 0.1">
                 </a-entity>
-                <a-entity dialogueUI id="dialogueID" position="0 -0.45 -1" rotation="0 0 0" depth="0.01"
-                    geometry="primitive: plane; width:3; height: 0.35"
-                    material="alphaTest:0.4; opacity: 0.7; transparent:true; color:#d3d3d3" visible="false">
+                <a-entity dialogueUI id="dialogueID" position="0 -0.4 -1" rotation="0 0 0" depth="0.01"
+                    geometry="primitive: plane; width:4; height: 0.35"
+                    material="alphaTest:0.4; opacity: 0.8; transparent:true; color:#d3d3d3" visible="false">
                 </a-entity>
                 <!-- <a-text playerhealth height="0.5" width="1" position="-0.95 -0.5 -0.8" value="Health:"></a-text>
                 <a-entity id="playerFace" playerFace scale="0.012 0.012 0.012" position="1 -0.1 -0.8"></a-entity> -->

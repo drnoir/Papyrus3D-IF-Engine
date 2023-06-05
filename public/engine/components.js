@@ -3,16 +3,16 @@
 // Dependency - A-Frame / A-Frame Extras
 
 // ENGINE CORE IMPORTS
-import { nextScene, loadData,  populateDiag, shootAt, enemyCombatAttack, getPlayerHealth, clearScene, loadNewLevel } from "./papyrus.js";
+import { nextScene, loadData,  populateDiag,populateInteractions, shootAt, enemyCombatAttack, getPlayerHealth, clearScene, loadNewLevel } from "./papyrus.js";
 
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
         let lastIndex = -1;
-        const COLORS = ['red', 'green', 'blue'];
+        // const COLORS = ['red', 'green'];
         this.el.addEventListener('click', function (evt) {
-            lastIndex = (lastIndex + 1) % COLORS.length;
-            this.setAttribute('material', 'color', COLORS[lastIndex]);
+            // lastIndex = (lastIndex + 1) % COLORS.length;
+            // this.setAttribute('material', 'color', COLORS[lastIndex]);
             console.log('I was clicked at: ', evt.detail.intersection.point);
             nextScene();
         });
@@ -97,7 +97,7 @@ AFRAME.registerComponent('startgamebtn', {
 // ADD GLOW FX 
 AFRAME.registerComponent('glowfx', {
     schema: {
-        color: { type: 'color', default: 'white' },
+        color: { type: 'color', default: 'yellow' },
         visible: { type: 'boolean', default: true }
     },
     init: function () {
@@ -109,9 +109,9 @@ AFRAME.registerComponent('glowfx', {
         const aImage = document.createElement('a-image');
         aImage.setAttribute('src', '#glow');
         aImage.setAttribute('look-at', '#player');
-        aImage.setAttribute('material', 'transparent: true; opacity: 1.0; alphaTest: 0.01;');
+        aImage.setAttribute('material', 'transparent: true; opacity: 0.8; alphaTest: 0.01;');
         aImage.setAttribute('color', data.color);
-        aImage.setAttribute('position', '0 0.55 0');
+        aImage.setAttribute('position', '0 0 0');
         aImage.setAttribute('rotation', '-90 0 0');
         aImage.setAttribute('scale', '0.3 0.3 0.3');
         aImage.setAttribute('geometry', 'primitive: circle;');
@@ -500,17 +500,16 @@ AFRAME.registerComponent('triggerdiagfloor', {
 AFRAME.registerComponent('prefab', {
     schema: {
         triggerDialogue: { type: 'boolean', default: false},
-        diagNum: {type: 'number', default: 0},
+        interactionNum: {type: 'number', default: 0},
     },
     init: function () {
         var data = this.data; 
         const el = this.el;
         const triggerDialogue = this.data.triggerDialogue;
-        const diaglogueNum = this.data.diagNum;
-        console.log(triggerDialogue,diaglogueNum)
+        const interactionNum = this.data.interactionNum;
         if (triggerDialogue){
             this.el.addEventListener('click', function (evt) {
-                populateDiag(diaglogueNum,0)
+                populateInteractions(interactionNum);
             })
         }
     },

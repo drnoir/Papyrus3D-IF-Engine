@@ -1,7 +1,7 @@
 {
   "characters": [
     {
-      "name": "bobGuy",
+      "name": "Bob",
       "id": "bob",
       "model": "models/geek.glb"
     },
