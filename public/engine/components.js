@@ -3,7 +3,7 @@
 // Dependency - A-Frame / A-Frame Extras
 
 // ENGINE CORE IMPORTS
-import { nextScene, loadData,  populateDiag, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth, clearScene, loadNewLevel } from "./papyrus.js";
+import { nextScene, loadData,  populateDiag, shootAt, enemyCombatAttack, getPlayerHealth, clearScene, loadNewLevel } from "./papyrus.js";
 
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
@@ -330,54 +330,40 @@ AFRAME.registerComponent('enemy', {
         if (animated) {
             newEnemy.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
-
         newEnemy.setAttribute('rotation', rot);
         el.appendChild(newEnemy);
-
-
-        newEnemy.addEventListener('click', function (evt) {
-            let newMeleeAttack = startMeleeCombatAttack(0);
+        el.addEventListener('click', function (evt) {
+            console.log('click detect', newEnemy);
+            let newMeleeAttack = shootAt(0);
             if (newMeleeAttack > 0 && lifeStatus === 'alive') {
                 // new health is for UI , health is the enemies health
                 health = -newMeleeAttack;
                 healthBarVal = health / 10 * 3;
                 console.log('enemy health reassigned to ' + health)
                 healthBarTracker.setAttribute('width', healthBarVal);
-
-                // const playercam = document.getElementById('playercam');
-                // let playercamPos = playercam.getAttribute('position');
-                //
-                // let distanceCheck = playercam.position.x - pos.x;
-                // // if player in range -
-                // console.log('playerdistancecheck'+playercam.position.x, pos.x,distanceCheck);
-                enemyCombatAttack();
-                if (lifeStatus === 'alive'
-                    // && distanceCheck <= 50
-                ) {
-                    // attack player back - ADD RANGE CHECKS LATER
-                    enemyCombatAttack();
+                if (lifeStatus === 'alive'){
+                    let player = document.getElementById('playercam'); 
+                    let distanceToPlayerCheck = el.getAttribute("position").distanceTo(player)
+                    // move away if a wall    
+                    if (  distanceToPlayerCheck < 0.1) {
+                        console.log(distanceToPlayerCheck)
+                        enemyCombatAttack();
+                     }
                 } else {
                     lifeStatus = 'dead';
                     let deathAudio = document.querySelector("#death");
                     deathAudio.play();
                     console.log('Enemy is dead');
                     el.emit(`enemydead`, null, false);
-                    el.remove();
+                    this.remove();
                 }
             }
-            // enemy gets killed
         });
     },
-    enemyTurn: function () {
-        const el = this.el;
-    },
-
     tick: function (time, timeDelta) {
-        let data = this.data;
-        const patrol = data.patrol;
-        if (patrol){
+            this.distanceCheck();
             this.moveRandom();
-        }
+            this.moveToPlayer();
     },
     moveRandom: function () {
         const el = this.el;
@@ -385,44 +371,59 @@ AFRAME.registerComponent('enemy', {
         let currentPosition = this.el.object3D.position;
         let randomDirection = Math.floor(Math.random() * 5);
         let randomYDirection = Math.floor(Math.random() * 5);
-        let randRot = Math.floor(Math.random() * 45); let randomRotChance = Math.floor(Math.random() * 1000);
+        let randRot = Math.floor(Math.random() * 1); 
+        let randomRotChance = Math.floor(Math.random() * 1000);
         // random direction and movement
         if (randomDirection < 1) {
-            el.object3D.position.x += 0.04;
+            el.object3D.position.x += 0.01;
             el.object3D.position.z += 0.01;
-            if (randomRotChance > 950) {
+            if (randomRotChance > 950 ) {
                 el.object3D.rotation.y += randRot
             }
         };
         if (randomDirection < 2) {
-            el.object3D.position.x -= 0.04;
+            el.object3D.position.x -= 0.01;
             el.object3D.position.z -= 0.01;
             if (randomRotChance > 950) {
                 el.object3D.rotation.y -= randRot
             }
         };
         if (randomDirection > 2 && randomDirection < 3) {
-            el.object3D.position.z -= 0.03;
+            el.object3D.position.z -= 0.01;
         };
         if (randomDirection > 3 && randomDirection < 4) {
-            el.object3D.position.z += 0.03;
+            el.object3D.position.z += 0.01;
         };
+    },
+    distanceToPlayer : function (player){
+        let distanceToPlayerCheck = this.el.getAttribute("position").distanceTo(player)
+        // move away if a wall    
+        if (  distanceToPlayerCheck   < 0.3) {
+            enemyCombatAttack();
+         }
+    },
+    distanceCheck : function (dt){
+        const floor = document.querySelector('a-box');
+        let distanceToWall = this.el.getAttribute("position").distanceTo(floor && !floor.className==='floor')
+        // move away if a wall    
+        if ( distanceToWall < 0.5) {
+                let floorPos = floor.getAttribute(position);
+                let x = floorPos.x; let z = floorPos.z;
+                el.object3D.position.x-el.object3D.position.x-x;
+                el.object3D.position.x-el.object3D.position.z-z;
+            }
     },
     moveToPlayer: function (t,dt){
         if (!this.chase){
-             const el = this.el;
-            var target = document.getElementById('playercam'); console.log(target.object3D.position);
+            const el = this.el;
+            var target = document.getElementById('playercam'); 
             var vec3 = new THREE.Vector3();
-            var currentPosition = el.getAttribute("position"); console.log(currentPosition);
-
+            var currentPosition = el.getAttribute("position"); 
             vec3 = this.el.object3D.worldToLocal(target.object3D.position.clone());
-            var  distance = dt*this.data.speed / 1000;      
-                var camFromOrca = currentPosition.distanceTo( target.object3D.position );
-                var obj = this.el.object3D;
-            if (camFromOrca > 1) {
-                this.el.setAttribute("position", target.object3D.position )
-                // sync
-                // this.el.components["dynamic-body"].syncToPhysics();
+           var camFromOrca = currentPosition.distanceTo( target.object3D.position);
+            if (camFromOrca < 3) {
+                this.el.object3D.position.x=this.el.object3D.position.x-target.object3D.position.x;
+                this.el.object3D.position.z=this.el.object3D.position.z-target.object3D.position.z;
             }
         } 
     },

@@ -140,7 +140,7 @@ function addEnemy(enemyID) {
     enemy.setAttribute('id', enemies.enemies[enemyID].name);
     enemy.setAttribute('name', enemies.enemies[enemyID].name);
     enemy.setAttribute('gltf-model', modelID);
-    enemy.setAttribute('scale', "0.05 0.05 0.05");
+    enemy.setAttribute('scale', "0.5 0.5 0.5");
     enemy.setAttribute('enemy', '');
     enemy.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     return enemy;
@@ -282,7 +282,7 @@ function createRooms() {
         ceil.setAttribute('rotation', '-90 0 0');
         ceil.setAttribute('position', '0 3.5 0');
         ceil.setAttribute('static-body', '');
-        ceil.setAttribute('scale', '0.2 0.2 0.2');
+        ceil.setAttribute('scale', '1 1 1');
         ceil.setAttribute('material', 'src: #grunge; repeat: 10 10');
         el.appendChild(ceil);
     } else {
@@ -577,13 +577,12 @@ function createOutdoorFloor(floorNum) {
 }
 
 // COMBAT SYSTEM
-// MELEE ATTACK PLAYER 
-function startMeleeCombatAttack(enemyID) {
+// SHOOT
+function shootAt(enemyID) {
     const currentEnemy = enemies.enemies[enemyID]; let enemyConst = parseInt(currentEnemy.constitution);
     let playerDicerollDmg = 0; let playerDicerollHit = RandomDiceRoll(1, CombatDiceNumber);
     console.log('player hitroll ' + playerDicerollHit)
     let attackAudio = document.querySelector("#playerattack");
-
     attackAudio.play();
     triggerMuzzleFX();
 
@@ -592,14 +591,13 @@ function startMeleeCombatAttack(enemyID) {
         hitAudio.play();
         playerDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber);
         console.log('You hit! ' + playerDicerollHit / CombatDiceNumber + 'The enemy takes' + playerDicerollDmg);
-        enemyCombatAttack();
         return playerDicerollDmg;
     } else {
         console.log(playerDicerollHit / CombatDiceNumber + 'You Missed! and caused ' + playerDicerollDmg + 'damage');
-        enemyCombatAttack();
         return playerDicerollDmg;
     }
 }
+
 
 // MELEE ENEMY ATTACK
 function enemyCombatAttack(enemyID) {
@@ -686,4 +684,4 @@ function clearScene() {
 };
 
 // EXPORT JS 
-export { nextScene, loadNewLevel, populateDiag, clearScene, loadData, startMeleeCombatAttack, enemyCombatAttack, getPlayerHealth };
+export { nextScene, loadNewLevel, populateDiag, clearScene, loadData, shootAt, enemyCombatAttack, getPlayerHealth };
