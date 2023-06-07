@@ -2,12 +2,11 @@
 // PAPYRUS 3D ENGINE CODE 
 
 // Reassignable global game stare vars
-let player; let player1;
+let player;
 // CONFIG CHARECTERS AND ENEMIES STORE
 let config; let chars; let enemies; let gun = true;
 // Diagoloue and scene metadata shit
 let diag; let sceneMetadata; let interactions;
-let custumEnemyModelPaths = [];
 let lockedDoors = [];
 // STORE TEXTURE INFO
 let textures; let prefabs;
@@ -44,12 +43,13 @@ async function loadData(currentScene) {
 
 // Load engine Config file (JSON) - As the engine relies on configurable json there can be custum values 
 async function loadConfig() {
-    const res = await fetch('config.json'); config = await res.json();
+    const res = await fetch('config.json'); 
+    config = await res.json();
     CombatDiceNumber = config.CombatDiceNumber; CombatDMGDiceNumber = config.CombatDMGDiceNumber;
     gun = config.Gun;
     if (gun) {
         const gunModel = document.getElementById('gun');
-        gunModel.setAttribute('visible:', true)
+        gunModel.setAttribute('visible:', true);
     }
     console.log('combat dice num' + CombatDiceNumber, CombatDMGDiceNumber)
 }
@@ -335,12 +335,11 @@ function createRooms() {
     let doorTexture = textures.textures[2].id; let wallTexture2 = textures.textures[3].id;
     let exitTexture = textures.textures[4].id; let waterTexture = textures.textures[5].id;
 
-    const WALL_SIZE = 0.8;
+    const WALL_SIZE = 1;
     const WALL_HEIGHT = 3.5;
     const el = document.getElementById('room')
 
     let door; let wall;
-
     if (roomType === "Indoor") {
         let ceil = document.createElement('a-box');
         let ceilArea = (mapSource.width * mapSource.height);
@@ -422,6 +421,7 @@ function createRooms() {
                 let dataLength = mapData[i].length;
                 let diagTrigger = prefabTrigger === 'T' ? true : false;
                 let triggerNum = prefabTrigger === 'T' ? mapData[i].charAt(dataLength - 1) : null;
+                
                 console.log('diaglogue trigger:' + diagTrigger + 'dialogueNum' + triggerNum);
                 const prefabElm = document.createElement('a-entity');
                 const prefabElmNum = prefabs.prefabs[1];
@@ -476,7 +476,7 @@ function createRooms() {
                 water.setAttribute('static-body', '');
                 water.setAttribute('position', floorPos);
                 water.setAttribute('rotation', '90 0 0');
-                water.setAttribute('scale', '1 4.6 2');
+                water.setAttribute('scale', '1 5.72 2');
                 water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
                 el.appendChild(water);
             }

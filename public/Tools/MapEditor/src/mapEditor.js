@@ -137,7 +137,6 @@ AFRAME.registerComponent('editor-listener', {
 });
 
 
-
 function updateMap(indexToReplace, mapNumType) {
     console.log('update map index'+indexToReplace, mapNumType)
     mapTemplate.splice(indexToReplace, 1, mapNumType);
