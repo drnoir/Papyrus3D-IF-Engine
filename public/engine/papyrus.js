@@ -5,7 +5,7 @@
 let player;
 // CONFIG CHARECTERS AND ENEMIES STORE
 let config; let chars; let enemies; let gun = true;
-// Diagoloue and scene metadata shit
+// Diagoloue and scene metadata etc
 let diag; let sceneMetadata; let interactions;
 let lockedDoors = [];
 // STORE TEXTURE INFO
@@ -153,7 +153,7 @@ function addEnemy(enemyID) {
     return enemy;
 }
 
-// Add a torch to geometry 
+// Add a torch / light to geometry 
 function addTorch(torchColor, torchIndex) {
     let torch = document.createElement('a-box');
     torch.setAttribute('id', torch + [torchIndex]);
@@ -280,14 +280,14 @@ function addButton() {
 }
 
 
-function createChoiceButtons(amount) {
+function createChoiceButtons(amount, charID) {
     // check if there is an existing button element firsst before adding a new one
     if (!document.getElementById('choiceButtons')) {
-        let char = document.getElementById('Bob');// FOR TESTING PURPOSES - needs to be passed associated char
+        let char = document.getElementById(charID);// FOR TESTING PURPOSES - needs to be passed associated char
         let choiceButtons= document.createElement('a-entity')
         char.appendChild(choiceButtons);
         let initX = -0.06
-        for (let x = 0; x < choiceButtons.length; x++) {
+        for (let x = 0; x < amount; x++) {
         let nextChoiceBtn = document.createElement('a-box')
         nextChoiceBtn.setAttribute('id', 'choiceButton'+x);
         nextChoiceBtn.setAttribute('cursor-listener', '');
@@ -745,10 +745,6 @@ function clearScene() {
     const el = document.getElementById('room');
     const scene = document.querySelector('a-scene');
     el.parentNode.removeChild(el);
-    // // ADD ENTITY BACK
-    // const newRoom = document.createElement('a-entity');
-    // newRoom.setAttribute('id', 'room');
-    // scene.appendChild(newRoom)
 };
 
 // EXPORT JS 
