@@ -3,14 +3,14 @@
       {
         "name": "chest",
         "id": "chest",
-        "model": "./models/chest.glb",
+        "model": "./models//prefabs/chest.glb",
         "scale": 1,
         "animations": []
       },
        {
         "name":"computer",
          "id":"computer",
-         "model": "./models/computer.glb",
+         "model": "./models/prefabs/computer.glb",
          "scale": "0.6 0.6 0.6",
          "rotation": "0 275 0",
          "animations": []

@@ -40,7 +40,7 @@
             </a-entity>
         </a-entity>
         <a-entity environment ="preset: forest; ground:flat; playArea:300; dressing:none;" position="0 0 -20"></a-entity>
-        <!-- Walls (used by map-old.json.js -->)
+        <!-- Walls (used by map-old.json.js -->
         <a-entity id="room"></a-entity>
         <!-- Sky -->
         <a-sky id="sky" color="#00468b"></a-sky>
@@ -55,6 +55,7 @@
         <option value="1">Enemies</option>
         <option value="2">Door</option>
         <option value="5">Prefabs</option>
+        <option value="6">Water</option>
     </select>
     <label for="deletemode">
         <input type="checkbox" id="deletemode" name="deletemode" value="no"> Toggle DELETE MODE
@@ -62,6 +63,11 @@
     <label for="heightmode">
         <input type="checkbox" id="heightmode" name="heightmode" value="no"> Toggle HEIGHT MODE
     </label>
+    <div class="slidecontainer">
+    <label for="enemymode">
+        <input type="checkbox" id="enemymode" name="enemymode" value="no"> Toggle ENEMY MODE
+    </label>
+</div>
     <h4>Height (HEIGHTMODE)</h4>
     <div class="slidecontainer">
         <input type="range" min="1" max="20" value="1" class="slider" id="myRange">
