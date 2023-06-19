@@ -551,7 +551,7 @@ function createRooms() {
                         wall.setAttribute('triggerdiagfloor', '');
                         wall.setAttribute('glowfx', 'color:#ffde85;');
                     }
-                    wall.setAttribute('class', 'floor');
+                    wall.setAttribute('class', 'wall');
                     wall.setAttribute('height', floorHeight);
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', floorPos);
@@ -559,6 +559,7 @@ function createRooms() {
                 }
                 // full height wall
                 if (mapData[i] === 1) {
+                    wall.setAttribute('class', 'wall');
                     wall.setAttribute('height', WALL_HEIGHT);
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', position);
@@ -567,6 +568,7 @@ function createRooms() {
                 }
                 // 1/2 height wall
                 if (mapData[i] === 2) {
+                    wall.setAttribute('class', 'wall');
                     wall.setAttribute('height', WALL_HEIGHT / 2);
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', halfYposition);
@@ -574,6 +576,7 @@ function createRooms() {
                 }
                 //  1/4 height wall
                 if (mapData[i] === 3) {
+                    wall.setAttribute('class', 'wall');
                     wall.setAttribute('height', WALL_HEIGHT / 4);
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', quarterYposition);

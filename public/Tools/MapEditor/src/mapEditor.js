@@ -414,7 +414,7 @@ function allHeightSwitch(currentEntity) {
         wallHeight = 0;
         console.log(wallHeight);
     }
-        //water
+    //water
         else if (currentEntity == 6) {
             console.log("current entity matched" + currentEntity);
             wallHeight = 0;

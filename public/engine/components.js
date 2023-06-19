@@ -370,7 +370,6 @@ AFRAME.registerComponent('enemy', {
         el.setAttribute('animation-mixer', 'clip: Run; loop: repeat; ');
         let currentPosition = this.el.object3D.position;
         let randomDirection = Math.floor(Math.random() * 5);
-        let randomYDirection = Math.floor(Math.random() * 5);
         let randRot = Math.floor(Math.random() * 1); 
         let randomRotChance = Math.floor(Math.random() * 1000);
         // random direction and movement
@@ -404,7 +403,7 @@ AFRAME.registerComponent('enemy', {
     },
     distanceCheck : function (dt){
         const floor = document.querySelector('a-box');
-        let distanceToWall = this.el.getAttribute("position").distanceTo(floor && !floor.className==='floor')
+        let distanceToWall = this.el.getAttribute("position").distanceTo(floor && floor.className==='wall')
         // move away if a wall    
         if ( distanceToWall < 0.5) {
                 let floorPos = floor.getAttribute(position);
