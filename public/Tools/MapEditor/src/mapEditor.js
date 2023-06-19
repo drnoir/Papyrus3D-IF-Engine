@@ -20,6 +20,7 @@ let floorTexture;
 let doorTexture;
 let wallTexture2;
 let wallTexture3;
+let waterTexture;
 
 // custum height mode
 let heightMode = false;
@@ -105,18 +106,6 @@ AFRAME.registerComponent('editor-listener', {
                     // set up different rotation presets?
                     //    prefabBox.setAttribute('rotation', prefabElmNum.rotation);
                 }
-                else if (currentEntity === 6 && !deleteMode && !heightMode) {
-                const water = document.createElement('a-plane');
-                water.setAttribute('height', WALL_HEIGHT / 20);
-                water.setAttribute('width', WALL_SIZE);
-                water.setAttribute('depth', WALL_SIZE);
-                water.setAttribute('static-body', '');
-                water.setAttribute('position', floorPos);
-                water.setAttribute('rotation', '90 0 0');
-                water.setAttribute('scale', '1 5.72 2');
-                water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
-                el.appendChild(water);
-                }
                 else {
                     el.object3D.position.y = 0;
                     el.setAttribute('height', WALL_HEIGHT / 20);
@@ -128,12 +117,25 @@ AFRAME.registerComponent('editor-listener', {
                 console.log('enemy paint triggered')
                 const enemy1 = document.createElement('a-box');
                 enemy1.setAttribute('color', 'red');
-                enemy1.setAttribute('scale', '1 4 1');
+                enemy1.setAttribute('scale', '0.8 5 0.8');
                 enemy1.setAttribute('static-body', '');
                 el.setAttribute('height', WALL_HEIGHT / 20);
                 el.object3D.position.y = 0;
                 el.appendChild(enemy1);
             }
+            // paint water mode
+            if (currentEntity === 6 && !deleteMode && !heightMode) {
+                const water = document.createElement('a-plane');
+                // water.setAttribute('height', WALL_HEIGHT / 20);
+                // water.setAttribute('width', WALL_HEIGHT / 20);
+                // water.setAttribute('depth', WALL_HEIGHT / 20);
+                // water.setAttribute('static-body', '');
+                water.setAttribute('rotation', '90 0 0');
+                water.setAttribute('scale', '1 1 1');
+                water.object3D.position.y = 0;
+                water.setAttribute('material', 'src:#water; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
+                el.appendChild(water);
+                }
 
             if (currentEntity === 5) {
                 updateMap(index, prefabNew);
@@ -412,6 +414,12 @@ function allHeightSwitch(currentEntity) {
         wallHeight = 0;
         console.log(wallHeight);
     }
+        //water
+        else if (currentEntity == 6) {
+            console.log("current entity matched" + currentEntity);
+            wallHeight = 0;
+            console.log(wallHeight);
+        }
     // enemies
     else if (currentEntity == 9) {
         console.log("current entity matched" + currentEntity);
@@ -426,37 +434,31 @@ function allHeightSwitch(currentEntity) {
 function switchPaintMode(currentPaintMode) {
     console.log(currentPaintMode);
     const enemyTitle = document.getElementById('enemiesTitle');
-    if (currentPaintMode === "Wall") {
+    if (currentPaintMode === "walls") {
         enemyTypeSelect.setAttribute('hidden', '');
         enemyTitle.setAttribute('hidden', '');
     }
     if (currentPaintMode === "enemies") {
         console.log('current paint mode' + currentPaintMode);
         currentEntity = 9;
-        // enemyTypeSelect.removeAttribute('hidden', '');
         console.log('enemies')
         wallHeight = 0;
         heightY = 0;
-        // enemyTitle.removeAttribute('hidden', '');
-        console.log(currentEntity);
-
     }
-    if (currentPaintMode === "Door") {
+    if (currentPaintMode === "door") {
         enemyTypeSelect.setAttribute('hidden', '');
         enemyTitle.setAttribute('hidden', '');
         wallHeight = 2.5;
         heightY = 1;
     }
-    if (currentPaintMode === "Prefabs") {
+    if (currentPaintMode === "prefabs") {
         enemyTypeSelect.setAttribute('hidden', '');
         enemyTitle.setAttribute('hidden', '');
         wallHeight = 0;
         heightY = 0;
     }
-    if (currentPaintMode === "Water") {
+    if (currentPaintMode === "water") {
         currentEntity = 6;
-        enemyTypeSelect.setAttribute('hidden', '');
-        enemyTitle.setAttribute('hidden', '');
         wallHeight = 0;
         heightY = 0;
     }

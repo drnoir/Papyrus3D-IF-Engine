@@ -19,7 +19,7 @@ let CombatDMGDiceNumber = 6;
 // dialogueUI Elements Based on a-frame defaults 
 const scene = document.querySelector('a-scene'); const assets = document.querySelector('a-assets');
 
-async function loadData(currentScene) {
+async function loadData() {
     //config and diagloue loading
     await loadPlayer();
     await loadTextures(currentScene);
