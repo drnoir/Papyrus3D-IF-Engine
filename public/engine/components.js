@@ -313,7 +313,7 @@ AFRAME.registerComponent('enemy', {
         healthBarTracker.setAttribute('height', 0.2);
         healthBarTracker.setAttribute('width', 1);
         healthBarTracker.setAttribute('depth', 0.15);
-        healthBarTracker.setAttribute('position', '0 0 0.09');
+        healthBarTracker.setAttribute('position', '0 0 0');
         healthBarTracker.setAttribute('material', 'color:red');
         healthBarTracker.setAttribute('HealthBarid', id);
 

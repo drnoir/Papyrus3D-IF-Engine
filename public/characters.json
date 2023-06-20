@@ -11,9 +11,9 @@
       "model": "models/lady.glb"
     },
     {
-      "name": "ninja",
-      "id": "ninja",
-      "model": "models/bob/scene.gltf"
+      "name": "copeidle",
+      "id": "copidle",
+      "model": "models/copidle.glb"
     }
   ]
 }

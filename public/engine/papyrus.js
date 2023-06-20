@@ -170,7 +170,7 @@ function addKey(keyColor, keyIndex) {
     let color = returnKeyColor(keyColor);
     key.setAttribute('id', key + [keyIndex]);
     key.setAttribute('color' ,  color);
-    key.setAttribute('scale' , '0.4, 0.4, 0.4');
+    key.setAttribute('scale' , '0.2, 0.2, 0.2');
     return key;
 }
 
@@ -304,7 +304,7 @@ function addButton() {
 
 
 function createChoiceButtons(amount, charID) {
-    // check if there is an existing button element firsst before adding a new one
+    // check if there is an existing button element first before adding a new one
     if (!document.getElementById('choiceButtons')) {
         let char = document.getElementById(charID);// FOR TESTING PURPOSES - needs to be passed associated char
         let choiceButtons= document.createElement('a-entity')
@@ -420,7 +420,8 @@ function createRooms() {
             // char
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "h") {
                 console.log("its a char!")
-                let char = addChar(charLoopIndex);
+                let charNumber = mapData[i].charAt(5) ? String(mapData[i].charAt(4)+mapData[i].charAt(5)) :mapData[i].charAt(4); 
+                let char = addChar(charNumber-1);
                 console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
                 char.setAttribute('static-body', '');
@@ -435,7 +436,7 @@ function createRooms() {
                 floor.setAttribute('material', 'src:#' + floorTexture);
                 el.appendChild(floor);
                 el.appendChild(char);
-                charLoopIndex++;
+                // charLoopIndex++;
             }
             // prefabs
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "7") {
@@ -472,10 +473,10 @@ function createRooms() {
             // enemy slots
             if (mapData[i] === 9) {
                 let enemy1 = addEnemy(0);
-                console.log('char ran and char is' +  enemy1)
                 enemy1.setAttribute('id', i);
                 enemy1.setAttribute('status', 'alive');
-                enemy1.setAttribute('animation__001', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
+                enemy1.setAttribute('mixamo.com', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
+                enemy1.setAttribute('animation-mixer', {timeScale: 1});
                 enemy1.setAttribute('position', charPos);
                 enemy1.setAttribute('static-body', '');
                 const floor = document.createElement('a-box');
@@ -541,7 +542,7 @@ function createRooms() {
             let key= addKey( mapData[i].charAt(1) , i);
             key.setAttribute('position',  keyPosition  );
             key.setAttribute('material', 'src:#' + keyTexture );
-            
+
             const floor = document.createElement('a-box');
             floor.setAttribute('height', WALL_HEIGHT / 20);
             floor.setAttribute('width', WALL_SIZE);
