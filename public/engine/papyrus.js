@@ -164,6 +164,29 @@ function addTorch(torchColor, torchIndex) {
     return torch;
 }
 
+// Add a torch / light to geometry 
+function addKey(keyColor, keyIndex) {
+    let key= document.createElement('a-box');
+    let color = returnKeyColor(keyColor);
+    key.setAttribute('id', key + [keyIndex]);
+    key.setAttribute('color' ,  color);
+    key.setAttribute('scale' , '0.4, 0.4, 0.4');
+    return key;
+}
+
+function returnKeyColor (colorCode){
+    if (colorCode == 'B'){
+        return 'blue';
+    }
+    if (colorCode == 'Y'){
+        return 'yellow';
+    }
+    if (colorCode == 'R'){
+        return 'red';
+    }
+
+}
+
 function populateDiag(passageID, currentChar) {
     const dialogueUI = document.getElementById('dialogueID');
     // add button test function
@@ -334,6 +357,7 @@ function createRooms() {
     let wallTexture = textures.textures[0].id; let floorTexture = textures.textures[1].id;
     let doorTexture = textures.textures[2].id; let wallTexture2 = textures.textures[3].id;
     let exitTexture = textures.textures[4].id; let waterTexture = textures.textures[5].id;
+    let keyTexture =  textures.textures[6].id;
 
     const WALL_SIZE = 1;
     const WALL_HEIGHT = 3.5;
@@ -391,6 +415,7 @@ function createRooms() {
             const quarterYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const charPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const torchPosition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const keyPosition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0.4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const stairsPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(y - (mapSource.height)) * WALL_SIZE} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             // char
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "h") {
@@ -508,6 +533,26 @@ function createRooms() {
                 console.log('torch ran and char is' + torch)
                 torch.setAttribute('position', torchPosition);
                 el.appendChild(torch);
+            }
+            // add keys
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "K") {
+            console.log("its a key!")
+            // map data index 1 contains color coding b, y, r etc
+            let key= addKey( mapData[i].charAt(1) , i);
+            key.setAttribute('position',  keyPosition  );
+            key.setAttribute('material', 'src:#' + keyTexture );
+            
+            const floor = document.createElement('a-box');
+            floor.setAttribute('height', WALL_HEIGHT / 20);
+            floor.setAttribute('width', WALL_SIZE);
+            floor.setAttribute('depth', WALL_SIZE);
+            floor.setAttribute('static-body', '');
+            floor.setAttribute('position', floorPos);
+            floor.setAttribute('editor-listener', '');
+            floor.setAttribute('material', 'src:#' + floorTexture);
+            floor.setAttribute('playermovement', '');
+            el.appendChild(floor);
+            el.appendChild(key);
             }
             // add cam - UPDATE CONDITIONAL THIS IS TERRIBLE JSUT KEEPING IT FOR TESTING
             else if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "a") {
