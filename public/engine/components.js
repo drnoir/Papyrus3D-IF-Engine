@@ -362,6 +362,7 @@ AFRAME.registerComponent('enemy', {
     },
     tick: function (time, timeDelta) {
             this.distanceCheck();
+            this.distanceToPlayer();
             this.moveRandom();
             this.moveToPlayer();
     },
@@ -394,16 +395,18 @@ AFRAME.registerComponent('enemy', {
             el.object3D.position.z += 0.01;
         };
     },
-    distanceToPlayer : function (player){
-        let distanceToPlayerCheck = this.el.getAttribute("position").distanceTo(player)
+    distanceToPlayer : function (dt){
+        var target = document.getElementById('playercam'); 
+        let distanceToPlayerCheck = this.el.getAttribute("position").distanceTo(target)
         // move away if a wall    
-        if (  distanceToPlayerCheck   < 0.3) {
+        if (  distanceToPlayerCheck   < 0.1) {
+            console.log('enemy is close to player, attack!');
             enemyCombatAttack();
          }
     },
     distanceCheck : function (dt){
         const floor = document.querySelector('a-box');
-        let distanceToWall = this.el.getAttribute("position").distanceTo(floor && floor.className==='wall')
+        let distanceToWall = this.el.getAttribute("position").distanceTo(floor && floor.className==='wall' ||  floor.className==='water')
         // move away if a wall    
         if ( distanceToWall < 0.5) {
                 let floorPos = floor.getAttribute(position);
