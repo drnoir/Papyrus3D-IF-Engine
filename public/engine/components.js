@@ -316,8 +316,9 @@ AFRAME.registerComponent('enemy', {
         healthBarTracker.setAttribute('position', '0 0 0.09');
         healthBarTracker.setAttribute('material', 'color:red');
         healthBarTracker.setAttribute('HealthBarid', id);
+
         healthBar.appendChild(healthBarTracker);
-        newEnemy.appendChild(healthBar);
+        // newEnemy.appendChild(healthBar);
 
         // check if model GLB or Obj - this can probably be made into a util function and put into papyrus core
         if (format === "glb") {
@@ -332,6 +333,8 @@ AFRAME.registerComponent('enemy', {
         }
         newEnemy.setAttribute('rotation', rot);
         el.appendChild(newEnemy);
+        el.appendChild(healthBar);
+
         el.addEventListener('click', function (evt) {
             console.log('click detect', newEnemy);
             let newMeleeAttack = shootAt(0);
