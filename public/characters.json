@@ -1,18 +1,18 @@
 {
   "characters": [
     {
-      "name": "Bob",
-      "id": "bob",
+      "name": "bob",
+      "id": 1,
       "model": "models/geek.glb"
     },
     {
       "name": "lady",
-      "id": "lady",
+      "id": 2,
       "model": "models/lady.glb"
     },
     {
-      "name": "copeidle",
-      "id": "copidle",
+      "name": "copidle",
+      "id": 3,
       "model": "models/copidle.glb"
     }
   ]

@@ -6,13 +6,13 @@ let player;
 // CONFIG CHARECTERS AND ENEMIES STORE
 let config; let chars; let enemies; let gun = true;
 // Diagoloue and scene metadata etc
-let diag; let sceneMetadata; let interactions;
+let diag; let sceneMetadata; let interactions; let charDiagIDs = [];
 let lockedDoors = [];
 // STORE TEXTURE INFO
 let textures; let prefabs;
 // diaglog UI Globals / shit 
 let currentDiagID = 0; let currentScene = 1;
-let currentChar = 0; let mapSource = 0;
+let currentChar = 0; let mapSource = 0; let currentInteraction = 0; 
 // combat var defaults SIMULATED DICE - Combat system is based on D and D - INIT vals / max 
 let CombatDiceNumber = 6;
 let CombatDMGDiceNumber = 6;
@@ -35,7 +35,7 @@ async function loadData() {
     await setupPlayerInfo();
     // run create scene routine
     await createRooms();
-    await populateDiag(0);
+    await populateDiag (1,1);
     // testing dialogue.json UI population
     const sound = document.querySelector('[sound]');
     sound.components.sound.playSound();
@@ -62,6 +62,7 @@ async function loadPlayer() {
 async function loadChars() {
     const res = await fetch('characters.json')
     chars = await res.json();
+    console.log(chars);
 }
 
 async function loadDiag(sceneToLoad) {
@@ -123,17 +124,19 @@ function setupPlayerInfo() {
 }
 
 //Add chareceter to scene function 
-function addChar(charID) {
-    console.log(chars.characters[charID].id, chars.characters[charID].name);
-    let modelRef = chars.characters[charID].id;
-    let modelID = '#' + modelRef;
-    console.log(modelRef);
+function addChar(charNumber) {
+    // console.log(chars.characters[charID].id, chars.characters[charID].name);
+    let indexCharNumber = charNumber - 1;
+    console.log('char param passed'+charNumber)
+    let modelID = '#' +  chars.characters[indexCharNumber].name;
     let char = document.createElement('a-entity');
-    char.setAttribute('id', chars.characters[charID].name);
-    char.setAttribute('name', chars.characters[charID].name);
+    char.setAttribute('id', chars.characters[indexCharNumber].name);
+    char.setAttribute('name', chars.characters[indexCharNumber].name);
     char.setAttribute('gltf-model', modelID);
     char.setAttribute('scale', "1 1 1");
     char.setAttribute('animation-mixer', "clip: *; loop: repeat;");
+    charDiagIDs.push(charNumber);
+    console.log(charDiagIDs);
     return char;
 }
 
@@ -187,37 +190,35 @@ function returnKeyColor (colorCode){
 
 }
 
-function populateDiag(passageID, currentChar) {
+function populateDiag(currentDiagID, currentChar) {
     const dialogueUI = document.getElementById('dialogueID');
     // add button test function
     showDialogueUI();
-    const passageBtn = document.getElementById('nextPassageBtn');
-    if (!passageBtn) {
-        addButton(currentChar);
+
+        // const choicesCheck = diag.passage[passageID].choices;
+        // console.log(choicesCheck);
+        // if (choicesCheck){
+        // createChoiceButtons(choicesCheck.length)
+        // }
+    
+        let newPassage = diag.passage[currentChar].text;
+        let newCharName = diag.passage[currentChar].char;
+        currentDiagID = currentChar;
+        dialogueUI.setAttribute('text', 'wrapCount:' + 100);
+        dialogueUI.setAttribute('text', 'width:' + 3, 2);
+        dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
     }
 
-    const choicesCheck = diag.passage[passageID].choices;
-    console.log(choicesCheck);
-    if (choicesCheck){
-    createChoiceButtons(choicesCheck.length)
-    }
 
-    let newPassage = diag.passage[passageID].text;
-    let newCharName = diag.passage[passageID].char;
-    currentDiagID = passageID;
-    dialogueUI.setAttribute('text', 'wrapCount:' + 100);
-    dialogueUI.setAttribute('text', 'width:' + 3, 2);
-    dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
-}
 
-function populateInteractions(interactionID, currentChar) {
+function populateInteractions(interactionID, currentInteraction) {
     const dialogueUI = document.getElementById('dialogueID');
     // add button test function
     showDialogueUI();
-    const passageBtn = document.getElementById('nextPassageBtn');
-    if (!passageBtn) {
-        addButton(currentChar);
-    }
+    // const passageBtn = document.getElementById('nextPassageBtn');
+    // if (!passageBtn) {
+    //     addButton(currentInteraction);
+    // }
 
     let newPassage =  interactions.interactions[interactionID].text;
     let newCharName =  interactions. interactions[interactionID].char;
@@ -273,34 +274,34 @@ function hideDialogueUI() {
     dialogueUI.setAttribute('visible', false);
 }
 
-// show passagebtn relative to character model
-function addButton() {
-    // console.log('charID passed' + activeChar);
-    // check if there is an existing button element firsst before adding a new one
-    if (!document.getElementById('nextPassageBtn')) {
-        let nextPassageBtn = document.createElement('a-box')
-        nextPassageBtn.setAttribute('id', 'nextPassageBtn');
-        nextPassageBtn.setAttribute('cursor-listener', '');
-        nextPassageBtn.setAttribute('depth', '0.01');
-        nextPassageBtn.setAttribute('height', '0.15');
-        nextPassageBtn.setAttribute('width', '0.15');
-        nextPassageBtn.setAttribute('material', 'color: white');
-        nextPassageBtn.setAttribute('position', '0.2 1.6 0.1');
-        // addtext
-        let nextPassageBtnTxt = document.createElement('a-text');
-        nextPassageBtnTxt.setAttribute('value', '>');
-        nextPassageBtnTxt.setAttribute('height', '1');
-        nextPassageBtnTxt.setAttribute('width', '3');
-        nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1')
-        nextPassageBtnTxt.setAttribute('material', 'color: black');
-        let char = document.getElementById('Bob') // FOR TESTING PURPOSES - needs to be passed associated char
-        char.appendChild(nextPassageBtn);
-        nextPassageBtn.appendChild(nextPassageBtnTxt);
-
-    } else {
-        console.log('Opps something went wrong - There is already a passage btn on the scene')
-    }
-}
+// // show passagebtn relative to character model
+// function addButton(diagID) {
+//     // let charDiagID = diagID+1;
+//     // console.log('charID passed' + activeChar);
+//     // check if there is an existing button element firsst before adding a new one
+//     if (!document.getElementById('nextPassageBtn')) {
+//         let nextPassageBtn = document.createElement('a-box')
+//         nextPassageBtn.setAttribute('id', 'nextPassageBtn');
+//         nextPassageBtn.setAttribute('cursor-listener', '');
+//         nextPassageBtn.setAttribute('depth', '0.01');
+//         nextPassageBtn.setAttribute('height', '0.15');
+//         nextPassageBtn.setAttribute('width', '0.15');
+//         nextPassageBtn.setAttribute('material', 'color: white');
+//         nextPassageBtn.setAttribute('position', '0.2 1.6 0.1');
+//         // addtext
+//         let nextPassageBtnTxt = document.createElement('a-text');
+//         nextPassageBtnTxt.setAttribute('value', '>');
+//         nextPassageBtnTxt.setAttribute('height', '1');
+//         nextPassageBtnTxt.setAttribute('width', '3');
+//         nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1')
+//         nextPassageBtnTxt.setAttribute('material', 'color: black');
+//         let char = document.getElementById('char'+diagID) // FOR TESTING PURPOSES - needs to be passed associated char
+//         char.appendChild(nextPassageBtn);
+//         nextPassageBtn.appendChild(nextPassageBtnTxt);
+//     } else {
+//         console.log('Opps something went wrong - There is already a passage btn on the scene')
+//     }
+// }
 
 
 function createChoiceButtons(amount, charID) {
@@ -420,12 +421,14 @@ function createRooms() {
             // char
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "h") {
                 console.log("its a char!")
-                let charNumber = mapData[i].charAt(5) ? String(mapData[i].charAt(4)+mapData[i].charAt(5)) :mapData[i].charAt(4); 
-                let char = addChar(charNumber-1);
+                let charNumber = mapData[i].charAt(4) ? String(mapData[i].charAt(4)+mapData[i].charAt(5)) :mapData[i].charAt(4); 
+                console.log(mapData[i].charAt(4));
+                let char = addChar(charNumber);
                 console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
                 char.setAttribute('static-body', '');
                 char.setAttribute('glowfx', 'visible:true;');
+                char.setAttribute('character', 'charID:' + charNumber+ ';');
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
                 floor.setAttribute('width', WALL_SIZE);

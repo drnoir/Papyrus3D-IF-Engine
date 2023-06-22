@@ -21,12 +21,18 @@ If you appriciate the work I have put into this project for free and want to don
 
 ### Features
 * Component system for character loading and enemy loading
-* Basic enemy AI and Attack system (Optional) WIP
 * Map Editor WIP- basic map editor for easy creation of scenes
 * Define 3D Scenes with character components and assets
 * Create unique repayable games that the engine can generate based on easily editable JSON templates
 * Customise scenes with different colours textures, background elements etc
 * Gaze based movement system ensuring maximum multi platform support
+
+### WIP FEATURES
+* custom dialogue system for multiple chars
+* keys and unlockable doors
+* Trigger events on choices / interactions
+* interactive objects
+* Basic enemy AI and Attack system (Optional) WIP
 
 ### Possible future Features
 * torch / advanced lighting

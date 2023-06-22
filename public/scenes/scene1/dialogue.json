@@ -2,22 +2,26 @@
   "passage": [
     {
       "char": "Bob",
+      "id" : 1,
       "position": "-1.5, 0, -4",
       "text": "Hey new guy! Come and open that door, it's Bob! I'm through the next room"
     },
     {
       "char": "Bob",
+      "id" : 1,
       "position": "-1.5, 0, -6",
       "text": "So new guy guy, whatever you name is.... We got a bit of an infestation problem that needs sorting out"
     },
     {
       "char": "Bob",
+      "id" : 1,
       "position": "-1.5, 0, -4",
       "text": "Go and use your pistol to take out these goddamn huge mutant ants. Union doesn't pay me enough for this shit, and its your first day so.... ",
       "choices" : ["Yes Ok", "No Way"]
     },
     {
-      "char": "Bob",
+      "char": "Bob", 
+      "id" : 1,
       "position": "-1.5, 0, -4",
       "text": "Get blasting!"
     }

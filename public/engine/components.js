@@ -217,7 +217,8 @@ AFRAME.registerComponent('character', {
         rotation: { type: 'string', default: '0 0 0' },
         scale: { type: 'string', default: '1 1 1' },
         animated: { type: 'boolean', default: false },
-        glowOn: { type: 'boolean', default: false }
+        glowOn: { type: 'boolean', default: false },
+        charID: {type: 'number', default: 0},
     },
     init: function () {
         const data = this.data;
@@ -229,22 +230,26 @@ AFRAME.registerComponent('character', {
         let animated = data.animated;
         let glowOn = data.glowOn;
         const elScale = this.el.scale;
-        const charContainer = document.getElementById('characters');
+        // const charContainer = document.getElementById('characters');
         // create a char based on attributes
-        const newCharacter = document.createElement('a-entity');
-        newCharacter.setAttribute('position', pos);
-        newCharacter.setAttribute('glowFX', 'visible:' + glowOn);
-        newCharacter.setAttribute('gltf-model', modelPath);
-        newCharacter.setAttribute('scale', scale);
+        // const newCharacter = document.createElement('a-entity');
+        // newCharacter.setAttribute('position', pos);
+        // newCharacter.setAttribute('glowFX', 'visible:' + glowOn);
+        // newCharacter.setAttribute('gltf-model', modelPath);
+        // newCharacter.setAttribute('scale', scale);
         if (animated) {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
-        newCharacter.setAttribute('rotation', rot);
-        charContainer.appendChild(newCharacter);
+        // newCharacter.setAttribute('rotation', rot);
+        // charContainer.appendChild(newCharacter);
 
-        newCharacter.addEventListener('click', function (evt) {
-            populateDiag(1,0)
-        });
+        // const triggerCharDialogue= data.triggerDialogue;
+        const charID = data.charID;
+
+       
+        this.el.addEventListener('click', function (evt) {
+        populateDiag( charID ,0)
+        })
     },
     remove: function () {
         this.el.destroy();
