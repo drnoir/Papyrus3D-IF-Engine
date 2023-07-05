@@ -11,7 +11,7 @@ let lockedDoors = [];
 // STORE TEXTURE INFO
 let textures; let prefabs;
 // diaglog UI Globals / shit 
-let currentDiagID = 0; let currentScene = 1;
+let currentDiagID = 0; let currentScene = 1; let nextSceneToLoad = currentScene + 1;
 let currentChar = 0; let mapSource = 0; let currentInteraction = 0; 
 // combat var defaults SIMULATED DICE - Combat system is based on D and D - INIT vals / max 
 let CombatDiceNumber = 6;
@@ -30,8 +30,8 @@ async function loadData() {
     await loadDiag(1);
     await loadInteractions(1);
     //scene loading / aFrame loading
-    await loadMap(currentScene);
     await loadSceneMetaData(currentScene);
+    await loadMap(currentScene);
     await setupPlayerInfo();
     // run create scene routine
     await createRooms();
@@ -258,10 +258,15 @@ function nextScene() {
 async function loadNewLevel(mapToLoad) {
     await clearScene();
     await loadSceneMetaData(mapToLoad);
+    await loadTextures(mapToLoad);
     if (sceneMetadata.roomType === "Indoor") {
         await loadMap(mapToLoad);
     }
     await createRooms();
+    await loadDiag(mapToLoad);
+    await loadInteractions(1);
+    await populateDiag (1,1);
+    currentScene = mapToLoad;
 }
 
 function showDialogueUI() {
@@ -351,9 +356,9 @@ function gotKey(keyNum) {
 function createRooms() {
     const mapData = mapSource.data;
     let roomType = sceneMetadata.roomtype;
+    console.log(roomType)
     // char info
     const chars = mapSource.chars; const charNum = mapSource.charnumber;
-    let charLoopIndex = 0;
     // allocate textures from JSON config
     let wallTexture = textures.textures[0].id; let floorTexture = textures.textures[1].id;
     let doorTexture = textures.textures[2].id; let wallTexture2 = textures.textures[3].id;
@@ -365,7 +370,8 @@ function createRooms() {
     const el = document.getElementById('room')
 
     let door; let wall;
-    if (roomType === "Indoor") {
+    // if (roomType === "Indoor") {
+    if (el){
         let ceil = document.createElement('a-box');
         let ceilArea = (mapSource.width * mapSource.height);
         ceil.setAttribute('width', ceilArea);
@@ -376,36 +382,38 @@ function createRooms() {
         ceil.setAttribute('scale', '1 1 1');
         ceil.setAttribute('material', 'src: #grunge; repeat: 10 10');
         el.appendChild(ceil);
-    } else {
+    } 
+    // outdoor stuff - reimplement later
+    // else {
         // scene data 
-        const newRoom = document.createElement('a-entity');
-        newRoom.setAttribute('id', 'room');
-        scene.appendChild(newRoom);
-        const enviroment = document.createElement('a-entity');
-        console.log('Mapsource pre loop outdoor'+mapSource);
-        for (let x = 0; x < mapSource.height; x++) {
-            for (let y = 0; y < mapSource.width; y++) {
-                const i = (y * mapSource.height) + x;
-                const floorPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-                // flat floor for outdoor
-                if (mapSource[i] === 0) {
-                    console.log('loop', mapSource[i])
-                    const floor = document.createElement('a-box');
-                    floor.setAttribute('height', WALL_HEIGHT / 20);
-                    floor.setAttribute('width', WALL_SIZE);
-                    floor.setAttribute('depth', WALL_SIZE);
-                    floor.setAttribute('static-body', '');
-                    floor.setAttribute('position', floorPos );
-                    // wall.setAttribute('load-texture', '');
-                    floor.setAttribute('editor-listener', '');
-                    floor.setAttribute('material', 'src:#' + floorTexture);
-                    newRoom.appendChild(floor);
-                }
-            }
-        }
-        enviroment.setAttribute('environment', "preset: arches; ground:hills; groundYScale:1; playArea:300;  dressingAmount: 10; dressingVariance:1 2 1; shadow:true;");
-        newRoom.appendChild(enviroment);
-    }
+    //     const newRoom = document.createElement('a-entity');
+    //     newRoom.setAttribute('id', 'room');
+    //     scene.appendChild(newRoom);
+    //     const enviroment = document.createElement('a-entity');
+    //     console.log('Mapsource pre loop outdoor'+mapSource);
+    //     for (let x = 0; x < mapSource.height; x++) {
+    //         for (let y = 0; y < mapSource.width; y++) {
+    //             const i = (y * mapSource.height) + x;
+    //             const floorPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+    //             // flat floor for outdoor
+    //             if (mapSource[i] === 0) {
+    //                 console.log('loop', mapSource[i])
+    //                 const floor = document.createElement('a-box');
+    //                 floor.setAttribute('height', WALL_HEIGHT / 20);
+    //                 floor.setAttribute('width', WALL_SIZE);
+    //                 floor.setAttribute('depth', WALL_SIZE);
+    //                 floor.setAttribute('static-body', '');
+    //                 floor.setAttribute('position', floorPos );
+    //                 // wall.setAttribute('load-texture', '');
+    //                 floor.setAttribute('editor-listener', '');
+    //                 floor.setAttribute('material', 'src:#' + floorTexture);
+    //                 newRoom.appendChild(floor);
+    //             }
+    //         }
+    //     }
+    //     enviroment.setAttribute('environment', "preset: arches; ground:hills; groundYScale:1; playArea:300;  dressingAmount: 10; dressingVariance:1 2 1; shadow:true;");
+    //     newRoom.appendChild(enviroment);
+    // }
     // LOOP to map geometry 
     for (let x = 0; x < mapSource.height; x++) {
         for (let y = 0; y < mapSource.width; y++) {
@@ -515,7 +523,7 @@ function createRooms() {
                 wall.setAttribute('class', 'floor');
                 wall.setAttribute('playermovement', '');
                 // create component for exit  
-                wall.setAttribute('exit', '');
+                wall.setAttribute('exit', 'toLoad:'+nextSceneToLoad+';');
                 wall.setAttribute('material', 'src:#' + exitTexture);
                 // wall.setAttribute('color', 'green');
                 const floor = document.createElement('a-box');

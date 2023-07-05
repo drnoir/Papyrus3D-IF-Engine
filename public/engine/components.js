@@ -624,13 +624,13 @@ AFRAME.registerComponent("load-texture", {
 AFRAME.registerComponent('exit', {
     schema: {
         color: { type: 'color', default: 'green' },
-        // modelPath: {type: 'string', default: './models/exit.glb'},
         modelID: { type: 'string', default: 'exit' },
         modelMat: { type: 'string', default: 'exit' },
         position: { type: 'string', default: '0 0.1 0' },
         rotation: { type: 'string', default: '0 0 0' },
         scale: { type: 'string', default: '0.1 0.1 0.1' },
-        status: { type: 'string', default: 'false' }
+        status: { type: 'string', default: 'false' },
+        toLoad: { type: 'number', default: 1}
     },
 
     init: function () {
@@ -639,6 +639,7 @@ AFRAME.registerComponent('exit', {
         const exit = document.createElement('a-entity');
         let position = data.position;
         let color = data.color;
+        let toLoad= data.toLoad;
         let scale = data.scale;
 
         exit.setAttribute('geometry', 'primitive: box;');
@@ -648,21 +649,8 @@ AFRAME.registerComponent('exit', {
         exit.setAttribute('scale', scale);
 
         this.el.addEventListener('click', function (evt) {
-           loadNewLevel(3);
+           loadNewLevel(toLoad);
         })
-
-        // textureLoader.load(src,
-        //     // onLoad
-        //     function (tex) {
-        //         let mesh = el.getObject3D('mesh')
-        //         mesh.material.map = tex;
-        //     },
-        //     // onProgress
-        //     undefined,
-        //     //onError
-        //     function (err) {
-        //         console.error('texture load error on exit texture - check texture config and folder');
-        //     });
     },
     remove: function () {
         const el = this.el;
