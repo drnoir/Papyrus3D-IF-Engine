@@ -1,6 +1,4 @@
-// main js 
 // PAPYRUS 3D ENGINE CODE 
-
 // Reassignable global game stare vars
 let player;
 // CONFIG CHARECTERS AND ENEMIES STORE
@@ -12,13 +10,14 @@ let lockedDoors = [];
 let textures; let prefabs;
 // diaglog UI Globals / shit 
 let currentDiagID = 0; let currentScene = 1; let nextSceneToLoad = currentScene + 1;
-let currentChar = 0; let mapSource = 0; let currentInteraction = 0; 
+let currentChar = 0; let mapSource = 0; let currentInteraction = 0;
 // combat var defaults SIMULATED DICE - Combat system is based on D and D - INIT vals / max 
 let CombatDiceNumber = 6;
 let CombatDMGDiceNumber = 6;
 // dialogueUI Elements Based on a-frame defaults 
 const scene = document.querySelector('a-scene'); const assets = document.querySelector('a-assets');
 
+// DATA LOADING ROUTINES
 async function loadData() {
     //config and diagloue loading
     await loadPlayer();
@@ -35,7 +34,7 @@ async function loadData() {
     await setupPlayerInfo();
     // run create scene routine
     await createRooms();
-    await populateDiag (1,1);
+    await populateDiag(1, 1);
     // testing dialogue.json UI population
     const sound = document.querySelector('[sound]');
     sound.components.sound.playSound();
@@ -43,7 +42,7 @@ async function loadData() {
 
 // Load engine Config file (JSON) - As the engine relies on configurable json there can be custum values 
 async function loadConfig() {
-    const res = await fetch('config.json'); 
+    const res = await fetch('config.json');
     config = await res.json();
     CombatDiceNumber = config.CombatDiceNumber; CombatDMGDiceNumber = config.CombatDMGDiceNumber;
     gun = config.Gun;
@@ -108,13 +107,14 @@ async function loadSceneMetaData(metaDataToLoad) {
     sceneMetadata = await res.json();
 }
 
+// PLAYER SETUP
 function setupPlayerInfo() {
     player = {
         name: player.name,
         health: player.health,
         strength: player.strength,
         constitution: player.strength,
-        // player model face states - WIP WHEN UI is done - DOOM injury states 
+        // player model face states - WIP WHEN UI is done - DOOM style injury states 
         playerFaceState: player.playerFaceState,
         playerFaceState25: player.playerFaceState25,
         playerFaceState50: player.playerFaceState50,
@@ -123,12 +123,13 @@ function setupPlayerInfo() {
     }
 }
 
+// CHARECETERS AND ENEMIES =--<
 //Add chareceter to scene function 
 function addChar(charNumber) {
     // console.log(chars.characters[charID].id, chars.characters[charID].name);
     let indexCharNumber = charNumber - 1;
-    console.log('char param passed'+charNumber)
-    let modelID = '#' +  chars.characters[indexCharNumber].name;
+    console.log('char param passed' + charNumber)
+    let modelID = '#' + chars.characters[indexCharNumber].name;
     let char = document.createElement('a-entity');
     char.setAttribute('id', chars.characters[indexCharNumber].name);
     char.setAttribute('name', chars.characters[indexCharNumber].name);
@@ -167,78 +168,30 @@ function addTorch(torchColor, torchIndex) {
     return torch;
 }
 
-// Add a torch / light to geometry 
+// KEYS
 function addKey(keyColor, keyIndex) {
-    let key= document.createElement('a-box');
+    let key = document.createElement('a-box');
     let color = returnKeyColor(keyColor);
     key.setAttribute('id', key + [keyIndex]);
-    key.setAttribute('color' ,  color);
-    key.setAttribute('scale' , '0.2, 0.2, 0.2');
+    key.setAttribute('color', color);
+    key.setAttribute('scale', '0.2, 0.2, 0.2');
     return key;
 }
 
-function returnKeyColor (colorCode){
-    if (colorCode == 'B'){
+function returnKeyColor(colorCode) {
+    if (colorCode == 'B') {
         return 'blue';
     }
-    if (colorCode == 'Y'){
+    if (colorCode == 'Y') {
         return 'yellow';
     }
-    if (colorCode == 'R'){
+    if (colorCode == 'R') {
         return 'red';
     }
 
 }
 
-function populateDiag(currentDiagID, currentChar) {
-    const dialogueUI = document.getElementById('dialogueID');
-    // add button test function
-    showDialogueUI();
-
-        // const choicesCheck = diag.passage[passageID].choices;
-        // console.log(choicesCheck);
-        // if (choicesCheck){
-        // createChoiceButtons(choicesCheck.length)
-        // }
-    
-        let newPassage = diag.passage[currentChar].text;
-        let newCharName = diag.passage[currentChar].char;
-        currentDiagID = currentChar;
-        dialogueUI.setAttribute('text', 'wrapCount:' + 100);
-        dialogueUI.setAttribute('text', 'width:' + 3, 2);
-        dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
-    }
-
-
-
-function populateInteractions(interactionID, currentInteraction) {
-    const dialogueUI = document.getElementById('dialogueID');
-    // add button test function
-    showDialogueUI();
-    // const passageBtn = document.getElementById('nextPassageBtn');
-    if (!passageBtn) {
-        addButton(currentInteraction);
-    }
-
-    let newPassage =  interactions.interactions[interactionID].text;
-    let newCharName =  interactions. interactions[interactionID].char;
-    currentDiagID = interactionID;
-    dialogueUI.setAttribute('text', 'wrapCount:' + 100);
-    dialogueUI.setAttribute('text', 'width:' + 3, 2);
-    dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
-}
-
-
-// make glow component show on specified char indicating char speaking
-function makeCharActive(charID) {
-    const charRef = document.getElementById(charID);
-    if (charRef.getAttribute('glowfx', 'visible:false;')) {
-        charRef.setAttribute('glowfx', 'visible:true;');
-        charName = charRef.getAttribute('id')
-        console.log('check current'+ charName);
-    }
-}
-
+// LEVEL LOADING 
 //Move to next dialogue passage  
 function nextScene() {
     if (diag.passage.length - 1 !== currentDiagID) {
@@ -265,10 +218,11 @@ async function loadNewLevel(mapToLoad) {
     await createRooms();
     await loadDiag(mapToLoad);
     await loadInteractions(1);
-    await populateDiag (1,1);
+    await populateDiag(1, 1);
     currentScene = mapToLoad;
 }
 
+// DIALOGUE 
 function showDialogueUI() {
     const dialogueUI = document.getElementById('dialogueID');
     dialogueUI.setAttribute('visible', true);
@@ -281,7 +235,7 @@ function hideDialogueUI() {
 
 // show passagebtn relative to character model
 function addButton(diagID) {
-    // check if there is an existing button element firsst before adding a new one
+    // check if there is an existing button element first before adding a new one
     if (!document.getElementById('nextPassageBtn')) {
         let nextPassageBtn = document.createElement('a-box')
         nextPassageBtn.setAttribute('id', 'nextPassageBtn');
@@ -298,7 +252,7 @@ function addButton(diagID) {
         nextPassageBtnTxt.setAttribute('width', '3');
         nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1')
         nextPassageBtnTxt.setAttribute('material', 'color: black');
-        let char = document.getElementById('char'+diagID) // FOR TESTING PURPOSES - needs to be passed associated char
+        let char = document.getElementById('char' + diagID) // FOR TESTING PURPOSES - needs to be passed associated char
         char.appendChild(nextPassageBtn);
         nextPassageBtn.appendChild(nextPassageBtnTxt);
     } else {
@@ -306,36 +260,80 @@ function addButton(diagID) {
     }
 }
 
-
 function createChoiceButtons(amount, charID) {
     // check if there is an existing button element first before adding a new one
     if (!document.getElementById('choiceButtons')) {
         let char = document.getElementById(charID);// FOR TESTING PURPOSES - needs to be passed associated char
-        let choiceButtons= document.createElement('a-entity')
+        let choiceButtons = document.createElement('a-entity')
         char.appendChild(choiceButtons);
         let initX = -0.06
         for (let x = 0; x < amount; x++) {
-        let nextChoiceBtn = document.createElement('a-box')
-        nextChoiceBtn.setAttribute('id', 'choiceButton'+x);
-        nextChoiceBtn.setAttribute('cursor-listener', '');
-        nextChoiceBtn.setAttribute('depth', '0.01');
-        nextChoiceBtn.setAttribute('height', '0.15');
-        nextChoiceBtn.setAttribute('width', '0.15');
-        nextChoiceBtn.setAttribute('material', 'color: white');
-        nextChoiceBtn.setAttribute('position', initX+0.02+'1.6 0.1');
-        // addtext
-        let nextChoiceBtnTxt = document.createElement('a-text');
-        nextChoiceBtnTxt.setAttribute('value'+x);
-        nextChoiceBtnTxt.setAttribute('height', '1');
-        nextChoiceBtnTxt.setAttribute('width', '3');
-        nextChoiceBtnTxt.setAttribute('position', '0 0.015 0.1')
-        nextChoiceBtnTxt.setAttribute('material', 'color: black');
-        char.appendChild( nextChoiceBtn);
-        nextChoiceBtn.appendChild(nextChoiceBtnTxt);
-        choiceButtons.appendChild(nextChoiceBtn);
+            let nextChoiceBtn = document.createElement('a-box')
+            nextChoiceBtn.setAttribute('id', 'choiceButton' + x);
+            nextChoiceBtn.setAttribute('cursor-listener', '');
+            nextChoiceBtn.setAttribute('depth', '0.01');
+            nextChoiceBtn.setAttribute('height', '0.15');
+            nextChoiceBtn.setAttribute('width', '0.15');
+            nextChoiceBtn.setAttribute('material', 'color: white');
+            nextChoiceBtn.setAttribute('position', initX + 0.02 + '1.6 0.1');
+            // addtext
+            let nextChoiceBtnTxt = document.createElement('a-text');
+            nextChoiceBtnTxt.setAttribute('value' + x);
+            nextChoiceBtnTxt.setAttribute('height', '1');
+            nextChoiceBtnTxt.setAttribute('width', '3');
+            nextChoiceBtnTxt.setAttribute('position', '0 0.015 0.1')
+            nextChoiceBtnTxt.setAttribute('material', 'color: black');
+            char.appendChild(nextChoiceBtn);
+            nextChoiceBtn.appendChild(nextChoiceBtnTxt);
+            choiceButtons.appendChild(nextChoiceBtn);
         }
     } else {
         console.log('Opps something went wrong - There must already be some choice buttons on screen or the engine could not find the choices')
+    }
+}
+
+function populateDiag(currentDiagID, currentChar) {
+    const dialogueUI = document.getElementById('dialogueID');
+    // add button test function
+    showDialogueUI();
+
+    // const choicesCheck = diag.passage[passageID].choices;
+    // console.log(choicesCheck);
+    // if (choicesCheck){
+    // createChoiceButtons(choicesCheck.length)
+    // }
+
+    let newPassage = diag.passage[currentChar].text;
+    let newCharName = diag.passage[currentChar].char;
+    currentDiagID = currentChar;
+    dialogueUI.setAttribute('text', 'wrapCount:' + 100);
+    dialogueUI.setAttribute('text', 'width:' + 3, 2);
+    dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
+}
+
+function populateInteractions(interactionID, currentInteraction) {
+    const dialogueUI = document.getElementById('dialogueID');
+    // add button test function
+    showDialogueUI();
+    // const passageBtn = document.getElementById('nextPassageBtn');
+    if (!passageBtn) {
+        addButton(currentInteraction);
+    }
+    let newPassage = interactions.interactions[interactionID].text;
+    let newCharName = interactions.interactions[interactionID].char;
+    currentDiagID = interactionID;
+    dialogueUI.setAttribute('text', 'wrapCount:' + 100);
+    dialogueUI.setAttribute('text', 'width:' + 3, 2);
+    dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
+}
+
+// make glow component show on specified char indicating char speaking
+function makeCharActive(charID) {
+    const charRef = document.getElementById(charID);
+    if (charRef.getAttribute('glowfx', 'visible:false;')) {
+        charRef.setAttribute('glowfx', 'visible:true;');
+        charName = charRef.getAttribute('id')
+        console.log('check current' + charName);
     }
 }
 
@@ -350,6 +348,7 @@ function gotKey(keyNum) {
     doors.push
 }
 
+// ROOM CREATION
 // Create rooms loop - called at init
 function createRooms() {
     const mapData = mapSource.data;
@@ -361,7 +360,7 @@ function createRooms() {
     let wallTexture = textures.textures[0].id; let floorTexture = textures.textures[1].id;
     let doorTexture = textures.textures[2].id; let wallTexture2 = textures.textures[3].id;
     let exitTexture = textures.textures[4].id; let waterTexture = textures.textures[5].id;
-    let keyTexture =  textures.textures[6].id;
+    let keyTexture = textures.textures[6].id;
 
     const WALL_SIZE = 1;
     const WALL_HEIGHT = 3.5;
@@ -379,7 +378,7 @@ function createRooms() {
         ceil.setAttribute('scale', '1 1 1');
         ceil.setAttribute('material', 'src: #grunge; repeat: 10 10');
         el.appendChild(ceil);
-    } 
+    }
     // outdoor stuff - reimplement later
     else {
         // scene data 
@@ -387,7 +386,7 @@ function createRooms() {
         newRoom.setAttribute('id', 'room');
         scene.appendChild(newRoom);
         const enviroment = document.createElement('a-entity');
-        console.log('Mapsource pre loop outdoor'+mapSource);
+        console.log('Mapsource pre loop outdoor' + mapSource);
         for (let x = 0; x < mapSource.height; x++) {
             for (let y = 0; y < mapSource.width; y++) {
                 const i = (y * mapSource.height) + x;
@@ -400,7 +399,7 @@ function createRooms() {
                     floor.setAttribute('width', WALL_SIZE);
                     floor.setAttribute('depth', WALL_SIZE);
                     floor.setAttribute('static-body', '');
-                    floor.setAttribute('position', floorPos );
+                    floor.setAttribute('position', floorPos);
                     // wall.setAttribute('load-texture', '');
                     floor.setAttribute('editor-listener', '');
                     floor.setAttribute('material', 'src:#' + floorTexture);
@@ -426,14 +425,14 @@ function createRooms() {
             // char
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "h") {
                 console.log("its a char!")
-                let charNumber = mapData[i].charAt(4) ? String(mapData[i].charAt(4)+mapData[i].charAt(5)) :mapData[i].charAt(4); 
+                let charNumber = mapData[i].charAt(4) ? String(mapData[i].charAt(4) + mapData[i].charAt(5)) : mapData[i].charAt(4);
                 console.log(mapData[i].charAt(4));
                 let char = addChar(charNumber);
                 console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
                 char.setAttribute('static-body', '');
                 char.setAttribute('glowfx', 'visible:true;');
-                char.setAttribute('character', 'charID:' + charNumber+ ';');
+                char.setAttribute('character', 'charID:' + charNumber + ';');
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
                 floor.setAttribute('width', WALL_SIZE);
@@ -455,7 +454,7 @@ function createRooms() {
                 let dataLength = mapData[i].length;
                 let diagTrigger = prefabTrigger === 'T' ? true : false;
                 let triggerNum = prefabTrigger === 'T' ? mapData[i].charAt(dataLength - 1) : null;
-                
+
                 console.log('diaglogue trigger:' + diagTrigger + 'dialogueNum' + triggerNum);
                 const prefabElm = document.createElement('a-entity');
                 const prefabElmNum = prefabs.prefabs[1];
@@ -484,14 +483,14 @@ function createRooms() {
                 enemy1.setAttribute('id', i);
                 enemy1.setAttribute('status', 'alive');
                 enemy1.setAttribute('mixamo.com', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
-                enemy1.setAttribute('animation-mixer', {timeScale: 1});
+                enemy1.setAttribute('animation-mixer', { timeScale: 1 });
                 enemy1.setAttribute('position', charPos);
                 enemy1.setAttribute('static-body', '');
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
-                enemy1.setAttribute('enemy', 'modelID:' +  enemy1.model + ';' +
-                    'format:glb; animated:true;' + 'health:' +  enemy1.health +
-                    'id:' + i + 'constitution:' +  enemy1.constitution);
+                enemy1.setAttribute('enemy', 'modelID:' + enemy1.model + ';' +
+                    'format:glb; animated:true;' + 'health:' + enemy1.health +
+                    'id:' + i + 'constitution:' + enemy1.constitution);
                 floor.setAttribute('width', WALL_SIZE);
                 floor.setAttribute('depth', WALL_SIZE);
                 floor.setAttribute('static-body', '');
@@ -520,7 +519,7 @@ function createRooms() {
                 wall.setAttribute('class', 'floor');
                 wall.setAttribute('playermovement', '');
                 // create component for exit  
-                wall.setAttribute('exit', 'toLoad:'+nextSceneToLoad+';');
+                wall.setAttribute('exit', 'toLoad:' + nextSceneToLoad + ';');
                 wall.setAttribute('material', 'src:#' + exitTexture);
                 // wall.setAttribute('color', 'green');
                 const floor = document.createElement('a-box');
@@ -545,23 +544,23 @@ function createRooms() {
             }
             // add keys
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "K") {
-            console.log("its a key!")
-            // map data index 1 contains color coding b, y, r etc
-            let key= addKey( mapData[i].charAt(1) , i);
-            key.setAttribute('position',  keyPosition  );
-            key.setAttribute('material', 'src:#' + keyTexture );
+                console.log("its a key!")
+                // map data index 1 contains color coding b, y, r etc
+                let key = addKey(mapData[i].charAt(1), i);
+                key.setAttribute('position', keyPosition);
+                key.setAttribute('material', 'src:#' + keyTexture);
 
-            const floor = document.createElement('a-box');
-            floor.setAttribute('height', WALL_HEIGHT / 20);
-            floor.setAttribute('width', WALL_SIZE);
-            floor.setAttribute('depth', WALL_SIZE);
-            floor.setAttribute('static-body', '');
-            floor.setAttribute('position', floorPos);
-            floor.setAttribute('editor-listener', '');
-            floor.setAttribute('material', 'src:#' + floorTexture);
-            floor.setAttribute('playermovement', '');
-            el.appendChild(floor);
-            el.appendChild(key);
+                const floor = document.createElement('a-box');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('width', WALL_SIZE);
+                floor.setAttribute('depth', WALL_SIZE);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', floorPos);
+                floor.setAttribute('editor-listener', '');
+                floor.setAttribute('material', 'src:#' + floorTexture);
+                floor.setAttribute('playermovement', '');
+                el.appendChild(floor);
+                el.appendChild(key);
             }
             // add cam - UPDATE CONDITIONAL THIS IS TERRIBLE JSUT KEEPING IT FOR TESTING
             else if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "a") {
@@ -701,7 +700,7 @@ function createOutdoorFloor(floorNum) {
     return floorPanels;
 }
 
-// COMBAT SYSTEM
+// COMBAT SYSTEM -->
 // SHOOT
 function shootAt(enemyID) {
     const currentEnemy = enemies.enemies[enemyID]; let enemyConst = parseInt(currentEnemy.constitution);
@@ -722,8 +721,6 @@ function shootAt(enemyID) {
         return playerDicerollDmg;
     }
 }
-
-
 // MELEE ENEMY ATTACK
 function enemyCombatAttack(enemyID) {
     const currentEnemy = enemies.enemies[enemyID];
@@ -753,6 +750,7 @@ function getPlayerHealth() {
     }
 }
 
+// FX AND 3D UI 0--0
 function triggerMuzzleFX() {
     console.log('triggerMUZZLE FX');
     const muzzle = document.getElementById('muzzleFX');
@@ -787,11 +785,11 @@ function createHealthBar() {
     newFace.appendChild(PlayerhealthBar);
 }
 
+// RANDOM AND UTILS ?
 // simulate random dice roll
 function RandomDiceRoll(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
-
 
 // Update Player pos
 function updatePlayerPos(newPlayPos) {
@@ -804,5 +802,5 @@ function clearScene() {
     el.parentNode.removeChild(el);
 };
 
-// EXPORT JS 
+// EXPORTS 
 export { nextScene, loadNewLevel, populateDiag, populateInteractions, clearScene, loadData, shootAt, enemyCombatAttack, getPlayerHealth };
