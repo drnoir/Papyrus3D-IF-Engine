@@ -216,9 +216,9 @@ function populateInteractions(interactionID, currentInteraction) {
     // add button test function
     showDialogueUI();
     // const passageBtn = document.getElementById('nextPassageBtn');
-    // if (!passageBtn) {
-    //     addButton(currentInteraction);
-    // }
+    if (!passageBtn) {
+        addButton(currentInteraction);
+    }
 
     let newPassage =  interactions.interactions[interactionID].text;
     let newCharName =  interactions. interactions[interactionID].char;
@@ -279,34 +279,32 @@ function hideDialogueUI() {
     dialogueUI.setAttribute('visible', false);
 }
 
-// // show passagebtn relative to character model
-// function addButton(diagID) {
-//     // let charDiagID = diagID+1;
-//     // console.log('charID passed' + activeChar);
-//     // check if there is an existing button element firsst before adding a new one
-//     if (!document.getElementById('nextPassageBtn')) {
-//         let nextPassageBtn = document.createElement('a-box')
-//         nextPassageBtn.setAttribute('id', 'nextPassageBtn');
-//         nextPassageBtn.setAttribute('cursor-listener', '');
-//         nextPassageBtn.setAttribute('depth', '0.01');
-//         nextPassageBtn.setAttribute('height', '0.15');
-//         nextPassageBtn.setAttribute('width', '0.15');
-//         nextPassageBtn.setAttribute('material', 'color: white');
-//         nextPassageBtn.setAttribute('position', '0.2 1.6 0.1');
-//         // addtext
-//         let nextPassageBtnTxt = document.createElement('a-text');
-//         nextPassageBtnTxt.setAttribute('value', '>');
-//         nextPassageBtnTxt.setAttribute('height', '1');
-//         nextPassageBtnTxt.setAttribute('width', '3');
-//         nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1')
-//         nextPassageBtnTxt.setAttribute('material', 'color: black');
-//         let char = document.getElementById('char'+diagID) // FOR TESTING PURPOSES - needs to be passed associated char
-//         char.appendChild(nextPassageBtn);
-//         nextPassageBtn.appendChild(nextPassageBtnTxt);
-//     } else {
-//         console.log('Opps something went wrong - There is already a passage btn on the scene')
-//     }
-// }
+// show passagebtn relative to character model
+function addButton(diagID) {
+    // check if there is an existing button element firsst before adding a new one
+    if (!document.getElementById('nextPassageBtn')) {
+        let nextPassageBtn = document.createElement('a-box')
+        nextPassageBtn.setAttribute('id', 'nextPassageBtn');
+        nextPassageBtn.setAttribute('cursor-listener', '');
+        nextPassageBtn.setAttribute('depth', '0.01');
+        nextPassageBtn.setAttribute('height', '0.15');
+        nextPassageBtn.setAttribute('width', '0.15');
+        nextPassageBtn.setAttribute('material', 'color: white');
+        nextPassageBtn.setAttribute('position', '0.2 1.6 0.1');
+        // addtext
+        let nextPassageBtnTxt = document.createElement('a-text');
+        nextPassageBtnTxt.setAttribute('value', '>');
+        nextPassageBtnTxt.setAttribute('height', '1');
+        nextPassageBtnTxt.setAttribute('width', '3');
+        nextPassageBtnTxt.setAttribute('position', '-0.05 0.015 0.1')
+        nextPassageBtnTxt.setAttribute('material', 'color: black');
+        let char = document.getElementById('char'+diagID) // FOR TESTING PURPOSES - needs to be passed associated char
+        char.appendChild(nextPassageBtn);
+        nextPassageBtn.appendChild(nextPassageBtnTxt);
+    } else {
+        console.log('Opps something went wrong - There is already a passage btn on the scene')
+    }
+}
 
 
 function createChoiceButtons(amount, charID) {
@@ -370,8 +368,7 @@ function createRooms() {
     const el = document.getElementById('room')
 
     let door; let wall;
-    // if (roomType === "Indoor") {
-    if (el){
+    if (roomType === "Indoor") {
         let ceil = document.createElement('a-box');
         let ceilArea = (mapSource.width * mapSource.height);
         ceil.setAttribute('width', ceilArea);
@@ -384,36 +381,36 @@ function createRooms() {
         el.appendChild(ceil);
     } 
     // outdoor stuff - reimplement later
-    // else {
+    else {
         // scene data 
-    //     const newRoom = document.createElement('a-entity');
-    //     newRoom.setAttribute('id', 'room');
-    //     scene.appendChild(newRoom);
-    //     const enviroment = document.createElement('a-entity');
-    //     console.log('Mapsource pre loop outdoor'+mapSource);
-    //     for (let x = 0; x < mapSource.height; x++) {
-    //         for (let y = 0; y < mapSource.width; y++) {
-    //             const i = (y * mapSource.height) + x;
-    //             const floorPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-    //             // flat floor for outdoor
-    //             if (mapSource[i] === 0) {
-    //                 console.log('loop', mapSource[i])
-    //                 const floor = document.createElement('a-box');
-    //                 floor.setAttribute('height', WALL_HEIGHT / 20);
-    //                 floor.setAttribute('width', WALL_SIZE);
-    //                 floor.setAttribute('depth', WALL_SIZE);
-    //                 floor.setAttribute('static-body', '');
-    //                 floor.setAttribute('position', floorPos );
-    //                 // wall.setAttribute('load-texture', '');
-    //                 floor.setAttribute('editor-listener', '');
-    //                 floor.setAttribute('material', 'src:#' + floorTexture);
-    //                 newRoom.appendChild(floor);
-    //             }
-    //         }
-    //     }
-    //     enviroment.setAttribute('environment', "preset: arches; ground:hills; groundYScale:1; playArea:300;  dressingAmount: 10; dressingVariance:1 2 1; shadow:true;");
-    //     newRoom.appendChild(enviroment);
-    // }
+        const newRoom = document.createElement('a-entity');
+        newRoom.setAttribute('id', 'room');
+        scene.appendChild(newRoom);
+        const enviroment = document.createElement('a-entity');
+        console.log('Mapsource pre loop outdoor'+mapSource);
+        for (let x = 0; x < mapSource.height; x++) {
+            for (let y = 0; y < mapSource.width; y++) {
+                const i = (y * mapSource.height) + x;
+                const floorPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+                // flat floor for outdoor
+                if (mapSource[i] === 0) {
+                    console.log('loop', mapSource[i])
+                    const floor = document.createElement('a-box');
+                    floor.setAttribute('height', WALL_HEIGHT / 20);
+                    floor.setAttribute('width', WALL_SIZE);
+                    floor.setAttribute('depth', WALL_SIZE);
+                    floor.setAttribute('static-body', '');
+                    floor.setAttribute('position', floorPos );
+                    // wall.setAttribute('load-texture', '');
+                    floor.setAttribute('editor-listener', '');
+                    floor.setAttribute('material', 'src:#' + floorTexture);
+                    newRoom.appendChild(floor);
+                }
+            }
+        }
+        enviroment.setAttribute('environment', "preset: arches; ground:hills; groundYScale:1; playArea:300;  dressingAmount: 10; dressingVariance:1 2 1; shadow:true;");
+        newRoom.appendChild(enviroment);
+    }
     // LOOP to map geometry 
     for (let x = 0; x < mapSource.height; x++) {
         for (let y = 0; y < mapSource.width; y++) {

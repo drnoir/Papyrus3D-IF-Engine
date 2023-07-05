@@ -230,13 +230,6 @@ AFRAME.registerComponent('character', {
         let animated = data.animated;
         let glowOn = data.glowOn;
         const elScale = this.el.scale;
-        // const charContainer = document.getElementById('characters');
-        // create a char based on attributes
-        // const newCharacter = document.createElement('a-entity');
-        // newCharacter.setAttribute('position', pos);
-        // newCharacter.setAttribute('glowFX', 'visible:' + glowOn);
-        // newCharacter.setAttribute('gltf-model', modelPath);
-        // newCharacter.setAttribute('scale', scale);
         if (animated) {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
@@ -448,11 +441,9 @@ AFRAME.registerComponent('intersection-spawn', {
         default: '',
         parse: AFRAME.utils.styleParser.parse
     },
-
     init: function () {
         const data = this.data;
         const el = this.el;
-
         el.addEventListener(data.event, evt => {
             // Create element.
             console.log(data.evt);
