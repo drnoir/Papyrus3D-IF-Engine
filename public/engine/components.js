@@ -3,7 +3,7 @@
 // Dependency - A-Frame / A-Frame Extras
 
 // ENGINE CORE IMPORTS
-import { nextScene, loadData,  populateDiag,populateInteractions, shootAt, enemyCombatAttack, getPlayerHealth, clearScene, loadNewLevel } from "./papyrus.js";
+import { nextScene, loadData, populateDiag, populateInteractions, shootAt, enemyCombatAttack, getPlayerHealth, clearScene, loadNewLevel } from "./papyrus.js";
 
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
@@ -218,7 +218,7 @@ AFRAME.registerComponent('character', {
         scale: { type: 'string', default: '1 1 1' },
         animated: { type: 'boolean', default: false },
         glowOn: { type: 'boolean', default: false },
-        charID: {type: 'number', default: 0},
+        charID: { type: 'number', default: 0 },
     },
     init: function () {
         const data = this.data;
@@ -239,9 +239,9 @@ AFRAME.registerComponent('character', {
         // const triggerCharDialogue= data.triggerDialogue;
         const charID = data.charID;
 
-       
+
         this.el.addEventListener('click', function (evt) {
-        populateDiag( charID ,0)
+            populateDiag(charID, 0)
         })
     },
     remove: function () {
@@ -256,7 +256,7 @@ AFRAME.registerComponent('enemy', {
         color: { type: 'color', default: 'white' },
         modelPath: { type: 'string', default: './models/deadcop.glb' },
         modelID: { type: 'string', default: 'enemy1' },
-        modelMat: { type: 'string', default: 'demonMat'},
+        modelMat: { type: 'string', default: 'demonMat' },
         format: { type: 'string', default: 'glb' },
         position: { type: 'string', default: '0 0.1 0' },
         rotation: { type: 'string', default: '0 0 0' },
@@ -268,8 +268,8 @@ AFRAME.registerComponent('enemy', {
         strength: { type: 'number', default: 5 },
         health: { type: 'number', default: 5 },
         status: { type: 'string', default: 'alive' },
-        speed: {type: 'number', default: 2},
-        patrol : {type: 'boolean', default: true}
+        speed: { type: 'number', default: 2 },
+        patrol: { type: 'boolean', default: true }
     },
     init: function () {
         let data = this.data;
@@ -320,7 +320,7 @@ AFRAME.registerComponent('enemy', {
 
         // check if model GLB or Obj - this can probably be made into a util function and put into papyrus core
         if (format === "glb") {
-            newEnemy.setAttribute('gltf-model', '#'+modelID );
+            newEnemy.setAttribute('gltf-model', '#' + modelID);
         } else {
             newEnemy.setAttribute('obj-model', 'obj:#' + modelID + ';' + 'mtl:#' + modelMat + ';');
         }
@@ -342,14 +342,14 @@ AFRAME.registerComponent('enemy', {
                 healthBarVal = health / 10 * 3;
                 console.log('enemy health reassigned to ' + health)
                 healthBarTracker.setAttribute('width', healthBarVal);
-                if (lifeStatus === 'alive'){
-                    let player = document.getElementById('playercam'); 
+                if (lifeStatus === 'alive') {
+                    let player = document.getElementById('playercam');
                     let distanceToPlayerCheck = el.getAttribute("position").distanceTo(player)
                     // move away if a wall    
-                    if (  distanceToPlayerCheck < 0.1) {
+                    if (distanceToPlayerCheck < 0.1) {
                         console.log(distanceToPlayerCheck)
                         enemyCombatAttack();
-                     }
+                    }
                 } else {
                     lifeStatus = 'dead';
                     let deathAudio = document.querySelector("#death");
@@ -362,23 +362,23 @@ AFRAME.registerComponent('enemy', {
         });
     },
     tick: function (time, timeDelta) {
-            this.distanceCheck();
-            this.distanceToPlayer();
-            this.moveRandom();
-            this.moveToPlayer();
+        this.distanceCheck();
+        this.distanceToPlayer();
+        this.moveRandom();
+        this.moveToPlayer();
     },
     moveRandom: function () {
         const el = this.el;
         el.setAttribute('animation-mixer', 'clip: Run; loop: repeat; ');
         let currentPosition = this.el.object3D.position;
         let randomDirection = Math.floor(Math.random() * 5);
-        let randRot = Math.floor(Math.random() * 1); 
+        let randRot = Math.floor(Math.random() * 1);
         let randomRotChance = Math.floor(Math.random() * 1000);
         // random direction and movement
         if (randomDirection < 1) {
             el.object3D.position.x += 0.01;
             el.object3D.position.z += 0.01;
-            if (randomRotChance > 950 ) {
+            if (randomRotChance > 950) {
                 el.object3D.rotation.y += randRot
             }
         };
@@ -396,39 +396,39 @@ AFRAME.registerComponent('enemy', {
             el.object3D.position.z += 0.01;
         };
     },
-    distanceToPlayer : function (dt){
-        var target = document.getElementById('playercam'); 
+    distanceToPlayer: function (dt) {
+        var target = document.getElementById('playercam');
         let distanceToPlayerCheck = this.el.getAttribute("position").distanceTo(target)
         // move away if a wall    
-        if (  distanceToPlayerCheck   < 0.1) {
+        if (distanceToPlayerCheck < 0.1) {
             console.log('enemy is close to player, attack!');
             enemyCombatAttack();
-         }
+        }
     },
-    distanceCheck : function (dt){
+    distanceCheck: function (dt) {
         const floor = document.querySelector('a-box');
-        let distanceToWall = this.el.getAttribute("position").distanceTo(floor && floor.className==='wall' ||  floor.className==='water')
+        let distanceToWall = this.el.getAttribute("position").distanceTo(floor && floor.className === 'wall' || floor.className === 'water')
         // move away if a wall    
-        if ( distanceToWall < 0.5) {
-                let floorPos = floor.getAttribute(position);
-                let x = floorPos.x; let z = floorPos.z;
-                el.object3D.position.x-el.object3D.position.x-x;
-                el.object3D.position.x-el.object3D.position.z-z;
-            }
+        if (distanceToWall < 0.5) {
+            let floorPos = floor.getAttribute(position);
+            let x = floorPos.x; let z = floorPos.z;
+            el.object3D.position.x - el.object3D.position.x - x;
+            el.object3D.position.x - el.object3D.position.z - z;
+        }
     },
-    moveToPlayer: function (t,dt){
-        if (!this.chase){
+    moveToPlayer: function (t, dt) {
+        if (!this.chase) {
             const el = this.el;
-            var target = document.getElementById('playercam'); 
+            var target = document.getElementById('playercam');
             var vec3 = new THREE.Vector3();
-            var currentPosition = el.getAttribute("position"); 
+            var currentPosition = el.getAttribute("position");
             vec3 = this.el.object3D.worldToLocal(target.object3D.position.clone());
-           var camFromOrca = currentPosition.distanceTo( target.object3D.position);
+            var camFromOrca = currentPosition.distanceTo(target.object3D.position);
             if (camFromOrca < 3) {
-                this.el.object3D.position.x=this.el.object3D.position.x-target.object3D.position.x;
-                this.el.object3D.position.z=this.el.object3D.position.z-target.object3D.position.z;
+                this.el.object3D.position.x = this.el.object3D.position.x - target.object3D.position.x;
+                this.el.object3D.position.z = this.el.object3D.position.z - target.object3D.position.z;
             }
-        } 
+        }
     },
     remove: function () {
         const el = this.el;
@@ -480,13 +480,13 @@ AFRAME.registerComponent('playermovement', {
 AFRAME.registerComponent('triggerdiagfloor', {
     schema: {
         default: '',
-        selfdestruct : {type: 'boolean', default:  false}
+        selfdestruct: { type: 'boolean', default: false }
     },
     init: function () {
         this.el.addEventListener('click', function (evt) {
             console.log('Dialogue would trigger here TEST');
-            populateDiag(5,0);
-            if (this.data.selfdestruct){
+            populateDiag(5, 0);
+            if (this.data.selfdestruct) {
                 this.remove();
             }
         })
@@ -500,15 +500,15 @@ AFRAME.registerComponent('triggerdiagfloor', {
 
 AFRAME.registerComponent('prefab', {
     schema: {
-        triggerDialogue: { type: 'boolean', default: false},
-        interactionNum: {type: 'number', default: 0},
+        triggerDialogue: { type: 'boolean', default: false },
+        interactionNum: { type: 'number', default: 0 },
     },
     init: function () {
-        var data = this.data; 
+        var data = this.data;
         const el = this.el;
         const triggerDialogue = this.data.triggerDialogue;
         const interactionNum = this.data.interactionNum;
-        if (triggerDialogue){
+        if (triggerDialogue) {
             this.el.addEventListener('click', function (evt) {
                 populateInteractions(interactionNum);
             })
@@ -524,40 +524,40 @@ AFRAME.registerComponent('prefab', {
 
 AFRAME.registerComponent('door', {
     schema: {
-        locked: { type: 'boolean', default: false},
-        doorLockNum: {type: 'number', default: 0},
+        locked: { type: 'boolean', default: false },
+        doorLockNum: { type: 'number', default: 0 },
     },
     init: function () {
         const el = this.el;
-       var data = this.data;
+        var data = this.data;
         let locked = data.locked;
         this.closeDoor = AFRAME.utils.bind(this.closeDoor, this);
 
         const doorPos = el.getAttribute('position');
         this.el.addEventListener('click', function (evt) {
-            if (!locked){
-            let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;let newX = x-1;
-            console.log(x,y,z, newX);
-            el.setAttribute('animation', "property: position; to:"+newX+y+z+"; loop:  false; dur: 5000");
-            let doorAudio = document.querySelector("#dooropen");
-            doorAudio.play();
-            this.closeDoor;
+            if (!locked) {
+                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1;
+                console.log(x, y, z, newX);
+                el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
+                let doorAudio = document.querySelector("#dooropen");
+                doorAudio.play();
+                this.closeDoor;
             }
             // locked door checks
-            else{
+            else {
                 console.log('This door is locked, Find a Key to unlock it');
             }
         })
     },
     closeDoor: function () {
         const el = this.el;
-        setTimeout( resetAnim(el), 8000);
-            function resetAnim(el){
-                console.log(el, 'triggered door close')
-                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
-                let newX = x+3;
-                this.el.setAttribute('animation', "property: position; to:"+newX+y+z+"; loop:  false; dur: 5000")
-            }
+        setTimeout(resetAnim(el), 8000);
+        function resetAnim(el) {
+            console.log(el, 'triggered door close')
+            let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
+            let newX = x + 3;
+            this.el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000")
+        }
     },
     remove: function () {
         const el = this.el;
@@ -569,23 +569,26 @@ AFRAME.registerComponent('door', {
 AFRAME.registerComponent('key', {
     schema: {
         default: '',
-        color: { type: 'string', default: 'blue',
-        keyNumber: { type: 'number', default: 1,
-    },
-
-    init: function () {
-        const el = this.el;
-        const data = this.data;
-        const keyNumber = data.keyNumber;
-        this.el.addEventListener('click', function (evt) {
-            gotKey(keyNumber)
-        })
-    },
-    remove: function () {
-        const el = this.el;
-        el.destroy();
-    },
-}}});
+        color: {
+            type: 'string', default: 'blue',
+            keyNumber: {
+                type: 'number', default: 1,
+            },
+            init: function () {
+                const el = this.el;
+                const data = this.data;
+                const keyNumber = data.keyNumber;
+                this.el.addEventListener('click', function (evt) {
+                    gotKey(keyNumber)
+                })
+            },
+            remove: function () {
+                const el = this.el;
+                el.destroy();
+            },
+        }
+    }
+});
 
 AFRAME.registerComponent("load-texture", {
     schema: {
@@ -621,7 +624,7 @@ AFRAME.registerComponent('exit', {
         rotation: { type: 'string', default: '0 0 0' },
         scale: { type: 'string', default: '0.1 0.1 0.1' },
         status: { type: 'string', default: 'false' },
-        toLoad: { type: 'number', default: 1}
+        toLoad: { type: 'number', default: 1 }
     },
 
     init: function () {
@@ -630,7 +633,7 @@ AFRAME.registerComponent('exit', {
         const exit = document.createElement('a-entity');
         let position = data.position;
         let color = data.color;
-        let toLoad= data.toLoad;
+        let toLoad = data.toLoad;
         let scale = data.scale;
 
         exit.setAttribute('geometry', 'primitive: box;');
@@ -640,7 +643,7 @@ AFRAME.registerComponent('exit', {
         exit.setAttribute('scale', scale);
 
         this.el.addEventListener('click', function (evt) {
-           loadNewLevel(toLoad);
+            loadNewLevel(toLoad);
         })
     },
     remove: function () {
