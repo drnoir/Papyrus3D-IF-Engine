@@ -339,14 +339,14 @@ AFRAME.registerComponent('enemy', {
             if (newMeleeAttack > 0 && lifeStatus === 'alive') {
                 // new health is for UI , health is the enemies health
                 health = -newMeleeAttack;
-                healthBarVal = health / 10 * 3;
+                // healthBarVal = health / 10 * 3;
                 console.log('enemy health reassigned to ' + health)
                 healthBarTracker.setAttribute('width', healthBarVal);
-                if (lifeStatus === 'alive') {
+                if (lifeStatus === 'alive' && health >1) {
                     let player = document.getElementById('playercam');
                     let distanceToPlayerCheck = el.getAttribute("position").distanceTo(player)
                     // move away if a wall    
-                    if (distanceToPlayerCheck < 0.1) {
+                    if (distanceToPlayerCheck < 0.2) {
                         console.log(distanceToPlayerCheck)
                         enemyCombatAttack();
                     }
@@ -385,7 +385,7 @@ AFRAME.registerComponent('enemy', {
         if (randomDirection < 2) {
             el.object3D.position.x -= 0.01;
             el.object3D.position.z -= 0.01;
-            if (randomRotChance > 950) {
+            if (randomRotChance >750) {
                 el.object3D.rotation.y -= randRot
             }
         };
@@ -406,14 +406,16 @@ AFRAME.registerComponent('enemy', {
         }
     },
     distanceCheck: function (dt) {
-        const floor = document.querySelector('a-box');
-        let distanceToWall = this.el.getAttribute("position").distanceTo(floor && floor.className === 'wall' || floor.className === 'water')
+        // const wall = document.querySelector('a-box');
+        const wall = document.getElementsByClassName('wall')[0];
+        let wallPos = wall.object3D.position
+        let distanceToWall = this.el.getAttribute("position").distanceTo(wallPos)
+    //    console.log(distanceToWall);
         // move away if a wall    
-        if (distanceToWall < 0.5) {
-            let floorPos = floor.getAttribute(position);
-            let x = floorPos.x; let z = floorPos.z;
-            el.object3D.position.x - el.object3D.position.x - x;
-            el.object3D.position.x - el.object3D.position.z - z;
+        if (distanceToWall < 1) {
+            // let floorPos = floor.getAttribute(position);
+            el.object3D.position.x+= 0.1;
+            el.object3D.position.z+= 0.1;
         }
     },
     moveToPlayer: function (t, dt) {
