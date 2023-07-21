@@ -80,7 +80,7 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
                 else if (currentEntity === 0 && !deleteMode && heightMode) {
-                    custumHeightString = '0' + currentEntityCustom.toString();;
+                    custumHeightString = '0' + currentEntityCustom.toString();
                     let floorHeight = custumHeightY;
                     el.setAttribute('class', 'floor');
                     el.setAttribute('height', floorHeight);
