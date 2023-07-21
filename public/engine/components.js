@@ -233,13 +233,8 @@ AFRAME.registerComponent('character', {
         if (animated) {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
-        // newCharacter.setAttribute('rotation', rot);
-        // charContainer.appendChild(newCharacter);
-
         // const triggerCharDialogue= data.triggerDialogue;
         const charID = data.charID;
-
-
         this.el.addEventListener('click', function (evt) {
             populateDiag(charID, 0)
         })
@@ -311,7 +306,6 @@ AFRAME.registerComponent('enemy', {
         healthBarTracker.setAttribute('HealthBarid', id);
 
         healthBar.appendChild(healthBarTracker);
-        // newEnemy.appendChild(healthBar);
 
         // check if model GLB or Obj - this can probably be made into a util function and put into papyrus core
         if (format === "glb") {
@@ -375,7 +369,7 @@ AFRAME.registerComponent('enemy', {
         if (randomDirection < 1) {
             el.object3D.position.x += 0.01;
             el.object3D.position.z += 0.01;
-            if (randomRotChance > 950) {
+            if (randomRotChance > 850) {
                 el.object3D.rotation.y += randRot
             }
         }
@@ -397,7 +391,7 @@ AFRAME.registerComponent('enemy', {
         const target = document.getElementById('playercam');
         let distanceToPlayerCheck = this.el.getAttribute("position").distanceTo(target)
         // move away if a wall    
-        if (distanceToPlayerCheck < 0.1) {
+        if (distanceToPlayerCheck < 0.4) {
             console.log('enemy is close to player, attack!');
             enemyCombatAttack();
         }
@@ -410,9 +404,8 @@ AFRAME.registerComponent('enemy', {
     //    console.log(distanceToWall);
         // move away if a wall    
         if (distanceToWall < 1) {
-            // let floorPos = floor.getAttribute(position);
-            el.object3D.position.x+= 0.1;
-            el.object3D.position.z+= 0.1;
+            let wallPos  = wall.getAttribute(position);
+            el.object3D.position.z=-el.object3D.position.x-wallPos.z;
         }
     },
     moveToPlayer: function (t, dt) {
@@ -541,7 +534,6 @@ AFRAME.registerComponent('door', {
                 el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
                 let doorAudio = document.querySelector("#dooropen");
                 doorAudio.play();
-                this.closeDoor;
             }
             // locked door checks
             else {
@@ -556,7 +548,7 @@ AFRAME.registerComponent('door', {
             console.log(el, 'triggered door close')
             let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
             let newX = x + 3;
-            this.el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000")
+            el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000")
         }
     },
     remove: function () {
@@ -579,7 +571,8 @@ AFRAME.registerComponent('key', {
                 const data = this.data;
                 const keyNumber = data.keyNumber;
                 this.el.addEventListener('click', function (evt) {
-                    gotKey(keyNumber)
+                    gotKey(keyNumber);
+                    this.remove();
                 })
             },
             remove: function () {
