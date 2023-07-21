@@ -1,10 +1,8 @@
-// Papyrus componenet system
-// Componenents for papyrus engine VR / AR 
-// Dependency - A-Frame / A-Frame Extras
-
+// Papyrus component system
+// Components for papyrus engine VR / AR
+// Dependency tree - A-Frame / A-Frame Extras / Papyrus
 // ENGINE CORE IMPORTS
 import { nextScene, loadData, populateDiag, populateInteractions, shootAt, enemyCombatAttack, getPlayerHealth, clearScene, loadNewLevel } from "./papyrus.js";
-
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -18,7 +16,6 @@ AFRAME.registerComponent('cursor-listener', {
         });
     }
 });
-
 // TURN MONITORING
 AFRAME.registerComponent('turnmonitor', {
     schema: {
@@ -45,7 +42,6 @@ AFRAME.registerComponent('turnmonitor', {
         // Do something the component or its entity is detached.
     },
 });
-
 // HEALTH UI WITH UPDATES FOR UPDATING UI OF PLAYER HEALTH 
 AFRAME.registerComponent('playerhealth', {
     schema: {
@@ -68,7 +64,6 @@ AFRAME.registerComponent('playerhealth', {
         // Do something the component or its entity is detached.
     },
 });
-
 // START GAME BUTTON FOR INIT OF NEW GAME 
 AFRAME.registerComponent('startgamebtn', {
     schema: {
@@ -93,7 +88,6 @@ AFRAME.registerComponent('startgamebtn', {
         this.el.destroy();
     },
 });
-
 // ADD GLOW FX 
 AFRAME.registerComponent('glowfx', {
     schema: {
@@ -123,7 +117,6 @@ AFRAME.registerComponent('glowfx', {
         this.el.destroy();
     },
 });
-
 // PLAYER CAM componenet
 AFRAME.registerComponent('playercam', {
     schema: {
@@ -157,7 +150,6 @@ AFRAME.registerComponent('playercam', {
         }
         newCam.setAttribute('look-controls', '');
         newCam.setAttribute('camera', '');
-        const scene = document.getElementsByName('a-scene');
         scene.appendChild(newCam);
         // create cursor
         newCursor.setAttribute('position', '0 0 -1');
@@ -220,6 +212,7 @@ AFRAME.registerComponent('character', {
         glowOn: { type: 'boolean', default: false },
         charID: { type: 'number', default: 0 },
     },
+    multiple: true,
     init: function () {
         const data = this.data;
         const el = this.el;
@@ -246,6 +239,7 @@ AFRAME.registerComponent('character', {
 });
 
 // ENEMY AI - Pathing and behaviours - BUGGY MOVEMENT
+// REFACTOR THIS SO THAT ENEMY MOVEMENT CHECKS FOR 0 (FLOOR) INSTEAD OF CHECKING A BUNCH OF OTHER SHITE
 AFRAME.registerComponent('enemy', {
     schema: {
         color: { type: 'color', default: 'white' },
@@ -263,9 +257,10 @@ AFRAME.registerComponent('enemy', {
         strength: { type: 'number', default: 5 },
         health: { type: 'number', default: 5 },
         status: { type: 'string', default: 'alive' },
-        speed: { type: 'number', default: 2 },
+        speed: { type: 'number', default: 0.02 },
         patrol: { type: 'boolean', default: true }
     },
+    multiple: true,
     init: function () {
         let data = this.data;
         const el = this.el;
@@ -282,6 +277,8 @@ AFRAME.registerComponent('enemy', {
         let glowOn = data.glowOn;
         let health = data.health;
         let lifeStatus = data.status;
+
+
 
         // create a char based on attributes
         const newEnemy = document.createElement('a-entity');
@@ -304,7 +301,6 @@ AFRAME.registerComponent('enemy', {
         healthBarTracker.setAttribute('position', '0 0 0');
         healthBarTracker.setAttribute('material', 'color:red');
         healthBarTracker.setAttribute('HealthBarid', id);
-
         healthBar.appendChild(healthBarTracker);
 
         // check if model GLB or Obj - this can probably be made into a util function and put into papyrus core
@@ -353,41 +349,41 @@ AFRAME.registerComponent('enemy', {
         });
     },
     tick: function (time, timeDelta) {
-        this.distanceCheck();
         this.distanceToPlayer();
         this.moveRandom();
         this.moveToPlayer();
     },
     moveRandom: function () {
         const el = this.el;
-        el.setAttribute('animation-mixer', 'clip: Run; loop: repeat; ');
-        let currentPosition = this.el.object3D.position;
+        let data = this.data;
+        let speed = data.speed;
+        el.setAttribute('animation-mixer', 'clip: Run; loop: repeat; '); //  NEEDS A TEST WITH MODEL WITH ANIMATION
         let randomDirection = Math.floor(Math.random() * 5);
         let randRot = Math.floor(Math.random() * 1);
         let randomRotChance = Math.floor(Math.random() * 1000);
-        // random direction and movement
+        // random direction and movement check if ant is on the floor
         if (randomDirection < 1) {
-            el.object3D.position.x += 0.01;
-            el.object3D.position.z += 0.01;
+            el.object3D.position.x += speed ;
+            el.object3D.position.z += speed ;
             if (randomRotChance > 850) {
-                el.object3D.rotation.y += randRot
+                el.object3D.rotation.y += randRot;
             }
         }
         if (randomDirection < 2) {
-            el.object3D.position.x -= 0.01;
-            el.object3D.position.z -= 0.01;
+            el.object3D.position.x -= speed;
+            el.object3D.position.z -= speed;
             if (randomRotChance >750) {
-                el.object3D.rotation.y -= randRot
+                el.object3D.rotation.y -= randRot;
             }
         }
         if (randomDirection > 2 && randomDirection < 3) {
-            el.object3D.position.z -= 0.01;
+            el.object3D.position.z -= speed;
         }
         if (randomDirection > 3 && randomDirection < 4) {
-            el.object3D.position.z += 0.01;
+            el.object3D.position.z += speed;
         }
     },
-    distanceToPlayer: function (dt) {
+    distanceToPlayer: function () {
         const target = document.getElementById('playercam');
         let distanceToPlayerCheck = this.el.getAttribute("position").distanceTo(target)
         // move away if a wall    
@@ -396,19 +392,7 @@ AFRAME.registerComponent('enemy', {
             enemyCombatAttack();
         }
     },
-    distanceCheck: function (dt) {
-        // const wall = document.querySelector('a-box');
-        const wall = document.getElementsByClassName('wall')[0];
-        let wallPos = wall.object3D.position
-        let distanceToWall = this.el.getAttribute("position").distanceTo(wallPos)
-    //    console.log(distanceToWall);
-        // move away if a wall    
-        if (distanceToWall < 1) {
-            let wallPos  = wall.getAttribute(position);
-            el.object3D.position.z=-el.object3D.position.x-wallPos.z;
-        }
-    },
-    moveToPlayer: function (t, dt) {
+    moveToPlayer: function () {
         if (!this.chase) {
             const el = this.el;
             const target = document.getElementById('playercam');
