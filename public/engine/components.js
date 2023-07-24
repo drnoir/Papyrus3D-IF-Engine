@@ -257,14 +257,13 @@ AFRAME.registerComponent('enemy', {
         strength: { type: 'number', default: 5 },
         health: { type: 'number', default: 5 },
         status: { type: 'string', default: 'alive' },
-        speed: { type: 'number', default: 0.02 },
+        speed: { type: 'number', default: 0.015 },
         patrol: { type: 'boolean', default: true }
     },
     multiple: true,
     init: function () {
         let data = this.data;
         const el = this.el;
-        this.chase = false;
         // this is super important for combat - don't delete it
         const id = data.id;
         const modelID = data.modelID;
@@ -277,9 +276,6 @@ AFRAME.registerComponent('enemy', {
         let glowOn = data.glowOn;
         let health = data.health;
         let lifeStatus = data.status;
-
-
-
         // create a char based on attributes
         const newEnemy = document.createElement('a-entity');
         // newEnemy.setAttribute('position', pos);
@@ -317,7 +313,7 @@ AFRAME.registerComponent('enemy', {
         newEnemy.setAttribute('rotation', rot);
         el.appendChild(newEnemy);
         el.appendChild(healthBar);
-
+        // on gaze cursor interaction
         el.addEventListener('click', function (evt) {
             console.log('click detect', newEnemy);
             let newMeleeAttack = shootAt(0);
@@ -329,7 +325,7 @@ AFRAME.registerComponent('enemy', {
                 healthBarTracker.setAttribute('width', healthBarVal);
                 if (lifeStatus === 'alive' && health >1) {
                     let player = document.getElementById('playercam');
-                    let distanceToPlayerCheck = el.getAttribute("position").distanceTo(player)
+                    let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target)<5;
                     // move away if a wall    
                     if (distanceToPlayerCheck < 0.2) {
                         console.log(distanceToPlayerCheck)
@@ -342,6 +338,7 @@ AFRAME.registerComponent('enemy', {
                     console.log('Enemy is dead');
                     el.emit(`enemydead`, null, false);
                     // create death effect - explode?
+
                     // delay removal then remove
                     this.remove();
                 }
@@ -350,8 +347,6 @@ AFRAME.registerComponent('enemy', {
     },
     tick: function (time, timeDelta) {
         this.distanceToPlayer();
-        this.moveRandom();
-        this.moveToPlayer();
     },
     moveRandom: function () {
         const el = this.el;
@@ -384,16 +379,21 @@ AFRAME.registerComponent('enemy', {
         }
     },
     distanceToPlayer: function () {
+        console.log('distanceToPlayerCheck');
         const target = document.getElementById('playercam');
-        let distanceToPlayerCheck = this.el.getAttribute("position").distanceTo(target)
-        // move away if a wall    
-        if (distanceToPlayerCheck < 0.4) {
+        let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target)<5;
+        console.log(distanceToPlayerCheck);
+        // move towards player and attack or move randomly (Patrol later?)
+        if (distanceToPlayerCheck) {
             console.log('enemy is close to player, attack!');
-            enemyCombatAttack();
+            this.moveToPlayer();
+            this.enemyCombatAttack();
+        }
+        else{
+            this.moveRandom();
         }
     },
     moveToPlayer: function () {
-        if (!this.chase) {
             const el = this.el;
             const target = document.getElementById('playercam');
             let vec3 = new THREE.Vector3();
@@ -404,7 +404,6 @@ AFRAME.registerComponent('enemy', {
                 this.el.object3D.position.x = this.el.object3D.position.x - target.object3D.position.x;
                 this.el.object3D.position.z = this.el.object3D.position.z - target.object3D.position.z;
             }
-        }
     },
     remove: function () {
         const el = this.el;

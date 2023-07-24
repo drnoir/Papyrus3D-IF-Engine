@@ -9,11 +9,10 @@ Edit the json files in the public folder and then use the preview and export but
 Allow for customisation and export of games as a separate html / javascript bundle or an exe.
 
 Multi-Platform support - Desktop, Mobile, VR / AR.
-
-Game build in the public folder. Currently a test game but will be replaced with a generic template you can build on. Soon there will be a demos folder for example games once Alpha is ready for release.
+Game build in the public folder. Currently, a test game but will be replaced with a generic template you can build on. Soon there will be a demos folder for example games once Alpha is ready for release.
 
 ### A note on GNU licensing / Licensing for any games built with  Papyrus3D
-All the code for this project is released under a GNU3 licence and you can read the full licence for the software in the licence file. You are free to charge for or distrubute any games you make with the Papyrus3D framework however you want but the source code of anything you release will also be GNU3. It does not allow for you to download the engine code, claim is as your own and start charging for it. Any code that is based upon the source code MUST be released under GNU3 with the same conditions. This project is already built upon A-Frame which is itself an open source project.
+All the code for this project is released under a GNU3 licence, and you can read the full licence for the software in the licence file. You are free to charge for or distrubute any games you make with the Papyrus3D framework however you want but the source code of anything you release will also be GNU3. It does not allow for you to download the engine code, claim is as your own and start charging for it. Any code that is based upon the source code MUST be released under GNU3 with the same conditions. This project is already built upon A-Frame which is itself an open source project.
 
 ### Donating to the Papyrus3D project
 If you appriciate the work I have put into this project for free and want to donate to it. Please donate via https://www.buymeacoffee.com/noirnerd or sponser the project on GitHub. This is a work of passion and for my own self learning but to maintain it long term and to ensure its long term maintenance it helps to get donations from people. All the source code for this project is released to the public for free and with GNU 3 licence which you can find out more about here at https://www.gnu.org/licenses/gpl-3.0.en.html
@@ -58,7 +57,7 @@ check node version with
 to install required packages in the root directory for building from /public
 
 ## Local testing
-open shell and generate key. This genearates a key for ssl for a year. To regenerate run the command again. 
+open shell and generate key. This generates a key for ssl for a year. To regenerate run the command again. 
 > openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
 
 ## Run Local dev server
@@ -69,10 +68,10 @@ to boot up local server for testing with pacakge http-server
 # Trigger builds
 > npm run dist
 
-To create a distrubtion build with electron (Windows, Linux, Mobile App (Android / Apple))
+To create a distribution build with electron (Windows, Linux, Mobile App (Android / Apple))
 Not fully tested for all build types yet. Build is of the public folder with entry point index.html (The entry point for your game)
 
-# screengrabs of currnet version
+# screen grabs of current version
 ![alt text](https://github.com/drnoir/Papyrus3D-IF-Engine/blob/main/screengrab.png?raw=true)
 
 ## Documentation (WIP) 
@@ -81,11 +80,21 @@ Not fully tested for all build types yet. Build is of the public folder with ent
 * Adding characters and editing story config
 * Customizing UI 
 * Creating Player Choices
-* Map Creatopm
+* Map Creator
 * Exporting your project 
   - Web / VR
   - Desktop
   - Mobile
 
   ## Map Symbol Guide
-  
+* char + number - char ref to display numbered NPC Example "char1"
+* 0 - floor
+* 0 + any number - custom height wall
+* 1 - Full height wall
+* 2 - 1/2 height wall
+* 3 - 1/3 height wall
+* 5 - Custom Prefabs
+* 6 - Water
+* 7 - Custom prefabs Example : 71T6 7:type prefav 1 number prefav T trigger flag 6 number dialog to trigger
+* 9 - Enemies 
+* KB - Exit trigger

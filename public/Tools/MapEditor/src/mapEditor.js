@@ -197,7 +197,6 @@ async function loadMapTemplateData(templateSize) {
     console.log(mapRes.length);
 }
 
-
 async function loadTextures(e) {
     let fetchURL = './textures/textures.json';
     const res = await fetch(fetchURL)
