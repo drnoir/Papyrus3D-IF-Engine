@@ -16,32 +16,7 @@ AFRAME.registerComponent('cursor-listener', {
         });
     }
 });
-// TURN MONITORING
-AFRAME.registerComponent('turnmonitor', {
-    schema: {
-        color: { type: 'color', default: 'white' },
-        visible: { type: 'boolean', default: true },
-        turnNumber: { type: 'number', default: 1 },
-        turnType: { type: 'array', default: ['player', 'enemy'] }
-    },
-    init: function () {
-        const data = this.data;
-        const el = this.el;
-        const visible = data.visible;
-        const elHeight = this.el.height;
-        let turnNumber = this.data.turnNumber;
-        let turnType = this.data.turnType[0];
-        el.setAttribute('value', 'Turn ' + turnNumber)
-    },
-    nextTurn: function () {
-        this.turnNumber++;
-        el.setAttribute('value', 'Turn ' + this.turnNumber + this.turnType)
-        // Do something the component or its entity is detached.
-    },
-    remove: function () {
-        // Do something the component or its entity is detached.
-    },
-});
+
 // HEALTH UI WITH UPDATES FOR UPDATING UI OF PLAYER HEALTH 
 AFRAME.registerComponent('playerhealth', {
     schema: {
@@ -176,7 +151,6 @@ AFRAME.registerComponent('playercam', {
         playerhealthBarTracker.setAttribute('HealthBarid', 'playerHealthBar');
         playerhealthBar.appendChild(playerhealthBarTracker);
         newCam.appendChild(playerhealthBar);
-
         // function to load player face
         // check if model GLB or Obj - create func for this
         if (format === "glb") {
@@ -379,10 +353,10 @@ AFRAME.registerComponent('enemy', {
         }
     },
     distanceToPlayer: function () {
-        console.log('distanceToPlayerCheck');
+        // console.log('distanceToPlayerCheck');
         const target = document.getElementById('playercam');
         let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target)<5;
-        console.log(distanceToPlayerCheck);
+        // console.log(distanceToPlayerCheck);
         // move towards player and attack or move randomly (Patrol later?)
         if (distanceToPlayerCheck) {
             console.log('enemy is close to player, attack!');
@@ -445,11 +419,17 @@ AFRAME.registerComponent('playermovement', {
     },
     init: function () {
         this.el.addEventListener('click', function (evt) {
-            let newPos = this.getAttribute('position');
-            const playercam = document.getElementById('playercam');
-            playercam.setAttribute('position', newPos);
-            playercam.object3D.position.y = 1.5;
-        })
+            let newPos = this.object3D.position;
+            const playercam = document.getElementById('playercam')
+            const playercamPos = document.getElementById('playercam').object3D.position;
+            // distance checking
+            console.log(newPos.x, newPos.z);
+            let distanceCheck = playercamPos.distanceTo(newPos);
+            console.log(distanceCheck);
+            if (distanceCheck <=3) {
+                playercam.object3D.position.set(newPos.x, 1.5, newPos.z);
+            }
+            })
     }
 });
 
