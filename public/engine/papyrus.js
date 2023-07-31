@@ -307,7 +307,7 @@ function populateDiag(currentDiagID, currentChar) {
     let newCharName = diag.passage[currentChar].char;
     currentDiagID = currentChar;
     dialogueUI.setAttribute('text', 'wrapCount:' + 100);
-    dialogueUI.setAttribute('text', 'width:' + 3, 2);
+    dialogueUI.setAttribute('text', 'width:' + 3);
     dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
 }
 
@@ -323,7 +323,7 @@ function populateInteractions(interactionID, currentInteraction) {
     let newCharName = interactions.interactions[interactionID].char;
     currentDiagID = interactionID;
     dialogueUI.setAttribute('text', 'wrapCount:' + 100);
-    dialogueUI.setAttribute('text', 'width:' + 3, 2);
+    dialogueUI.setAttribute('text', 'width:' + 3);
     dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
 }
 
@@ -332,7 +332,7 @@ function makeCharActive(charID) {
     const charRef = document.getElementById(charID);
     if (charRef.getAttribute('glowfx', 'visible:false;')) {
         charRef.setAttribute('glowfx', 'visible:true;');
-        charName = charRef.getAttribute('id')
+        let charName = charRef.getAttribute('id')
         console.log('check current' + charName);
     }
 }
@@ -345,6 +345,7 @@ function removeButton() {
 }
 
 function gotKey(keyNum) {
+    // arr the key here (current key)
     doors.push
 }
 
@@ -483,7 +484,7 @@ function createRooms() {
                 enemy1.setAttribute('id', i);
                 enemy1.setAttribute('status', 'alive');
                 enemy1.setAttribute('mixamo.com', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
-                enemy1.setAttribute('animation-mixer', { timeScale: 1 });
+                enemy1.setAttribute('animation-mixer', {timeScale: 1});
                 enemy1.setAttribute('position', charPos);
                 enemy1.setAttribute('static-body', '');
                 const floor = document.createElement('a-box');
@@ -693,7 +694,7 @@ function createRooms() {
 
 function createOutdoorFloor(floorNum) {
     let floorPanels = [];
-    for (var i = 0; i < floorNum; i++) {
+    for (let i = 0; i < floorNum; i++) {
         floorPanels.push(0);
     }
     console.log(floorPanels)
@@ -800,7 +801,7 @@ function clearScene() {
     const el = document.getElementById('room');
     const scene = document.querySelector('a-scene');
     el.parentNode.removeChild(el);
-};
+}
 
 // EXPORTS 
 export { nextScene, loadNewLevel, populateDiag, populateInteractions, clearScene, loadData, shootAt, enemyCombatAttack, getPlayerHealth };

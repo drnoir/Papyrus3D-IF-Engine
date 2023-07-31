@@ -1,10 +1,8 @@
-// Papyrus componenet system
-// Componenents for papyrus engine VR / AR 
-// Dependency - A-Frame / A-Frame Extras
-
+// Papyrus component system
+// Components for papyrus engine VR / AR
+// Dependency tree - A-Frame / A-Frame Extras / Papyrus
 // ENGINE CORE IMPORTS
 import { nextScene, loadData, populateDiag, populateInteractions, shootAt, enemyCombatAttack, getPlayerHealth, clearScene, loadNewLevel } from "./papyrus.js";
-
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -19,33 +17,6 @@ AFRAME.registerComponent('cursor-listener', {
     }
 });
 
-// TURN MONITORING
-AFRAME.registerComponent('turnmonitor', {
-    schema: {
-        color: { type: 'color', default: 'white' },
-        visible: { type: 'boolean', default: true },
-        turnNumber: { type: 'number', default: 1 },
-        turnType: { type: 'array', default: ['player', 'enemy'] }
-    },
-    init: function () {
-        const data = this.data;
-        const el = this.el;
-        const visible = data.visible;
-        const elHeight = this.el.height;
-        let turnNumber = this.data.turnNumber;
-        let turnType = this.data.turnType[0];
-        el.setAttribute('value', 'Turn ' + turnNumber)
-    },
-    nextTurn: function () {
-        this.turnNumber++;
-        el.setAttribute('value', 'Turn ' + this.turnNumber + this.turnType)
-        // Do something the component or its entity is detached.
-    },
-    remove: function () {
-        // Do something the component or its entity is detached.
-    },
-});
-
 // HEALTH UI WITH UPDATES FOR UPDATING UI OF PLAYER HEALTH 
 AFRAME.registerComponent('playerhealth', {
     schema: {
@@ -56,7 +27,7 @@ AFRAME.registerComponent('playerhealth', {
         const data = this.data;
         const el = this.el;
         const visible = data.visible;
-        const elHeight = this.el.height;
+        const elHeight = el.height;
         let health = getPlayerHealth();
         el.setAttribute('value', 'Health ' + health)
     },
@@ -68,16 +39,15 @@ AFRAME.registerComponent('playerhealth', {
         // Do something the component or its entity is detached.
     },
 });
-
 // START GAME BUTTON FOR INIT OF NEW GAME 
 AFRAME.registerComponent('startgamebtn', {
     schema: {
         color: { default: 'red' }
     },
     init: function () {
-        var data = this.data;
-        var el = this.el;
-        var defaultColor = el.getAttribute('material').color;
+        const data = this.data;
+        const el = this.el;
+        const defaultColor = el.getAttribute('material').color;
 
         el.addEventListener('mouseenter', function () {
             el.setAttribute('color', data.color);
@@ -93,7 +63,6 @@ AFRAME.registerComponent('startgamebtn', {
         this.el.destroy();
     },
 });
-
 // ADD GLOW FX 
 AFRAME.registerComponent('glowfx', {
     schema: {
@@ -123,7 +92,6 @@ AFRAME.registerComponent('glowfx', {
         this.el.destroy();
     },
 });
-
 // PLAYER CAM componenet
 AFRAME.registerComponent('playercam', {
     schema: {
@@ -157,7 +125,6 @@ AFRAME.registerComponent('playercam', {
         }
         newCam.setAttribute('look-controls', '');
         newCam.setAttribute('camera', '');
-        const scene = document.getElementsByName('a-scene');
         scene.appendChild(newCam);
         // create cursor
         newCursor.setAttribute('position', '0 0 -1');
@@ -184,7 +151,6 @@ AFRAME.registerComponent('playercam', {
         playerhealthBarTracker.setAttribute('HealthBarid', 'playerHealthBar');
         playerhealthBar.appendChild(playerhealthBarTracker);
         newCam.appendChild(playerhealthBar);
-
         // function to load player face
         // check if model GLB or Obj - create func for this
         if (format === "glb") {
@@ -220,6 +186,7 @@ AFRAME.registerComponent('character', {
         glowOn: { type: 'boolean', default: false },
         charID: { type: 'number', default: 0 },
     },
+    multiple: true,
     init: function () {
         const data = this.data;
         const el = this.el;
@@ -233,13 +200,8 @@ AFRAME.registerComponent('character', {
         if (animated) {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
-        // newCharacter.setAttribute('rotation', rot);
-        // charContainer.appendChild(newCharacter);
-
         // const triggerCharDialogue= data.triggerDialogue;
         const charID = data.charID;
-
-
         this.el.addEventListener('click', function (evt) {
             populateDiag(charID, 0)
         })
@@ -250,7 +212,8 @@ AFRAME.registerComponent('character', {
 
 });
 
-// ENEMY 
+// ENEMY AI - Pathing and behaviours - BUGGY MOVEMENT
+// REFACTOR THIS SO THAT ENEMY MOVEMENT CHECKS FOR 0 (FLOOR) INSTEAD OF CHECKING A BUNCH OF OTHER SHITE
 AFRAME.registerComponent('enemy', {
     schema: {
         color: { type: 'color', default: 'white' },
@@ -268,16 +231,15 @@ AFRAME.registerComponent('enemy', {
         strength: { type: 'number', default: 5 },
         health: { type: 'number', default: 5 },
         status: { type: 'string', default: 'alive' },
-        speed: { type: 'number', default: 2 },
+        speed: { type: 'number', default: 0.015 },
         patrol: { type: 'boolean', default: true }
     },
+    multiple: true,
     init: function () {
         let data = this.data;
         const el = this.el;
-        this.chase = false;
         // this is super important for combat - don't delete it
         const id = data.id;
-        const modelPath = data.modelPath;
         const modelID = data.modelID;
         const modelMat = data.modelID;
         let scale = data.scale;
@@ -287,11 +249,7 @@ AFRAME.registerComponent('enemy', {
         let animated = data.animated;
         let glowOn = data.glowOn;
         let health = data.health;
-        let constitution = data.constitution;
-        let strength = data.strength;
-        const elScale = this.el.scale;
         let lifeStatus = data.status;
-
         // create a char based on attributes
         const newEnemy = document.createElement('a-entity');
         // newEnemy.setAttribute('position', pos);
@@ -301,7 +259,6 @@ AFRAME.registerComponent('enemy', {
         // health bar UI
         const healthBar = document.createElement('a-box');
         const healthBarTracker = document.createElement('a-box');
-        this.healthBarTracker = healthBarTracker;
         let healthBarVal = health / 10 * 3;
         healthBar.setAttribute('height', 0.2);
         healthBar.setAttribute('position', '0 1.5 0');
@@ -314,9 +271,7 @@ AFRAME.registerComponent('enemy', {
         healthBarTracker.setAttribute('position', '0 0 0');
         healthBarTracker.setAttribute('material', 'color:red');
         healthBarTracker.setAttribute('HealthBarid', id);
-
         healthBar.appendChild(healthBarTracker);
-        // newEnemy.appendChild(healthBar);
 
         // check if model GLB or Obj - this can probably be made into a util function and put into papyrus core
         if (format === "glb") {
@@ -324,7 +279,7 @@ AFRAME.registerComponent('enemy', {
         } else {
             newEnemy.setAttribute('obj-model', 'obj:#' + modelID + ';' + 'mtl:#' + modelMat + ';');
         }
-
+        //check for scale and animation
         newEnemy.setAttribute('scale', scale);
         if (animated) {
             newEnemy.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
@@ -332,7 +287,7 @@ AFRAME.registerComponent('enemy', {
         newEnemy.setAttribute('rotation', rot);
         el.appendChild(newEnemy);
         el.appendChild(healthBar);
-
+        // on gaze cursor interaction
         el.addEventListener('click', function (evt) {
             console.log('click detect', newEnemy);
             let newMeleeAttack = shootAt(0);
@@ -344,8 +299,8 @@ AFRAME.registerComponent('enemy', {
                 healthBarTracker.setAttribute('width', healthBarVal);
                 if (lifeStatus === 'alive' && health >1) {
                     let player = document.getElementById('playercam');
-                    let distanceToPlayerCheck = el.getAttribute("position").distanceTo(player)
-                    // distance checking for return attack
+                    let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target)<5;
+                    // move away if a wall    
                     if (distanceToPlayerCheck < 0.2) {
                         console.log(distanceToPlayerCheck)
                         enemyCombatAttack();
@@ -357,59 +312,63 @@ AFRAME.registerComponent('enemy', {
                     deathAudio.play();
                     console.log('Enemy is dead');
                     el.emit(`enemydead`, null, false);
+                    // create death effect - explode?
+
+                    // delay removal then remove
                     this.remove();
                 }
             }
         });
     },
     tick: function (time, timeDelta) {
-        this.distanceCheck();
         this.distanceToPlayer();
-        this.moveRandom();
-        this.moveToPlayer();
     },
     moveRandom: function () {
         const el = this.el;
-        el.setAttribute('animation-mixer', 'clip: Run; loop: repeat; ');
-        let currentPosition = this.el.object3D.position;
+        let data = this.data;
+        let speed = data.speed;
+        el.setAttribute('animation-mixer', 'clip: Run; loop: repeat; '); //  NEEDS A TEST WITH MODEL WITH ANIMATION
         let randomDirection = Math.floor(Math.random() * 5);
         let randRot = Math.floor(Math.random() * 1);
         let randomRotChance = Math.floor(Math.random() * 1000);
-        // random direction and movement
+        // random direction and movement check if ant is on the floor
         if (randomDirection < 1) {
-            el.object3D.position.x += 0.01;
-            el.object3D.position.z += 0.01;
-            if (randomRotChance > 950) {
-                el.object3D.rotation.y += randRot
+            el.object3D.position.x += speed ;
+            el.object3D.position.z += speed ;
+            if (randomRotChance > 850) {
+                el.object3D.rotation.y += randRot;
             }
-        };
+        }
         if (randomDirection < 2) {
-            el.object3D.position.x -= 0.01;
-            el.object3D.position.z -= 0.01;
+            el.object3D.position.x -= speed;
+            el.object3D.position.z -= speed;
             if (randomRotChance >750) {
-                el.object3D.rotation.y -= randRot
+                el.object3D.rotation.y -= randRot;
             }
-        };
+        }
         if (randomDirection > 2 && randomDirection < 3) {
-            el.object3D.position.z -= 0.01;
-        };
+            el.object3D.position.z -= speed;
+        }
         if (randomDirection > 3 && randomDirection < 4) {
-            el.object3D.position.z += 0.01;
-        };
+            el.object3D.position.z += speed;
+        }
     },
-    distanceToPlayer: function (dt) {
-        var target = document.getElementById('playercam');
-        let distanceToPlayerCheck = this.el.getAttribute("position").distanceTo(target)
-        // move away if a wall    
-        if (distanceToPlayerCheck < 0.1) {
+    distanceToPlayer: function () {
+        // console.log('distanceToPlayerCheck');
+        const target = document.getElementById('playercam');
+        let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target)<5;
+        // console.log(distanceToPlayerCheck);
+        // move towards player and attack or move randomly (Patrol later?)
+        if (distanceToPlayerCheck) {
             console.log('enemy is close to player, attack!');
-            enemyCombatAttack();
+            this.moveToPlayer();
+            this.enemyCombatAttack();
         }
     },
     distanceCheck: function (dt) {
         // const wall = document.querySelector('a-box');
         const wall = document.getElementsByClassName('wall')[0];
-        let wallPos = wall.object3D.position;
+        let wallPos = wall.object3D.position
         let distanceToWall = this.el.getAttribute("position").distanceTo(wallPos)
     //    console.log(distanceToWall);
         // move away if a wall    
@@ -419,15 +378,13 @@ AFRAME.registerComponent('enemy', {
             el.object3D.position.z+= 0.1;
         }
     },
-    moveToPlayer: function (t, dt) {
-        if (!this.chase) {
+    moveToPlayer: function () {
             const el = this.el;
-            var target = document.getElementById('playercam');
-            var vec3 = new THREE.Vector3();
-            var currentPosition = el.getAttribute("position");
+            const target = document.getElementById('playercam');
+            let vec3 = new THREE.Vector3();
+            const currentPosition = el.getAttribute("position");
             vec3 = this.el.object3D.worldToLocal(target.object3D.position.clone());
             var camFromOrca = currentPosition.distanceTo(target.object3D.position);
-            const distanceBetween = this.el.object3D.position.x/target.object3D.position.x
             if (camFromOrca < 3) {
                 console.log('enemy move player triggered - player is close - move towards player');
                 console.log(distanceBetween);
@@ -439,7 +396,6 @@ AFRAME.registerComponent('enemy', {
                 this.el.object3D.position.multiplyScalar(2);
                 this.el.object3D.position.sub(vec3);
             }
-        }
     },
     remove: function () {
         const el = this.el;
@@ -474,17 +430,24 @@ AFRAME.registerComponent('intersection-spawn', {
     }
 });
 
+// Positioning component
 AFRAME.registerComponent('playermovement', {
     schema: {
         default: '',
     },
     init: function () {
         this.el.addEventListener('click', function (evt) {
-            let newPos = this.getAttribute('position');
-            const playercam = document.getElementById('playercam');
-            playercam.setAttribute('position', newPos);
-            playercam.object3D.position.y = 1.5;
-        })
+            let newPos = this.object3D.position;
+            const playercam = document.getElementById('playercam')
+            const playercamPos = document.getElementById('playercam').object3D.position;
+            // distance checking
+            console.log(newPos.x, newPos.z);
+            let distanceCheck = playercamPos.distanceTo(newPos);
+            console.log(distanceCheck);
+            if (distanceCheck <=3) {
+                playercam.object3D.position.set(newPos.x, 1.5, newPos.z);
+            }
+            })
     }
 });
 
@@ -508,14 +471,14 @@ AFRAME.registerComponent('triggerdiagfloor', {
     },
 });
 
-
+//prefab Loading - Works
 AFRAME.registerComponent('prefab', {
     schema: {
         triggerDialogue: { type: 'boolean', default: false },
         interactionNum: { type: 'number', default: 0 },
     },
     init: function () {
-        var data = this.data;
+        const data = this.data;
         const el = this.el;
         const triggerDialogue = this.data.triggerDialogue;
         const interactionNum = this.data.interactionNum;
@@ -532,7 +495,7 @@ AFRAME.registerComponent('prefab', {
 });
 
 
-
+// door open and shut (Works)
 AFRAME.registerComponent('door', {
     schema: {
         locked: { type: 'boolean', default: false },
@@ -540,7 +503,7 @@ AFRAME.registerComponent('door', {
     },
     init: function () {
         const el = this.el;
-        var data = this.data;
+        const data = this.data;
         let locked = data.locked;
         this.closeDoor = AFRAME.utils.bind(this.closeDoor, this);
 
@@ -552,7 +515,6 @@ AFRAME.registerComponent('door', {
                 el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
                 let doorAudio = document.querySelector("#dooropen");
                 doorAudio.play();
-                this.closeDoor;
             }
             // locked door checks
             else {
@@ -567,7 +529,7 @@ AFRAME.registerComponent('door', {
             console.log(el, 'triggered door close')
             let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
             let newX = x + 3;
-            this.el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000")
+            el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000")
         }
     },
     remove: function () {
@@ -576,7 +538,7 @@ AFRAME.registerComponent('door', {
     },
 });
 
-
+// key pickup componenet
 AFRAME.registerComponent('key', {
     schema: {
         default: '',
@@ -590,7 +552,8 @@ AFRAME.registerComponent('key', {
                 const data = this.data;
                 const keyNumber = data.keyNumber;
                 this.el.addEventListener('click', function (evt) {
-                    gotKey(keyNumber)
+                    gotKey(keyNumber);
+                    this.remove();
                 })
             },
             remove: function () {
@@ -609,7 +572,7 @@ AFRAME.registerComponent("load-texture", {
         const data = this.data;
         const el = this.el;
         let src = data.src;
-        var textureLoader = new THREE.TextureLoader();
+        const textureLoader = new THREE.TextureLoader();
         textureLoader.load(src,
             // onLoad
             function (tex) {
@@ -626,6 +589,7 @@ AFRAME.registerComponent("load-texture", {
     }
 })
 
+// component for triggering an exit event
 AFRAME.registerComponent('exit', {
     schema: {
         color: { type: 'color', default: 'green' },
