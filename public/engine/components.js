@@ -321,7 +321,11 @@ AFRAME.registerComponent('enemy', {
         });
     },
     tick: function (time, timeDelta) {
-        this.distanceToPlayer();
+        let playerDistance = this.distanceToPlayer();
+        let wallDistance = this.distanceCheck();
+        if (!playerDistance && !wallDistance){
+            this.moveRandom();
+        }
     },
     moveRandom: function () {
         const el = this.el;
@@ -377,6 +381,9 @@ AFRAME.registerComponent('enemy', {
             el.object3D.position.x+= 0.1;
             el.object3D.position.z+= 0.1;
         }
+
+        let goAwayFromWall =  distanceToWall <1 ? true : false;
+        return goAwayFromWall;
     },
     moveToPlayer: function () {
             const el = this.el;
@@ -385,7 +392,7 @@ AFRAME.registerComponent('enemy', {
             const currentPosition = el.getAttribute("position");
             vec3 = this.el.object3D.worldToLocal(target.object3D.position.clone());
             var camFromOrca = currentPosition.distanceTo(target.object3D.position);
-            if (camFromOrca < 3) {
+            if (camFromOrca<=3) {
                 console.log('enemy move player triggered - player is close - move towards player');
                 console.log(distanceBetween);
                 this.el.object3D.position.x += 1;
@@ -396,6 +403,9 @@ AFRAME.registerComponent('enemy', {
                 this.el.object3D.position.multiplyScalar(2);
                 this.el.object3D.position.sub(vec3);
             }
+            let goToPlayer = camFromOrca <=3 ? true : false;
+            return goToPlayer;
+   
     },
     remove: function () {
         const el = this.el;
@@ -619,6 +629,7 @@ AFRAME.registerComponent('exit', {
 
         this.el.addEventListener('click', function (evt) {
             loadNewLevel(toLoad);
+            // createOutdoorFloor
         })
     },
     remove: function () {

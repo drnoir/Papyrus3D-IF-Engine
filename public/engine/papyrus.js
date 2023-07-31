@@ -313,6 +313,7 @@ function populateDiag(currentDiagID, currentChar) {
 
 function populateInteractions(interactionID, currentInteraction) {
     const dialogueUI = document.getElementById('dialogueID');
+    const passageBtn = document.getElementById('nextPassageBtn');
     // add button test function
     showDialogueUI();
     // const passageBtn = document.getElementById('nextPassageBtn');
@@ -321,7 +322,7 @@ function populateInteractions(interactionID, currentInteraction) {
     }
     let newPassage = interactions.interactions[interactionID].text;
     let newCharName = interactions.interactions[interactionID].char;
-    currentDiagID = interactionID;
+    currentDiagID = currentInteraction;
     dialogueUI.setAttribute('text', 'wrapCount:' + 100);
     dialogueUI.setAttribute('text', 'width:' + 3);
     dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
