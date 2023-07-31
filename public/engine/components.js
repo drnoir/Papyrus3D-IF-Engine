@@ -345,12 +345,13 @@ AFRAME.registerComponent('enemy', {
                 if (lifeStatus === 'alive' && health >1) {
                     let player = document.getElementById('playercam');
                     let distanceToPlayerCheck = el.getAttribute("position").distanceTo(player)
-                    // move away if a wall    
+                    // distance checking for return attack
                     if (distanceToPlayerCheck < 0.2) {
                         console.log(distanceToPlayerCheck)
                         enemyCombatAttack();
                     }
                 } else {
+                    // enemy dies
                     lifeStatus = 'dead';
                     let deathAudio = document.querySelector("#death");
                     deathAudio.play();
@@ -408,7 +409,7 @@ AFRAME.registerComponent('enemy', {
     distanceCheck: function (dt) {
         // const wall = document.querySelector('a-box');
         const wall = document.getElementsByClassName('wall')[0];
-        let wallPos = wall.object3D.position
+        let wallPos = wall.object3D.position;
         let distanceToWall = this.el.getAttribute("position").distanceTo(wallPos)
     //    console.log(distanceToWall);
         // move away if a wall    
@@ -426,9 +427,17 @@ AFRAME.registerComponent('enemy', {
             var currentPosition = el.getAttribute("position");
             vec3 = this.el.object3D.worldToLocal(target.object3D.position.clone());
             var camFromOrca = currentPosition.distanceTo(target.object3D.position);
+            const distanceBetween = this.el.object3D.position.x/target.object3D.position.x
             if (camFromOrca < 3) {
-                this.el.object3D.position.x = this.el.object3D.position.x - target.object3D.position.x;
-                this.el.object3D.position.z = this.el.object3D.position.z - target.object3D.position.z;
+                console.log('enemy move player triggered - player is close - move towards player');
+                console.log(distanceBetween);
+                this.el.object3D.position.x += 1;
+                this.el.object3D.position.multiplyScalar(2);
+                this.el.object3D.position.sub(vec3);
+
+                this.el.object3D.position.z += 1;
+                this.el.object3D.position.multiplyScalar(2);
+                this.el.object3D.position.sub(vec3);
             }
         }
     },
