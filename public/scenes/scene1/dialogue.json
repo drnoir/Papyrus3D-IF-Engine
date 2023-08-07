@@ -20,8 +20,8 @@
       "choices" : ["Yes Ok", "No Way"]
     },
     {
-      "char": "Bob", 
-      "id" : 1,
+      "char": "copidle", 
+      "id" : 3,
       "position": "-1.5, 0, -4",
       "text": "Get blasting!"
     }
