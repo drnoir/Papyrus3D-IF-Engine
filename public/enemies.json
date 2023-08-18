@@ -8,6 +8,15 @@
       "strength" : 4,
       "constitution" : 12,
       "animations": []
+    },
+    {
+      "name": "copidle",
+      "id": "copidle",
+      "model": "models/copidle.glb",
+      "health": 10,
+      "scale": 1,
+      "strength" : 4,
+      "constitution" : 12
     }
   ]
 }

@@ -323,6 +323,7 @@ AFRAME.registerComponent('enemy', {
     tick: function (time, timeDelta) {
         let playerDistance = this.distanceToPlayer();
         let wallDistance = this.distanceCheck();
+        console.log('enemy distance checks'+playerDistance, wallDistance)
         if (!playerDistance && !wallDistance){
             this.moveRandom();
         }
@@ -360,7 +361,7 @@ AFRAME.registerComponent('enemy', {
     distanceToPlayer: function () {
         // console.log('distanceToPlayerCheck');
         const target = document.getElementById('playercam');
-        let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target)<5;
+        let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target)<=3;
         // console.log(distanceToPlayerCheck);
         // move towards player and attack or move randomly (Patrol later?)
         if (distanceToPlayerCheck) {
@@ -368,6 +369,8 @@ AFRAME.registerComponent('enemy', {
             this.moveToPlayer();
             this.enemyCombatAttack();
         }
+        let goAwayFromPlayer =  distanceToPlayerCheck <=3 ? true : false;
+        return  goAwayFromPlayer;
     },
     distanceCheck: function (dt) {
         // const wall = document.querySelector('a-box');
@@ -637,6 +640,3 @@ AFRAME.registerComponent('exit', {
         el.destroy();
     },
 });
-
-
-

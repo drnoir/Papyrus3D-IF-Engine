@@ -4,6 +4,11 @@
         "Object": "Old Computer",
         "position": "-1.5, 0, -4",
         "text": "Oh wow this computer is almost old enough to be in a museum!"
+      },
+      {
+        "Object": "chest",
+        "position": "-1.5, 0, -4",
+        "text": "I wonder if there is treasure in here"
       }
     ]
   }

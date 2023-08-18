@@ -151,7 +151,7 @@ function addEnemy(enemyID) {
     enemy.setAttribute('id', enemies.enemies[enemyID].name);
     enemy.setAttribute('name', enemies.enemies[enemyID].name);
     enemy.setAttribute('gltf-model', modelID);
-    enemy.setAttribute('scale', "0.5 0.5 0.5");
+    enemy.setAttribute('scale', "1 1 1");
     enemy.setAttribute('enemy', '');
     enemy.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     return enemy;
@@ -162,7 +162,7 @@ function addTorch(torchColor, torchIndex) {
     let torch = document.createElement('a-box');
     torch.setAttribute('id', torch + [torchIndex]);
     let fire = document.createElement('a-entity');
-    fire.setAttribute('light', 'type: point; intensity: 0.10; distance: 1; decay: 0');
+    fire.setAttribute('light', 'type: point; intensity: 0.25; distance: 1; decay: 0');
     fire.setAttribute('color' + torchColor);
     torch.appendChild(fire);
     return torch;
@@ -481,7 +481,7 @@ function createRooms() {
             }
             // enemy slots
             if (mapData[i] === 9) {
-                let enemy1 = addEnemy(0);
+                let enemy1 = addEnemy(1);
                 enemy1.setAttribute('id', i);
                 enemy1.setAttribute('status', 'alive');
                 enemy1.setAttribute('mixamo.com', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
@@ -542,7 +542,20 @@ function createRooms() {
                 let torch = addTorch('yellow', i);
                 console.log('torch ran and char is' + torch)
                 torch.setAttribute('position', torchPosition);
+                // add floor 
+                const floor = document.createElement('a-box');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('width', WALL_SIZE);
+                floor.setAttribute('depth', WALL_SIZE);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', floorPos);
+                // wall.setAttribute('load-texture', '');
+                floor.setAttribute('editor-listener', '');
+                floor.setAttribute('material', 'src:#' + floorTexture);
+                floor.setAttribute('playermovement', '');
+
                 el.appendChild(torch);
+                el.appendChild(floor);
             }
             // add keys
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "K") {
