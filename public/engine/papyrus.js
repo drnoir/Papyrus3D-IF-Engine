@@ -520,9 +520,11 @@ function createRooms() {
                 wall.setAttribute('id', 'exit');
                 wall.setAttribute('class', 'floor');
                 wall.setAttribute('playermovement', '');
+                wall.setAttribute('glow', '');
                 // create component for exit  
                 wall.setAttribute('exit', 'toLoad:' + nextSceneToLoad + ';');
                 wall.setAttribute('material', 'src:#' + exitTexture);
+                wall.setAttribute('color', 'green');
                 // wall.setAttribute('color', 'green');
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);

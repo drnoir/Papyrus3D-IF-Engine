@@ -457,7 +457,7 @@ AFRAME.registerComponent('playermovement', {
             console.log(newPos.x, newPos.z);
             let distanceCheck = playercamPos.distanceTo(newPos);
             console.log(distanceCheck);
-            if (distanceCheck <=3) {
+            if (distanceCheck <=3.5) {
                 playercam.object3D.position.set(newPos.x, 1.5, newPos.z);
             }
             })
@@ -605,7 +605,7 @@ AFRAME.registerComponent("load-texture", {
 // component for triggering an exit event
 AFRAME.registerComponent('exit', {
     schema: {
-        color: { type: 'color', default: 'green' },
+        color: { type: 'string', default: 'green' },
         modelID: { type: 'string', default: 'exit' },
         modelMat: { type: 'string', default: 'exit' },
         position: { type: 'string', default: '0 0.1 0' },

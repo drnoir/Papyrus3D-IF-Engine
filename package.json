@@ -63,14 +63,14 @@
   "homepage": "https://github.com/drnoir/Papyrus3D-IF-Engine#readme",
   "devDependencies": {
     "electron": "^25.0.0",
-    "electron-builder": "^23.6.0",
+    "electron-builder": "^24.6.3",
     "http-server": "^14.1.1",
     "make-dir-webpack-plugin": "^0.1.0"
   },
   "dependencies": {
+    "ammo.js": "github:mozillareality/ammo.js#hubs/master",
     "budo": "^11.8.4",
     "concurrently": "^8.0.1",
-    "gltf-navmesh-generator": "^0.2.0",
     "scssify": "^4.0.0",
     "stringify": "^5.2.0"
   }
