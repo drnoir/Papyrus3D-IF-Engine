@@ -324,7 +324,7 @@ AFRAME.registerComponent('enemy', {
         let playerDistance = this.distanceToPlayer();
         let wallDistance = this.distanceCheck();
         console.log('enemy distance checks'+playerDistance, wallDistance)
-        if (!playerDistance && !wallDistance){
+        if (playerDistance || !wallDistance){
             this.moveRandom();
         }
     },
@@ -370,23 +370,28 @@ AFRAME.registerComponent('enemy', {
             this.enemyCombatAttack();
         }
         let goAwayFromPlayer =  distanceToPlayerCheck <=3 ? true : false;
+        console.log('move from player check'+goAwayFromPlayer)
         return  goAwayFromPlayer;
     },
     distanceCheck: function (dt) {
         // const wall = document.querySelector('a-box');
         const wall = document.getElementsByClassName('wall')[0];
+        console.log(wall);
         let wallPos = wall.object3D.position
         let distanceToWall = this.el.getAttribute("position").distanceTo(wallPos)
-    //    console.log(distanceToWall);
+    //    console.log(distanceToWall
+        console.log(distanceToWall);
         // move away if a wall    
-        if (distanceToWall < 1) {
+        if (distanceToWall <5) {
             // let floorPos = floor.getAttribute(position);
-            el.object3D.position.x+= 0.1;
-            el.object3D.position.z+= 0.1;
+           this.el.object3D.position.x+= 0.1;
+            this.el.object3D.position.z+= 0.1;
         }
 
         let goAwayFromWall =  distanceToWall <1 ? true : false;
+        console.log('move away from wall'+goAwayFromWall);
         return goAwayFromWall;
+      
     },
     moveToPlayer: function () {
             const el = this.el;

@@ -1,7 +1,7 @@
 {
   "SceneName": "Scene2",
   "Author" : "Chris Godber",
-  "RoomType": "Indoor",
+  "roomType": "Indoor",
   "RoomTextures" : "Brick",
   "floorTextures" : "Grass",
   "RoomWidth" : 8,

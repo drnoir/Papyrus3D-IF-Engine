@@ -9,7 +9,7 @@ let lockedDoors = [];
 // STORE TEXTURE INFO
 let textures; let prefabs;
 // diaglog UI Globals / shit 
-let currentDiagID = 0; let currentScene = 1; let nextSceneToLoad = currentScene + 1;
+let currentDiagID = 0; let currentScene = 1; let nextSceneToLoad = currentScene+1;
 let currentChar = 0; let mapSource = 0; let currentInteraction = 0;
 // combat var defaults SIMULATED DICE - Combat system is based on D and D - INIT vals / max 
 let CombatDiceNumber = 6;
@@ -151,9 +151,10 @@ function addEnemy(enemyID) {
     enemy.setAttribute('id', enemies.enemies[enemyID].name);
     enemy.setAttribute('name', enemies.enemies[enemyID].name);
     enemy.setAttribute('gltf-model', modelID);
-    enemy.setAttribute('scale', "1 1 1");
+    enemy.setAttribute('scale', "0.01 0.01 0.01");
     enemy.setAttribute('enemy', '');
     enemy.setAttribute('animation-mixer', "clip: *; loop: repeat;");
+    enemy.setAttribute('animation-mixer', {timeScale: 1});
     return enemy;
 }
 
@@ -354,7 +355,7 @@ function gotKey(keyNum) {
 // Create rooms loop - called at init
 function createRooms() {
     const mapData = mapSource.data;
-    let roomType = sceneMetadata.roomtype;
+    let roomType = sceneMetadata.roomType;
     console.log(roomType)
     // char info
     const chars = mapSource.chars; const charNum = mapSource.charnumber;
@@ -366,8 +367,13 @@ function createRooms() {
 
     const WALL_SIZE = 1;
     const WALL_HEIGHT = 3.5;
-    const el = document.getElementById('room')
-
+    let el = document.getElementById('room')
+    if (el===null){
+        const scene = document.querySelector('a-scene');
+        el = document.createElement('a-entity');
+        el.setAttribute('id', 'room');
+        scene.appendChild(el);
+    }
     let door; let wall;
     if (roomType === "Indoor") {
         let ceil = document.createElement('a-box');
@@ -484,8 +490,9 @@ function createRooms() {
                 let enemy1 = addEnemy(1);
                 enemy1.setAttribute('id', i);
                 enemy1.setAttribute('status', 'alive');
+                enemy1.setAttribute('animation-mixer', "clip: *; loop: repeat;");
                 enemy1.setAttribute('mixamo.com', 'property:opacity;from: 1; to: 0;opacity:1 to 0;dur: 5000; easing: easeInOutSine; loop: false; startEvents: enemydead');
-                enemy1.setAttribute('animation-mixer', {timeScale: 1});
+                // enemy1.setAttribute('animation-mixer', {timeScale: 1});
                 enemy1.setAttribute('position', charPos);
                 enemy1.setAttribute('static-body', '');
                 const floor = document.createElement('a-box');
@@ -522,7 +529,7 @@ function createRooms() {
                 wall.setAttribute('playermovement', '');
                 wall.setAttribute('glow', '');
                 // create component for exit  
-                wall.setAttribute('exit', 'toLoad:' + nextSceneToLoad + ';');
+                wall.setAttribute('exit', 'toLoad:' + nextSceneToLoad++ + ';');
                 wall.setAttribute('material', 'src:#' + exitTexture);
                 wall.setAttribute('color', 'green');
                 // wall.setAttribute('color', 'green');

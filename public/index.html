@@ -12,6 +12,7 @@
         <a-assets>
             <!-- models -->
             <a-asset-item id="bob" src='./models/geek.glb'></a-asset-item>
+            <a-asset-item id="grunt" src='./models/grunt.glb'></a-asset-item>
             <a-asset-item id="lady" src='./models/lady.glb'></a-asset-item>
             <a-asset-item id="glow" src="./glow.png"></a-asset-item>
             <a-asset-item id="gun" src="./models/fps_gun.glb"></a-asset-item>
@@ -56,7 +57,7 @@
         <a-entity sound="src: #playerattack" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
         <a-entity sound="src: #pistolshot" autoplay="false" volume="0.4" loop="false" positional="false"></a-entity>
         <a-entity light="type: ambient; color: #CCC;intensity: 0.34;"></a-entity>
-        <a-light type="point" color="#dd5003"  intensity='0.75' distance="8" position="-2 1 -0.2"></a-light>
+        <!-- <a-light type="point" color="#dd5003"  intensity='0.75' distance="8" position="-2 1 -0.2"></a-light> -->
         <a-circle id="startGame" startgamebtn radius="0.5" depth="0.1" position="1 2 -0.1 " rotation="0 0 0"
             color="black"><a-text position="-0.5 0 0.2" value="Start Game"></a-text></a-circle>
         <a-entity id="playercam" position="1 1.5 2">

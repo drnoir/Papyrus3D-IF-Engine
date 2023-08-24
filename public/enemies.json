@@ -10,9 +10,9 @@
       "animations": []
     },
     {
-      "name": "copidle",
-      "id": "copidle",
-      "model": "models/copidle.glb",
+      "name": "grunt",
+      "id": "grunt",
+      "model": "models/grunt.glb",
       "health": 10,
       "scale": 1,
       "strength" : 4,
