@@ -399,6 +399,7 @@ function createRooms() {
             for (let y = 0; y < mapSource.width; y++) {
                 const i = (y * mapSource.height) + x;
                 const floorPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            
                 // flat floor for outdoor
                 if (mapSource[i] === 0) {
                     console.log('loop', mapSource[i])
@@ -452,6 +453,22 @@ function createRooms() {
                 el.appendChild(floor);
                 el.appendChild(char);
                 // charLoopIndex++;
+            }
+            // playercam
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "P") {
+                const playerPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 1.5 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+                updatePlayerPos(playerPos);
+                const floor = document.createElement('a-box');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('width', WALL_SIZE);
+                floor.setAttribute('depth', WALL_SIZE);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', floorPos);
+                // wall.setAttribute('load-texture', '');
+                floor.setAttribute('editor-listener', '');
+                floor.setAttribute('material', 'src:#' + floorTexture);
+                el.appendChild(floor);
+            
             }
             // prefabs
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "7") {
@@ -817,7 +834,7 @@ function RandomDiceRoll(min, max) {
 
 // Update Player pos
 function updatePlayerPos(newPlayPos) {
-    document.querySelector('#player').setAttribute('position', newPlayPos);
+    document.querySelector('#playercam').setAttribute('position', newPlayPos);
 }
 
 function clearScene() {
