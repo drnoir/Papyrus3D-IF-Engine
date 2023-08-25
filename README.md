@@ -93,9 +93,10 @@ Not fully tested for all build types yet. Build is of the public folder with ent
 * 1 - Full height wall
 * 2 - 1/2 height wall
 * 3 - 1/3 height wall
-* 5 - Custom Prefabs
+* 4 - door
+* 5 - exit door
 * 6 - Water
 * 7 - Custom prefabs Example : 71T6 7:type prefav 1 number prefab T trigger flag 6 number dialog to trigger
 * 9 - Enemies 
 * P - Playerstart
-* KB - Exit trigger
+* KB - Key and then Blue for blue, y for tellow , R for red, G for Green

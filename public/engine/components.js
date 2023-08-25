@@ -570,6 +570,7 @@ AFRAME.registerComponent('key', {
                 const data = this.data;
                 const keyNumber = data.keyNumber;
                 this.el.addEventListener('click', function (evt) {
+                    console.log('key clicked')
                     gotKey(keyNumber);
                     this.remove();
                 })

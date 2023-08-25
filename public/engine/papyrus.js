@@ -416,7 +416,9 @@ function createRooms() {
                 }
             }
         }
-        enviroment.setAttribute('environment', "preset: arches; ground:hills; groundYScale:1; playArea:300;  dressingAmount: 10; dressingVariance:1 2 1; shadow:true;");
+    
+        enviroment.setAttribute('environment', "ground:hills; groundYScale:0.5; playArea:500;  dressingAmount: 5; dressingVariance:1 2 1; shadow:true;");
+        enviroment.setAttribute('position', '0 -5 10')
         newRoom.appendChild(enviroment);
     }
     // LOOP to map geometry 
@@ -482,7 +484,7 @@ function createRooms() {
 
                 console.log('diaglogue trigger:' + diagTrigger + 'dialogueNum' + triggerNum);
                 const prefabElm = document.createElement('a-entity');
-                const prefabElmNum = prefabs.prefabs[1];
+                const prefabElmNum = prefabs.prefabs[prefabNum1];
                 console.log(prefabElmNum)
                 prefabElm.setAttribute('gltf-model', '#' + prefabElmNum.id);
                 prefabElm.setAttribute('scale', prefabElmNum.scale);
@@ -539,29 +541,7 @@ function createRooms() {
                 water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
                 el.appendChild(water);
             }
-            // add exit
-            if (mapData[i] === 5) {
-                wall.setAttribute('id', 'exit');
-                wall.setAttribute('class', 'floor');
-                wall.setAttribute('playermovement', '');
-                wall.setAttribute('glow', '');
-                // create component for exit  
-                wall.setAttribute('exit', 'toLoad:' + nextSceneToLoad++ + ';');
-                wall.setAttribute('material', 'src:#' + exitTexture);
-                wall.setAttribute('color', 'green');
-                // wall.setAttribute('color', 'green');
-                const floor = document.createElement('a-box');
-                floor.setAttribute('height', WALL_HEIGHT / 20);
-                floor.setAttribute('width', WALL_SIZE);
-                floor.setAttribute('depth', WALL_SIZE);
-                floor.setAttribute('static-body', '');
-                floor.setAttribute('position', floorPos);
-                // wall.setAttribute('load-texture', '');
-                floor.setAttribute('editor-listener', '');
-                floor.setAttribute('material', 'src:#' + floorTexture);
-                floor.setAttribute('playermovement', '');
-                el.appendChild(floor);
-            }
+
             // add torch / light
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "t") {
                 console.log("its a torch!")
@@ -590,7 +570,9 @@ function createRooms() {
                 let key = addKey(mapData[i].charAt(1), i);
                 key.setAttribute('position', keyPosition);
                 key.setAttribute('material', 'src:#' + keyTexture);
-
+                key.setAttribute('key', '');
+                key.setAttribute('editor-listener', '');
+                
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
                 floor.setAttribute('width', WALL_SIZE);
@@ -612,8 +594,8 @@ function createRooms() {
                 camPointDebug.setAttribute('visible', false)
                 el.appendChild(camPoint);
             }
-            // if the number is 1 - 5,  create a wall
-            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0" || mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
+            // if the number is 1 - 4,  create a wall
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0" || mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4  || mapData[i] === 5) {
                 wall = document.createElement('a-box');
                 wall.setAttribute('width', WALL_SIZE);
                 wall.setAttribute('height', WALL_HEIGHT);
@@ -719,6 +701,33 @@ function createRooms() {
                     el.appendChild(floor);
                 }
             }
+
+                       // add exit
+                       if (mapData[i] === 5) {
+                        wall.setAttribute('id', 'door');
+                        // create component for door / lock
+                        wall.setAttribute('height', WALL_HEIGHT);
+                        wall.setAttribute('door', 'false');
+                        wall.setAttribute('locked', 'false');
+                        wall.setAttribute('door', '');
+                        wall.setAttribute('scale', '1 1 1');
+                        wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
+                        const floor = document.createElement('a-box');
+                        floor.setAttribute('height', WALL_HEIGHT / 20);
+                        floor.setAttribute('width', WALL_SIZE);
+                        floor.setAttribute('depth', WALL_SIZE);
+                        floor.setAttribute('static-body', '');
+                        floor.setAttribute('position', floorPos);
+                        floor.setAttribute('editor-listener', '');
+                        floor.setAttribute('material', 'src:#' + floorTexture);
+                        // floor.setAttribute('playermovement', '');
+                        // floor.setAttribute('playermovement', '');
+                        wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
+                        wall.setAttribute('exit', 'toLoad:' + nextSceneToLoad++ + ';');
+        
+                        el.appendChild(wall);
+                        el.appendChild(floor);
+                    }
         }
     }
     // top down map update pos - FUTURE FEATURE

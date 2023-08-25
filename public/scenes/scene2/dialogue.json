@@ -1,9 +1,29 @@
 {
   "passage": [
     {
-      "char": "Tree",
-      "position": "0, 0, -4",
-      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et varius libero, vel fermentum nulla. Pellentesque gravida nibh eu dui molestie eleifend. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque varius lacus elit, a dignissim elit scelerisque et. Suspendisse turpis urna, vulputate at ligula sit amet, dignissim varius mauris. Nulla hendrerit elit ultrices, scelerisque enim ut, malesuada ligula. Nulla rhoncus luctus sapien vitae porta. Morbi tincidunt mi eget ligula hendrerit, dignissim feugiat mi eleifend."
+      "char": "bob",
+      "id" : 1,
+      "position": "-1.5, 0, -4",
+      "text": "Hey new guy! Come and open that door, it's Bob! I'm through the next room"
+    },
+    {
+      "char": "bob",
+      "id" : 1,
+      "position": "-1.5, 0, -6",
+      "text": "So new guy guy, whatever you name is.... We got a bit of an infestation problem that needs sorting out"
+    },
+    {
+      "char": "bob",
+      "id" : 1,
+      "position": "-1.5, 0, -4",
+      "text": "Go and use your pistol to take out these goddamn huge mutant ants. Union doesn't pay me enough for this shit, and its your first day so.... ",
+      "choices" : ["Yes Ok", "No Way"]
+    },
+    {
+      "char": "woman", 
+      "id" : 3,
+      "position": "-1.5, 0, -4",
+      "text": "Get blasting!"
     }
   ]
 }

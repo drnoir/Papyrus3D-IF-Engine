@@ -4,7 +4,7 @@
         "name": "chest",
         "id": "chest",
         "model": "./models//prefabs/chest.glb",
-        "scale": 1,
+        "scale": "1 1 1",
         "animations": []
       },
        {
@@ -13,6 +13,46 @@
          "model": "./models/prefabs/computer.glb",
          "scale": "0.6 0.6 0.6",
          "rotation": "0 275 0",
+         "animations": []
+       },
+       {
+        "name":"switchboard",
+         "id":"switchboard",
+         "model": "./models/prefabs/switchboard.glb",
+         "scale": "2 3 2",
+         "rotation": "0 0 0",
+         "animations": []
+       },
+       {
+        "name":"clock",
+         "id":"clock",
+         "model": "./models/prefabs/clock.glb",
+         "scale": "0.001 0.001 0.001",
+         "rotation": "0 0 0",
+         "animations": []
+       },
+       {
+        "name":"table",
+         "id":"table",
+         "model": "./models/prefabs/table.glb",
+         "scale": "0.001 0.001 0.001",
+         "rotation": "-90 0 0",
+         "animations": []
+       },
+       {
+        "name":"pipe3",
+         "id":"pipe3",
+         "model": "./models/prefabs/pipe_3",
+         "scale": "1 1 1",
+         "rotation": "0 0 0",
+         "animations": []
+       },
+       {
+        "name":"pipe4",
+         "id":"pipe4",
+         "model": "./models/prefabs/pipe_3",
+         "scale": "1 1 1",
+         "rotation": "0 90 0",
          "animations": []
        }
     ]
