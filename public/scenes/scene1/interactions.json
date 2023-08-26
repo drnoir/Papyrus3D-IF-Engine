@@ -9,6 +9,11 @@
         "Object": "chest",
         "position": "-1.5, 0, -4",
         "text": "I wonder if there is treasure in here"
+      },
+      {
+        "Object": "Pipes",
+        "position": "-1.5, 0, -4",
+        "text": "These Pipes are helping to vent the excess heat from the server farms."
       }
     ]
   }

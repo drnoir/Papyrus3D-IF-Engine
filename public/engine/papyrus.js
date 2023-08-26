@@ -231,7 +231,7 @@ function showDialogueUI() {
 
 function hideDialogueUI() {
     const dialogueUI = document.getElementById('dialogueID')
-    dialogueUI.setAttribute('visible', false);
+    dialogueUI.setAttribute('visible', false); addButton
 }
 
 // show passagebtn relative to character model
@@ -265,7 +265,8 @@ function createChoiceButtons(amount, charID) {
     // check if there is an existing button element first before adding a new one
     if (!document.getElementById('choiceButtons')) {
         let char = document.getElementById(charID);// FOR TESTING PURPOSES - needs to be passed associated char
-        let choiceButtons = document.createElement('a-entity')
+        const choiceButtons = document.createElement('a-entity')
+        choiceButtons .setAttribute('id', 'choiceButtons');
         char.appendChild(choiceButtons);
         let initX = -0.06
         for (let x = 0; x < amount; x++) {
@@ -317,12 +318,11 @@ function populateInteractions(interactionID, currentInteraction) {
     const passageBtn = document.getElementById('nextPassageBtn');
     // add button test function
     showDialogueUI();
-    // const passageBtn = document.getElementById('nextPassageBtn');
-    if (!passageBtn) {
-        addButton(currentInteraction);
-    }
+    // if (!passageBtn) {
+    //     createChoiceButtons(currentInteraction);
+    // }
     let newPassage = interactions.interactions[interactionID].text;
-    let newCharName = interactions.interactions[interactionID].char;
+    let newCharName = interactions.interactions[interactionID].Object;
     currentDiagID = currentInteraction;
     dialogueUI.setAttribute('text', 'wrapCount:' + 100);
     dialogueUI.setAttribute('text', 'width:' + 3);
@@ -490,7 +490,8 @@ function createRooms() {
                 prefabElm.setAttribute('scale', prefabElmNum.scale);
                 prefabElm.setAttribute('rotation', prefabElmNum.rotation);
                 prefabElm.setAttribute('animation-mixer', "clip: *; loop: repeat;");
-                prefabElm.setAttribute('prefab', 'triggerDialogue:' + diagTrigger + ';diagNum:' + triggerNum + ';');
+                //add prefab componenet
+                prefabElm.setAttribute('prefab', 'triggerDialogue:' + diagTrigger + ';interactionNum:' + triggerNum + ';');
                 prefabElm.setAttribute('id', 'prefab' + prefabElmNum.ID);
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
@@ -572,7 +573,7 @@ function createRooms() {
                 key.setAttribute('material', 'src:#' + keyTexture);
                 key.setAttribute('key', '');
                 key.setAttribute('editor-listener', '');
-                
+
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
                 floor.setAttribute('width', WALL_SIZE);
