@@ -427,7 +427,7 @@ function createRooms() {
             const i = (y * mapSource.width) + x;
             const floorPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(WALL_HEIGHT / 2)} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-            const halfYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 1 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const halfYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const quarterYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const charPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0.5 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const torchPosition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
@@ -586,15 +586,6 @@ function createRooms() {
                 el.appendChild(floor);
                 el.appendChild(key);
             }
-            // add cam - UPDATE CONDITIONAL THIS IS TERRIBLE JSUT KEEPING IT FOR TESTING
-            else if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "c" && mapData[i].charAt(1) === "a") {
-                const camPoint = document.createElement('a-entity');
-                camPoint.setAttribute('id', 'cam' + [i]);
-                camPoint.setAttribute('player', 'position:' + position);
-                const camPointDebug = document.createElement('a-box');
-                camPointDebug.setAttribute('visible', false)
-                el.appendChild(camPoint);
-            }
             // if the number is 1 - 4,  create a wall
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0" || mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4  || mapData[i] === 5) {
                 wall = document.createElement('a-box');
@@ -650,6 +641,13 @@ function createRooms() {
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', halfYposition);
                     wall.setAttribute('material', 'src:#' + wallTexture2);
+                    floor.setAttribute('height', WALL_HEIGHT / 20);
+                    floor.setAttribute('width', WALL_SIZE);
+                    floor.setAttribute('depth', WALL_SIZE);
+                    floor.setAttribute('static-body', '');
+                    floor.setAttribute('position', floorPos);
+                    floor.setAttribute('material', 'src:#' + floorTexture);
+                    el.appendChild(floor);
                 }
                 //  1/4 height wall
                 if (mapData[i] === 3) {
@@ -675,9 +673,7 @@ function createRooms() {
                     floor.setAttribute('depth', WALL_SIZE);
                     floor.setAttribute('static-body', '');
                     floor.setAttribute('position', floorPos);
-                    floor.setAttribute('editor-listener', '');
                     floor.setAttribute('material', 'src:#' + floorTexture);
-                    floor.setAttribute('playermovement', '');
                     el.appendChild(floor);
                 }
                 // door locked
