@@ -150,7 +150,7 @@ AFRAME.registerComponent('playercam', {
         playerhealthBarTracker.setAttribute('material', 'color:red');
         playerhealthBarTracker.setAttribute('HealthBarid', 'playerHealthBar');
         playerhealthBar.appendChild(playerhealthBarTracker);
-        newCam.appendChild(playerhealthBar);
+        // newCam.appendChild(playerHealthBar);
         // function to load player face
         // check if model GLB or Obj - create func for this
         if (format === "glb") {
@@ -640,6 +640,39 @@ AFRAME.registerComponent('exit', {
             loadNewLevel(toLoad);
             // createOutdoorFloor
         })
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+});
+
+// component for  healthbar 
+AFRAME.registerComponent('healthbar', {
+    schema: {
+        health: { type: 'number', default: 100 },
+    },
+
+    init: function () {
+        const data = this.data; 
+        const health = data.health;
+         // health bar UI
+         const healthBarContainer = document.getElementById('healthbarUI')
+         const healthBar = document.createElement('a-box');
+         const healthBarTracker = document.createElement('a-box');
+         let healthBarVal =  health  / 10 * 3;
+         healthBar.setAttribute('height', 0.09);
+         healthBar.setAttribute('position', '-1.8 -0.38 0');
+         healthBar.setAttribute('width', 0.4);
+         healthBar.setAttribute('depth', 0.01);
+         healthBar.setAttribute('material', 'color:white');
+         healthBarTracker.setAttribute('height', 0.09);
+         healthBarTracker.setAttribute('width', 0.4);
+         healthBarTracker.setAttribute('depth', 0.015);
+         healthBarTracker.setAttribute('position', '0 0 0');
+         healthBarTracker.setAttribute('material', 'color:green');
+         healthBar.appendChild(healthBarTracker);
+         healthBarContainer.appendChild(healthBar);
     },
     remove: function () {
         const el = this.el;

@@ -35,6 +35,7 @@ async function loadData() {
     // run create scene routine
     await createRooms();
     await populateDiag(1, 1);
+
     // testing dialogue.json UI population
     const sound = document.querySelector('[sound]');
     sound.components.sound.playSound();
