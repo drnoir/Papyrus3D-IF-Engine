@@ -567,6 +567,28 @@ function createRooms() {
                 el.appendChild(torch);
                 el.appendChild(floor);
             }
+            // add Locked doors
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "4" && mapData[i].charAt(1) === "L") {
+                const door = document.createElement('a-box');
+                door.setAttribute('id', 'door');
+                // create component for door / lock
+                door.setAttribute('height', WALL_HEIGHT);
+                door.setAttribute('door', 'locked: true');
+                // door.setAttribute('locked', 'true');
+                door.setAttribute('scale', '1 1 0.89');
+                door.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
+                door.setAttribute('position', position);
+        
+                const floor = document.createElement('a-box');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('width', WALL_SIZE);
+                floor.setAttribute('depth', WALL_SIZE);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', floorPos);
+                floor.setAttribute('material', 'src:#' + floorTexture);
+                el.appendChild(door);
+                el.appendChild(floor);
+            }
             // add keys
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "K") {
                 console.log("its a key!")
@@ -665,8 +687,9 @@ function createRooms() {
                     wall.setAttribute('id', 'door');
                     // create component for door / lock
                     wall.setAttribute('height', WALL_HEIGHT);
-                    wall.setAttribute('door', 'false');
-                    wall.setAttribute('locked', 'false');
+        
+                    // check if door should be locked or not 
+                    wall.setAttribute('locked', 'false')
                     wall.setAttribute('door', '');
                     wall.setAttribute('scale', '1 1 0.89');
                     wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
