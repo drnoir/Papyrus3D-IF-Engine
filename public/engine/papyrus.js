@@ -219,7 +219,7 @@ async function loadNewLevel(mapToLoad) {
     await createRooms();
     await loadDiag(mapToLoad);
     await loadInteractions(1);
-    await populateDiag(1, 1);
+    await populateDiag(0, 0);
     currentScene = mapToLoad;
 }
 
@@ -310,6 +310,7 @@ function populateDiag(currentDiagID, currentChar) {
     currentDiagID = currentChar;
     dialogueUI.setAttribute('text', 'wrapCount:' + 100);
     dialogueUI.setAttribute('text', 'width:' + 3);
+    dialogueUI.setAttribute('text', 'color:black');
     dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
 }
 
@@ -326,6 +327,7 @@ function populateInteractions(interactionID, currentInteraction) {
     currentDiagID = currentInteraction;
     dialogueUI.setAttribute('text', 'wrapCount:' + 100);
     dialogueUI.setAttribute('text', 'width:' + 3);
+    dialogueUI.setAttribute('text', 'color:black');
     dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
 }
 
