@@ -14,6 +14,11 @@
         "Object": "Pipes",
         "position": "-1.5, 0, -4",
         "text": "These Pipes are helping to vent the excess heat from the server farms."
+      },
+      {
+        "Object": "Server Machine",
+        "position": "-1.5, 0, -4",
+        "text": "This is one of the servers in the facility"
       }
     ]
   }

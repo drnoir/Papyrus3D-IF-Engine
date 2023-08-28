@@ -2,7 +2,7 @@
 // Components for papyrus engine VR / AR
 // Dependency tree - A-Frame / A-Frame Extras / Papyrus
 // ENGINE CORE IMPORTS
-import { nextScene, loadData, populateDiag, populateInteractions, shootAt, enemyCombatAttack, getPlayerHealth, clearScene, loadNewLevel } from "./papyrus.js";
+import { nextScene, loadData, populateDiag,nextPassageForChar, populateInteractions, shootAt, enemyCombatAttack, getPlayerHealth,    setPlayerHealth,clearScene, loadNewLevel } from "./papyrus.js";
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -131,26 +131,7 @@ AFRAME.registerComponent('playercam', {
         newCursor.setAttribute('cursor', 'fuse: true; fiseTimeout:500');
         newCursor.setAttribute('geometry', 'primitive: ring; radiusInner: 0.02; radiusOuter: 0.03');
         newCursor.setAttribute('material', 'color: black; shader: flat');
-        // create healthbar
-
-        // health bar UI
-        const playerHealthBar = document.createElement('a-box');
-        const playerhealthBarTracker = document.createElement('a-box');
-        this.playerhealthBarTracker = playerhealthBarTracker;
-        let playerhealthBarVal = 100;
-        playerHealthBar.setAttribute('height', 0.5);
-        playerHealthBar.setAttribute('position', '0 8 -0.5');
-        playerHealthBar.setAttribute('width', 3);
-        playerHealthBar.setAttribute('depth', 0.1);
-        playerHealthBar.setAttribute('material', 'color:white');
-        playerhealthBarTracker.setAttribute('height', 0.4);
-        playerhealthBarTracker.setAttribute('width', playerhealthBarVal.toString());
-        playerhealthBarTracker.setAttribute('depth', 0.1);
-        playerhealthBarTracker.setAttribute('position', '0 0 0.1');
-        playerhealthBarTracker.setAttribute('material', 'color:red');
-        playerhealthBarTracker.setAttribute('HealthBarid', 'playerHealthBar');
-        playerhealthBar.appendChild(playerhealthBarTracker);
-        // newCam.appendChild(playerHealthBar);
+     
         // function to load player face
         // check if model GLB or Obj - create func for this
         if (format === "glb") {
@@ -185,6 +166,8 @@ AFRAME.registerComponent('character', {
         animated: { type: 'boolean', default: false },
         glowOn: { type: 'boolean', default: false },
         charID: { type: 'number', default: 0 },
+        currentDiagID: { type: 'number', default: 0 },
+        numDiag:  { type: 'number', default: 0 },
     },
     multiple: true,
     init: function () {
@@ -197,13 +180,25 @@ AFRAME.registerComponent('character', {
         let animated = data.animated;
         let glowOn = data.glowOn;
         const elScale = this.el.scale;
+        let currentDiagID = data.currentDiagID;
+        let numDiag = data.numDiag;
         if (animated) {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
         // const triggerCharDialogue= data.triggerDialogue;
         const charID = data.charID;
         this.el.addEventListener('click', function (evt) {
-            populateDiag(charID, 0)
+            console.log('diagNum count'+numDiag)
+            // currentDiagID++;
+            if ( numDiag === 0){
+            nextPassageForChar(charID,numDiag);
+            numDiag=1;  
+            }
+            else{
+            nextPassageForChar(charID,numDiag);
+            numDiag++;
+            }
+                   
         })
     },
     remove: function () {
@@ -608,6 +603,26 @@ AFRAME.registerComponent("load-texture", {
     }
 })
 
+
+AFRAME.registerComponent("triggerdmg", {
+    schema: {
+        dmgAmount : {type: 'number', default: 20}
+    },
+    init: function () {
+        const data = this.data;
+        const el = this.el;
+        let dmgAmount = data.dmgAmount;
+        const healthbarComp  = document.querySelector('[healthbar]').components.healthbar;
+    
+        this.el.addEventListener('click', function (evt) {
+            healthbarComp.reduceHealthBar(dmgAmount)
+        })
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+})
 // component for triggering an exit event
 AFRAME.registerComponent('exit', {
     schema: {
@@ -655,24 +670,41 @@ AFRAME.registerComponent('healthbar', {
 
     init: function () {
         const data = this.data; 
-        const health = data.health;
+        let health = data.health;
+        
          // health bar UI
-         const healthBarContainer = document.getElementById('healthbarUI')
+         const healthBarContainer = document.getElementById('healthbarUI');
          const healthBar = document.createElement('a-box');
          const healthBarTracker = document.createElement('a-box');
-         let healthBarVal =  health  / 10 * 3;
-         healthBar.setAttribute('height', 0.09);
+
+         healthBar.setAttribute('height', 0.1);
+         healthBar.setAttribute('id', 'healthBar');
          healthBar.setAttribute('position', '-1.8 -0.38 0');
-         healthBar.setAttribute('width', 0.4);
+         healthBar.setAttribute('width', health/250);
          healthBar.setAttribute('depth', 0.01);
          healthBar.setAttribute('material', 'color:white');
-         healthBarTracker.setAttribute('height', 0.09);
-         healthBarTracker.setAttribute('width', 0.4);
+         healthBarTracker.setAttribute('id', 'healthBarTracker');
+         healthBarTracker.setAttribute('height', 0.1);
+         healthBarTracker.setAttribute('width', health/250);
          healthBarTracker.setAttribute('depth', 0.015);
          healthBarTracker.setAttribute('position', '0 0 0');
          healthBarTracker.setAttribute('material', 'color:green');
          healthBar.appendChild(healthBarTracker);
          healthBarContainer.appendChild(healthBar);
+    },
+    reduceHealthBar: function (amount, health) {
+        const el = this.el;
+        const data = this.data; 
+        let healthUpdate = getPlayerHealth();
+        const healthBarTracker = document.getElementById('healthBarTracker');
+        // play player pain audio
+        let painAudio = document.querySelector("#playerpain");
+        painAudio.play();
+        // set new player health and update UI
+        setPlayerHealth(amount);
+        const healthBarVal100 =  (healthUpdate-amount)/250;
+        healthBarTracker.setAttribute('width', healthBarVal100 );
+      
     },
     remove: function () {
         const el = this.el;

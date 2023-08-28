@@ -10,7 +10,8 @@ let lockedDoors = [];
 let textures; let prefabs;
 // diaglog UI Globals / shit 
 let currentDiagID = 0; let currentScene = 1; let nextSceneToLoad = currentScene+1;
-let currentChar = 0; let mapSource = 0; let currentInteraction = 0;
+let charDialogs = [];
+let currentChar; let mapSource = 0; let currentInteraction = 0;
 // combat var defaults SIMULATED DICE - Combat system is based on D and D - INIT vals / max 
 let CombatDiceNumber = 6;
 let CombatDMGDiceNumber = 6;
@@ -21,6 +22,7 @@ const scene = document.querySelector('a-scene'); const assets = document.querySe
 async function loadData() {
     //config and diagloue loading
     await loadPlayer();
+    await setupPlayerInfo();
     await loadTextures(currentScene);
     await loadConfig();
     await loadChars();
@@ -31,10 +33,9 @@ async function loadData() {
     //scene loading / aFrame loading
     await loadSceneMetaData(currentScene);
     await loadMap(currentScene);
-    await setupPlayerInfo();
     // run create scene routine
     await createRooms();
-    await populateDiag(1, 1);
+    // await populateDiag(0, 0);
 
     // testing dialogue.json UI population
     const sound = document.querySelector('[sound]');
@@ -132,12 +133,13 @@ function addChar(charNumber) {
     console.log('char param passed' + charNumber)
     let modelID = '#' + chars.characters[indexCharNumber].name;
     let char = document.createElement('a-entity');
-    char.setAttribute('id', chars.characters[indexCharNumber].name);
+    char.setAttribute('id', chars.characters[indexCharNumber].id);
     char.setAttribute('name', chars.characters[indexCharNumber].name);
     char.setAttribute('gltf-model', modelID);
     char.setAttribute('scale', chars.characters[indexCharNumber].scale);
     char.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     charDiagIDs.push(charNumber);
+    // returnDiag(charNumber);
     console.log(charDiagIDs);
     return char;
 }
@@ -199,8 +201,8 @@ function nextScene() {
     if (diag.passage.length - 1 !== currentDiagID) {
         currentChar = diag.passage[currentDiagID].char;
         console.log(diag.passage.length - 1, currentDiagID, currentChar)
-        currentDiagID++;
-        populateDiag(currentDiagID, currentChar);
+        // currentDiagID++;
+        // populateDiag(currentDiagID, currentChar);
         makeCharActive(currentChar);
         // hide after certain time
         setTimeout(hideDialogueUI, 10000);
@@ -220,7 +222,8 @@ async function loadNewLevel(mapToLoad) {
     await createRooms();
     await loadDiag(mapToLoad);
     await loadInteractions(1);
-    await populateDiag(0, 0);
+    // await populateDiag(0, 0);
+
     currentScene = mapToLoad;
 }
 
@@ -295,7 +298,8 @@ function createChoiceButtons(amount, charID) {
     }
 }
 
-function populateDiag(currentDiagID, currentChar) {
+function populateDiag(currentChar, numDiag) {
+ 
     const dialogueUI = document.getElementById('dialogueID');
     // add button test function
     showDialogueUI();
@@ -305,14 +309,58 @@ function populateDiag(currentDiagID, currentChar) {
     // if (choicesCheck){
     // createChoiceButtons(choicesCheck.length)
     // }
+    // let newPassage; let newCharName; let newPassageID;
+ 
+    nextPassageForChar(currentChar, numDiag);
+    console.log(charDialogs)
+    // add to UI 
+    // dialogueUI.setAttribute('text', 'wrapCount:' + 100);
+    // dialogueUI.setAttribute('text', 'width:' + 3);
+    // dialogueUI.setAttribute('text', 'color:black');
+    // dialogueUI.setAttribute('text', 'value:' + newCharName + newPassageID+ '\n' + newPassage);
+}
 
-    let newPassage = diag.passage[currentChar].text;
-    let newCharName = diag.passage[currentChar].char;
-    currentDiagID = currentChar;
-    dialogueUI.setAttribute('text', 'wrapCount:' + 100);
-    dialogueUI.setAttribute('text', 'width:' + 3);
-    dialogueUI.setAttribute('text', 'color:black');
-    dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
+function nextPassageForChar(currentChar, numDiag){
+    showDialogueUI();
+    const dialogueUI = document.getElementById('dialogueID');
+    // console.log(  'text TEST'+charDialogs[0][0].text)
+    let newPassage; let newPassageID;  let newCharName 
+    if (numDiag===0){
+        // populate chars dialogues 
+        returnDiag(currentChar);
+        newPassage = charDialogs[0][0].text;
+        newPassageID = charDialogs[0][0].diagID;
+        newCharName = charDialogs[0][0].char;
+        console.log(  charDialogs)
+        dialogueUI.setAttribute('text', 'wrapCount:' + 100);
+        dialogueUI.setAttribute('text', 'width:' + 3);
+        dialogueUI.setAttribute('text', 'color:black');
+        dialogueUI.setAttribute('text', 'value:' + newCharName + newPassageID+ '\n' + newPassage);
+    }
+    // if at end of dialogues reset everything
+    if (numDiag+1 === charDialogs.length ){
+        console.log(numDiag, charDialogs.length);
+        numDiag = 0;
+        // reset diags array to empty
+        charDialogs = [];
+        dialogueUI.setAttribute('text', 'wrapCount:' + 100);
+        dialogueUI.setAttribute('text', 'width:' + 3);
+        dialogueUI.setAttribute('text', 'color:black');
+        dialogueUI.setAttribute('text', 'value:' + newCharName + newPassageID+ '\n' + newPassage);
+    }
+    if (numDiag>0){
+        // standard iterating through dialogues 
+        console.log(currentDiagID);
+        newPassage = charDialogs[0][numDiag].text;
+        newPassageID = charDialogs[0][numDiag].diagID;
+        newCharName = charDialogs[0][numDiag].char;
+        dialogueUI.setAttribute('text', 'wrapCount:' + 100);
+        dialogueUI.setAttribute('text', 'width:' + 3);
+        dialogueUI.setAttribute('text', 'color:black');
+        dialogueUI.setAttribute('text', 'value:' + newCharName + newPassageID+ '\n' + newPassage);
+        // setup diagID for next 
+        // numDiag++;
+    }
 }
 
 function populateInteractions(interactionID, currentInteraction) {
@@ -442,11 +490,14 @@ function createRooms() {
                 let charNumber = mapData[i].charAt(4) ? String(mapData[i].charAt(4) + mapData[i].charAt(5)) : mapData[i].charAt(4);
                 console.log(mapData[i].charAt(4));
                 let char = addChar(charNumber);
+                let diagCount = countDialogue(charNumber);
+                console.log('diagcountchar'+diagCount);
                 console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
                 char.setAttribute('static-body', '');
                 char.setAttribute('glowfx', 'visible:true;');
-                char.setAttribute('character', 'charID:' + charNumber + ';');
+                char.setAttribute('character', 'charID:' + charNumber + ';'+'numDiag:', diagCount+';' );
+        
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
                 floor.setAttribute('width', WALL_SIZE);
@@ -471,7 +522,7 @@ function createRooms() {
                 floor.setAttribute('position', floorPos);
                 // wall.setAttribute('load-texture', '');
                 floor.setAttribute('editor-listener', '');
-                floor.setAttribute('material', 'src:#' + floorTexture);
+                floor.setAttribute('material', 'src:#' +'floor');
                 el.appendChild(floor);
             
             }
@@ -504,7 +555,7 @@ function createRooms() {
                 floor.setAttribute('position', floorPos);
                 // wall.setAttribute('load-texture', '');
                 floor.setAttribute('editor-listener', '');
-                floor.setAttribute('material', 'src:#' + floorTexture);
+                floor.setAttribute('material', 'src:#' + 'floor');
                 el.appendChild(floor);
                 floor.appendChild(prefabElm);
             }
@@ -528,7 +579,7 @@ function createRooms() {
                 floor.setAttribute('static-body', '');
                 floor.setAttribute('position', floorPos);
                 floor.setAttribute('editor-listener', '');
-                floor.setAttribute('material', 'src:#' + floorTexture);
+                floor.setAttribute('material', 'src:#' + 'floor');
                 el.appendChild(floor);
                 el.appendChild(enemy1);
             }
@@ -561,7 +612,7 @@ function createRooms() {
                 floor.setAttribute('position', floorPos);
                 // wall.setAttribute('load-texture', '');
                 floor.setAttribute('editor-listener', '');
-                floor.setAttribute('material', 'src:#' + floorTexture);
+                floor.setAttribute('material', 'src:#' + 'floor');
                 floor.setAttribute('playermovement', '');
 
                 el.appendChild(torch);
@@ -585,7 +636,7 @@ function createRooms() {
                 floor.setAttribute('depth', WALL_SIZE);
                 floor.setAttribute('static-body', '');
                 floor.setAttribute('position', floorPos);
-                floor.setAttribute('material', 'src:#' + floorTexture);
+                floor.setAttribute('material', 'src:#' + 'floor');
                 el.appendChild(door);
                 el.appendChild(floor);
             }
@@ -606,7 +657,7 @@ function createRooms() {
                 floor.setAttribute('static-body', '');
                 floor.setAttribute('position', floorPos);
                 floor.setAttribute('editor-listener', '');
-                floor.setAttribute('material', 'src:#' + floorTexture);
+                floor.setAttribute('material', 'src:#' + 'floor');
                 floor.setAttribute('playermovement', '');
                 el.appendChild(floor);
                 el.appendChild(key);
@@ -629,7 +680,7 @@ function createRooms() {
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', floorPos);
                     wall.setAttribute('playermovement', '');
-                    wall.setAttribute('material', 'src:#' + floorTexture);
+                    wall.setAttribute('material', 'src:#' + 'floor');
                 }
                 // custom floor height
                 if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0") {
@@ -648,7 +699,22 @@ function createRooms() {
                     wall.setAttribute('height', floorHeight);
                     wall.setAttribute('static-body', '');
                     wall.setAttribute('position', floorPos);
-                    wall.setAttribute('material', 'src:#' + floorTexture);
+                    wall.setAttribute('material', 'src:#' +'floor');
+                }
+                // cause pain trigger floor
+                if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0" && mapData[i].charAt(1) === "H" && mapData[i].charAt(2) === "U") {
+                    let dmg1= mapData[i].charAt(3) ? mapData[i].charAt(3) : 0;
+                    let dmg2 = mapData[i].charAt(4) ? mapData[i].charAt(4) : 0;
+                    // let floorDamageAmount = mapData[i].charAt(3) && mapData[i].charAt(4) ?  dmg1 + dmg2 : 0;
+                    wall.setAttribute('class', 'wall');
+                    wall.setAttribute('height',  WALL_HEIGHT / 20);
+                    wall.setAttribute('static-body', '');
+                    wall.setAttribute('triggerdmg', '');
+                    wall.setAttribute('position', floorPos);
+                    wall.setAttribute('color', 'red');
+                    wall.setAttribute('material', 'src:#' + 'floor');
+                    wall.setAttribute('editor-listener', '');
+                    wall.setAttribute('playermovement', '');
                 }
                 // full height wall
                 if (mapData[i] === 1) {
@@ -671,7 +737,7 @@ function createRooms() {
                     floor.setAttribute('depth', WALL_SIZE);
                     floor.setAttribute('static-body', '');
                     floor.setAttribute('position', floorPos);
-                    floor.setAttribute('material', 'src:#' + floorTexture);
+                    floor.setAttribute('material', 'src:#' + 'floor');
                     el.appendChild(floor);
                 }
                 //  1/4 height wall
@@ -699,7 +765,7 @@ function createRooms() {
                     floor.setAttribute('depth', WALL_SIZE);
                     floor.setAttribute('static-body', '');
                     floor.setAttribute('position', floorPos);
-                    floor.setAttribute('material', 'src:#' + floorTexture);
+                    floor.setAttribute('material', 'src:#' + 'floor');
                     el.appendChild(floor);
                 }
                 // door locked
@@ -719,7 +785,7 @@ function createRooms() {
                     floor.setAttribute('static-body', '');
                     floor.setAttribute('position', floorPos);
                     floor.setAttribute('editor-listener', '');
-                    floor.setAttribute('material', 'src:#' + floorTexture);
+                    floor.setAttribute('material', 'src:#' + 'floor');
                     floor.setAttribute('playermovement', '');
                     el.appendChild(floor);
                 }
@@ -742,7 +808,7 @@ function createRooms() {
                         floor.setAttribute('static-body', '');
                         floor.setAttribute('position', floorPos);
                         floor.setAttribute('editor-listener', '');
-                        floor.setAttribute('material', 'src:#' + floorTexture);
+                        floor.setAttribute('material', 'src:#' + 'floor');
                         // floor.setAttribute('playermovement', '');
                         // floor.setAttribute('playermovement', '');
                         wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
@@ -823,6 +889,56 @@ function getPlayerHealth() {
     }
 }
 
+function setPlayerHealth(amountToTakeOff) {
+    if (player) {
+        player.health =  player.health - amountToTakeOff;
+        console.log(player.health);
+        if (player.health === 0)
+        {
+            console.log('player should now die');
+            // init playdeath sequence
+            playerDeath();
+        }
+    }
+}
+
+function resetPlayerHealth() {
+    if (player) {
+        player.health =  player.health;
+    }
+}
+
+
+// init diag Loading
+function returnDiag(charID){
+    for (charID in diag.passage) {
+        if (diag.passage.hasOwnProperty(charID)) {
+            charDialogs.push(diag.passage[charID]);
+            console.log('chardialogupdate'+charDialogs);
+        }
+    }
+}
+
+// calc dialogue lengths per char 
+function countDialogue(charID){
+let counter = 0;
+const diagArr = diag.passage;
+
+for (charID in diagArr) {
+    if (diagArr.hasOwnProperty(charID)) {
+       ++counter;
+    }
+}
+console.log('counter val'+counter);
+return counter;
+};
+
+function finalDiagID(charID){
+    const finalDiagID = countDialogue(charID);
+    return diag.passage[finalDiagID-1].diagID;
+};
+
+
 // FX AND 3D UI 0--0
 function triggerMuzzleFX() {
     console.log('triggerMUZZLE FX');
@@ -869,11 +985,22 @@ function updatePlayerPos(newPlayPos) {
     document.querySelector('#playercam').setAttribute('position', newPlayPos);
 }
 
+
 function clearScene() {
     const el = document.getElementById('room');
     const scene = document.querySelector('a-scene');
     el.parentNode.removeChild(el);
 }
 
+// func to call on event of playerdeath health reaching 0
+function playerDeath() {
+    let deathAudio = document.querySelector("#playerdeath");
+    deathAudio.play();
+    setTimeout(clearScene(), 5000);
+    setTimeout(loadData(), 5000);
+    setTimeout(resetPlayerHealth(), 5000);
+}
+
+
 // EXPORTS 
-export { nextScene, loadNewLevel, populateDiag, populateInteractions, clearScene, loadData, shootAt, enemyCombatAttack, getPlayerHealth };
+export { nextScene, loadNewLevel, populateDiag, nextPassageForChar, populateInteractions, clearScene, loadData, shootAt, enemyCombatAttack, getPlayerHealth, setPlayerHealth, playerDeath };

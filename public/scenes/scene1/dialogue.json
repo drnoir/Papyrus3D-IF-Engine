@@ -1,29 +1,50 @@
 {
   "passage": [
-    {
-      "char": "bob",
-      "id" : 1,
+    [ {
+      "char": "Tech",
+      "charID": 3,
+      "diagID": 0,
       "position": "-1.5, 0, -4",
-      "text": "Hey new guy! Come and open that door, it's Bob! I'm through the next room"
+      "text": "Hey new guy! Come and open that door, it's Alison, one of the tech's at this facility. I'm through the next room, let's have a quick chat. Just open the door ahead and see me, I'm next to the computer on your right."
     },
     {
-      "char": "bob",
-      "id" : 1,
+      "char": "Tech",
+      "charID": 3,
+      "diagID": 1,
       "position": "-1.5, 0, -6",
       "text": "So new guy guy, whatever you name is.... We got a bit of an infestation problem that needs sorting out"
     },
     {
-      "char": "bob",
-      "id" : 1,
+      "char": "Tech",
+      "charID": 3,
+      "diagID": 2,
       "position": "-1.5, 0, -4",
       "text": "Go and use your pistol to take out these goddamn huge mutant ants. Union doesn't pay me enough for this shit, and its your first day so.... ",
       "choices" : ["Yes Ok", "No Way"]
-    },
-    {
-      "char": "woman", 
-      "id" : 3,
-      "position": "-1.5, 0, -4",
-      "text": "Get blasting!"
-    }
-  ]
-}
+    }],
+        [
+            {
+                "char": "Tech2",
+                "charID": 1,
+                "diagID": 0,
+                "position": "-1.5, 0, -4",
+                "text": "Hey new guy! Come and open that door, it's Alison, one of the tech's at this facility. I'm through the next room, let's have a quick chat. Just open the door ahead and see me, I'm next to the computer on your right."
+              },
+              {
+                "char": "Tech2",
+                "charID": 1,
+                "diagID": 1,
+                "position": "-1.5, 0, -6",
+                "text": "So new guy guy, whatever you name is.... We got a bit of an infestation problem that needs sorting out"
+              },
+              {
+                "char": "Tech2",
+                "charID": 1,
+                "diagID": 2,
+                "position": "-1.5, 0, -4",
+                "text": "Go and use your pistol to take out these goddamn huge mutant ants. Union doesn't pay me enough for this shit, and its your first day so.... ",
+                "choices" : ["Yes Ok", "No Way"]
+              }
+        ]
+      ]
+  }

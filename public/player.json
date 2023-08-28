@@ -1,6 +1,6 @@
 {
   "name": "Maintenence Mike",
-  "health": 30,
+  "health": 100,
   "strength" : 5,
   "constitution" : 15,
   "status" : "alive",
