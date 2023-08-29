@@ -37,6 +37,7 @@ AFRAME.registerComponent('playerhealth', {
     },
     remove: function () {
         // Do something the component or its entity is detached.
+        this.el.destroy();
     },
 });
 // START GAME BUTTON FOR INIT OF NEW GAME 
