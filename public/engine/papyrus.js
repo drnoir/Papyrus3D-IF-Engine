@@ -397,9 +397,10 @@ function removeButton() {
     }
 }
 
-function gotKey(keyNum) {
+function gotKey(keyColor) {
     // arr the key here (current key)
-    doors.push
+    lockedDoors.push(keyColor);
+    console.log('lockeddoors with keys'+lockedDoors);
 }
 
 // ROOM CREATION
@@ -659,6 +660,7 @@ function createRooms() {
                 floor.setAttribute('editor-listener', '');
                 floor.setAttribute('material', 'src:#' + 'floor');
                 floor.setAttribute('playermovement', '');
+                
                 el.appendChild(floor);
                 el.appendChild(key);
             }
@@ -1003,4 +1005,4 @@ function playerDeath() {
 
 
 // EXPORTS 
-export { nextScene, loadNewLevel, populateDiag, nextPassageForChar, populateInteractions, clearScene, loadData, shootAt, enemyCombatAttack, getPlayerHealth, setPlayerHealth, playerDeath };
+export { nextScene, loadNewLevel, populateDiag, nextPassageForChar, populateInteractions, clearScene, loadData, shootAt, gotKey, enemyCombatAttack, getPlayerHealth, setPlayerHealth, playerDeath };

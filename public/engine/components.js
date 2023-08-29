@@ -2,7 +2,7 @@
 // Components for papyrus engine VR / AR
 // Dependency tree - A-Frame / A-Frame Extras / Papyrus
 // ENGINE CORE IMPORTS
-import { nextScene, loadData, populateDiag,nextPassageForChar, populateInteractions, shootAt, enemyCombatAttack, getPlayerHealth,    setPlayerHealth,clearScene, loadNewLevel } from "./papyrus.js";
+import { nextScene, loadData, populateDiag,nextPassageForChar, populateInteractions, shootAt, gotKey, enemyCombatAttack, getPlayerHealth,    setPlayerHealth,clearScene, loadNewLevel } from "./papyrus.js";
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -552,31 +552,30 @@ AFRAME.registerComponent('door', {
 });
 
 // key pickup componenet
-AFRAME.registerComponent('key', {
+AFRAME.registerComponent("key", {
     schema: {
-        default: '',
-        color: {
-            type: 'string', default: 'blue',
-            keyNumber: {
-                type: 'number', default: 1,
-            },
-            init: function () {
-                const el = this.el;
-                const data = this.data;
-                const keyNumber = data.keyNumber;
-                this.el.addEventListener('click', function (evt) {
-                    console.log('key clicked')
-                    gotKey(keyNumber);
-                    this.remove();
-                })
-            },
-            remove: function () {
-                const el = this.el;
-                el.destroy();
-            },
-        }
-    }
-});
+        color: {type: 'string', default: 'blue'},
+        keyNumber: {type: 'number', default: 1},
+    },
+    init: function () {
+        const data = this.data;
+        const el = this.el;
+        const keyNumber = data.keyNumber;
+        const color = data.color;
+        this.el.addEventListener('click', function (evt) {
+            console.log('key clicked');
+            gotKey(color);
+            this.remove();
+        })
+    
+    
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+}
+)
 
 AFRAME.registerComponent("load-texture", {
     schema: {
