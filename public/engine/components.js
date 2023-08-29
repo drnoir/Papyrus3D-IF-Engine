@@ -2,7 +2,7 @@
 // Components for papyrus engine VR / AR
 // Dependency tree - A-Frame / A-Frame Extras / Papyrus
 // ENGINE CORE IMPORTS
-import { nextScene, loadData, populateDiag,nextPassageForChar, populateInteractions, shootAt, gotKey, enemyCombatAttack, getPlayerHealth,    setPlayerHealth,clearScene, loadNewLevel } from "./papyrus.js";
+import { nextScene, loadData, populateDiag,nextPassageForChar, populateInteractions,populateMessage, shootAt, gotKey,getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth,    setPlayerHealth,clearScene, loadNewLevel } from "./papyrus.js";
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -513,14 +513,24 @@ AFRAME.registerComponent('door', {
     schema: {
         locked: { type: 'boolean', default: false },
         doorLockNum: { type: 'number', default: 0 },
+        key: {type: 'boolean', default: false},
+        keyColor: {type: 'string', default: 'blue'},
     },
     init: function () {
         const el = this.el;
         const data = this.data;
         let locked = data.locked;
+        let key = data.key;
+        let keyColor= data.keyColor;
         this.closeDoor = AFRAME.utils.bind(this.closeDoor, this);
 
+        if (key){
+            el.setAttribute('color', keyColor);
+            locked = true;
+        }
+
         const doorPos = el.getAttribute('position');
+
         this.el.addEventListener('click', function (evt) {
             if (!locked) {
                 let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1;
@@ -529,9 +539,24 @@ AFRAME.registerComponent('door', {
                 let doorAudio = document.querySelector("#dooropen");
                 doorAudio.play();
             }
+            else if (key) {
+                const playerKeys = getPlayerKeysInfo();
+                if (playerKeys.find((element) => element === 'blue' || 'yellow' || 'red' )){
+                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1;
+                console.log(x, y, z, newX);
+                el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
+                let doorAudio = document.querySelector("#dooropen");
+                doorAudio.play();
+                populateMessage(keyColor+' door', keyColor+' door opened')
+                locked = false;
+                }
+                else{
+                    populateMessage('Locked '+keyColor+' Key Door', 'This door is locked, you need to find a '+keyColor+' key to open it');
+                }
+            }
             // locked door checks
             else {
-                console.log('This door is locked, Find a Key to unlock it');
+                populateMessage('Locked Door', 'This door is locked, you may need to find a matching key for it');
             }
         })
     },
@@ -563,9 +588,11 @@ AFRAME.registerComponent("key", {
         const keyNumber = data.keyNumber;
         const color = data.color;
         this.el.addEventListener('click', function (evt) {
-            console.log('key clicked');
             gotKey(color);
+            let keyPickAudio = document.querySelector("#keypickup");
+            keyPickAudio.play();
             this.remove();
+            populateMessage('Blue Key', 'You have collected the '+color+' key')
         })
     
     

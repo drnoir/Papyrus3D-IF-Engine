@@ -324,18 +324,15 @@ function nextPassageForChar(currentChar, numDiag){
     showDialogueUI();
     const dialogueUI = document.getElementById('dialogueID');
     // console.log(  'text TEST'+charDialogs[0][0].text)
-    let newPassage; let newPassageID;  let newCharName 
+    let newPassage; let newCharName 
     if (numDiag===0){
         // populate chars dialogues 
         returnDiag(currentChar);
         newPassage = charDialogs[0][0].text;
-        newPassageID = charDialogs[0][0].diagID;
+        // newPassageID = charDialogs[0][0].diagID;
         newCharName = charDialogs[0][0].char;
         console.log(  charDialogs)
-        dialogueUI.setAttribute('text', 'wrapCount:' + 100);
-        dialogueUI.setAttribute('text', 'width:' + 3);
-        dialogueUI.setAttribute('text', 'color:black');
-        dialogueUI.setAttribute('text', 'value:' + newCharName + newPassageID+ '\n' + newPassage);
+        populateMessage(newCharName,newPassage)
     }
     // if at end of dialogues reset everything
     if (numDiag+1 === charDialogs.length ){
@@ -343,21 +340,14 @@ function nextPassageForChar(currentChar, numDiag){
         numDiag = 0;
         // reset diags array to empty
         charDialogs = [];
-        dialogueUI.setAttribute('text', 'wrapCount:' + 100);
-        dialogueUI.setAttribute('text', 'width:' + 3);
-        dialogueUI.setAttribute('text', 'color:black');
-        dialogueUI.setAttribute('text', 'value:' + newCharName + newPassageID+ '\n' + newPassage);
+        populateMessage(newCharName,newPassage)
     }
     if (numDiag>0){
         // standard iterating through dialogues 
         console.log(currentDiagID);
         newPassage = charDialogs[0][numDiag].text;
-        newPassageID = charDialogs[0][numDiag].diagID;
         newCharName = charDialogs[0][numDiag].char;
-        dialogueUI.setAttribute('text', 'wrapCount:' + 100);
-        dialogueUI.setAttribute('text', 'width:' + 3);
-        dialogueUI.setAttribute('text', 'color:black');
-        dialogueUI.setAttribute('text', 'value:' + newCharName + newPassageID+ '\n' + newPassage);
+        populateMessage(newCharName,newPassage)
         // setup diagID for next 
         // numDiag++;
     }
@@ -365,7 +355,6 @@ function nextPassageForChar(currentChar, numDiag){
 
 function populateInteractions(interactionID, currentInteraction) {
     const dialogueUI = document.getElementById('dialogueID');
-    const passageBtn = document.getElementById('nextPassageBtn');
     // add button test function
     showDialogueUI();
     // if (!passageBtn) {
@@ -374,10 +363,21 @@ function populateInteractions(interactionID, currentInteraction) {
     let newPassage = interactions.interactions[interactionID].text;
     let newCharName = interactions.interactions[interactionID].Object;
     currentDiagID = currentInteraction;
+    populateMessage(newCharName,newPassage)
+   
+    setTimeout(hideDialogueUI, 12000);
+}
+
+// show a message from enviroment
+function populateMessage(char, message){
+    const dialogueUI = document.getElementById('dialogueID');
+    // add button test function
+    showDialogueUI();
     dialogueUI.setAttribute('text', 'wrapCount:' + 100);
     dialogueUI.setAttribute('text', 'width:' + 3);
     dialogueUI.setAttribute('text', 'color:black');
-    dialogueUI.setAttribute('text', 'value:' + newCharName + '\n' + newPassage);
+    dialogueUI.setAttribute('text', 'value:' + char + '\n' + message);
+    setTimeout(hideDialogueUI, 12000);
 }
 
 // make glow component show on specified char indicating char speaking
@@ -625,7 +625,7 @@ function createRooms() {
                 door.setAttribute('id', 'door');
                 // create component for door / lock
                 door.setAttribute('height', WALL_HEIGHT);
-                door.setAttribute('door', 'locked: true');
+                door.setAttribute('door', 'locked: true;key:true;');
                 // door.setAttribute('locked', 'true');
                 door.setAttribute('scale', '1 1 0.89');
                 door.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
@@ -663,6 +663,27 @@ function createRooms() {
                 
                 el.appendChild(floor);
                 el.appendChild(key);
+            }
+              // add cylinder
+              if (mapData[i] === "C") {
+                const cylinderElm = document.createElement('a-entity');
+                cylinderElm.setAttribute('gltf-model', '#' + 'cylinder');
+                cylinderElm.setAttribute('scale', '1 1 3');
+                cylinderElm.setAttribute('rotation', '90 0 0');
+                // cylinderElm.setAttribute('material', 'src:#' + wallTexture + ';repeat: 1 1');
+                cylinderElm.setAttribute('position', floorPos);
+               
+                const floor = document.createElement('a-box');
+                floor.setAttribute('height', WALL_HEIGHT / 20);
+                floor.setAttribute('width', WALL_SIZE);
+                floor.setAttribute('depth', WALL_SIZE);
+                floor.setAttribute('static-body', '');
+                floor.setAttribute('position', floorPos);
+                floor.setAttribute('material', 'src:#' + 'floor');
+            
+
+                el.appendChild(cylinderElm);
+                el.appendChild(floor);
             }
             // if the number is 1 - 4,  create a wall
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0" || mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4  || mapData[i] === 5) {
@@ -771,15 +792,19 @@ function createRooms() {
                     el.appendChild(floor);
                 }
                 // door locked
-                if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "4" && mapData[i].charAt(1) === "_") {
+                if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "4" && mapData[i].charAt(1) === "L" ) {
                     let doorNum2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
                     let doorNum = doorNum2;
+                    let doorColor =  mapData[i].charAt(2) ? mapData[i].charAt(2) : null;
                     wall.setAttribute('id', 'door');
                     // door locked set num 
                     wall.setAttribute('height', WALL_HEIGHT);
-                    wall.setAttribute('door', 'doorLockNum:' + doorNum);
+                    let doorLockColor = returnKeyColor(doorColor);
+                    wall.setAttribute('door', 'doorLockNum:' + doorNum+'key:true;keyColour:'+doorLockColor );
+                    doorNum++;
                     wall.setAttribute('locked', 'true');
                     wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
+    
                     const floor = document.createElement('a-box');
                     floor.setAttribute('height', WALL_HEIGHT / 20);
                     floor.setAttribute('width', WALL_SIZE);
@@ -987,6 +1012,10 @@ function updatePlayerPos(newPlayPos) {
     document.querySelector('#playercam').setAttribute('position', newPlayPos);
 }
 
+function getPlayerKeysInfo(){
+   return lockedDoors;
+}
+
 
 function clearScene() {
     const el = document.getElementById('room');
@@ -1005,4 +1034,4 @@ function playerDeath() {
 
 
 // EXPORTS 
-export { nextScene, loadNewLevel, populateDiag, nextPassageForChar, populateInteractions, clearScene, loadData, shootAt, gotKey, enemyCombatAttack, getPlayerHealth, setPlayerHealth, playerDeath };
+export { nextScene, loadNewLevel, populateDiag, nextPassageForChar, populateInteractions,populateMessage, clearScene, loadData, shootAt, gotKey,getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth, setPlayerHealth, playerDeath };
