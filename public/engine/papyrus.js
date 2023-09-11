@@ -2,7 +2,7 @@
 // Reassignable global game stare vars
 let player;
 // CONFIG CHARECTERS AND ENEMIES STORE
-let config; let chars; let enemies; let gun = true;
+let config; let chars; let enemies; let gun = false;
 // Diagoloue and scene metadata etc
 let diag; let sceneMetadata; let interactions; let charDiagIDs = [];
 let lockedDoors = [];
@@ -28,8 +28,8 @@ async function loadData() {
     await loadChars();
     await loadEnemies();
     await loadPrefabs();
-    await loadDiag(1);
-    await loadInteractions(1);
+    await loadDiag(currentScene);
+    await loadInteractions(currentScene);
     //scene loading / aFrame loading
     await loadSceneMetaData(currentScene);
     await loadMap(currentScene);
@@ -192,7 +192,6 @@ function returnKeyColor(colorCode) {
     if (colorCode == 'R') {
         return 'red';
     }
-
 }
 
 // LEVEL LOADING 
@@ -221,7 +220,7 @@ async function loadNewLevel(mapToLoad) {
     }
     await createRooms();
     await loadDiag(mapToLoad);
-    await loadInteractions(1);
+    await loadInteractions(mapToLoad);
     // await populateDiag(0, 0);
 
     currentScene = mapToLoad;

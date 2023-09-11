@@ -15,7 +15,7 @@
     {
       "name": "woman",
       "id": 3,
-      "model": "models/woman.glb",
+      "model":"models/woman.glb",
       "scale" : "0.007 0.007 0.007"
     }
   ]
