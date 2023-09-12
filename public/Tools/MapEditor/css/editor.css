@@ -8,6 +8,10 @@ body{
     margin: 1em 1em 1em 1em;
 }
 
+.p1{
+    padding: 1em 1em 1em 1em;
+}
+
 .m1_left{
     margin-left:1em;
 }
@@ -109,7 +113,8 @@ button, input[type="button"], input[type="submit"] {
 }
 
 .slidecontainer {
-    width: 100%;
+    width: 80%;
+    margin:1em;
   }
   
   .slider {

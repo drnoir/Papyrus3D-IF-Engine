@@ -32,6 +32,7 @@ let waterTexture;
 
 // custum height mode
 let heightMode = false;
+let playerPlaceMode = false;
 let custumHeightY = 1;
 let currentEntityCustom = 0;
 
@@ -42,6 +43,10 @@ let currentPrefab = 0;
 const prefabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 let currentPaintMode = paintMode[0];
 let deleteMode = false;
+
+// char
+const charIDRef = document.getElementById('charID');
+let charID = charIDRef.value;
 
 // scene elements
 const scene = document.querySelector('a-scene');
@@ -105,6 +110,30 @@ AFRAME.registerComponent('editor-listener', {
                 }
             }
             // door - not locked
+            // check if playerstart on map first 
+        const playerMarker = document.getElementById('playerStart').parentNode;
+        console.log('player marker' +playerMarker)
+        const playerMarkers = playerMarker.children.length;
+            console.log(playerMarkers)
+            if (playerPlaceMode && currentEntity === "P" && !deleteMode && !heightMode && playerMarkers>=1) {
+                console.log('You have already placed the player start playerMarker, reset?');
+            }
+            if (playerPlaceMode && currentEntity === "P" && !deleteMode && !heightMode && playerMarkers===0) {
+                    // custumHeightString = '0' + currentEntityCustom.toString();
+                    const playerPlaceElm = document.createElement('a-box');
+                    const playerText = document.createElement('a-text');
+                    playerText.setAttribute('value', 'PLAYER START' );
+                    playerText.object3D.position.y = 1;
+                    playerText.object3D.position.x = -0.5;
+                    playerPlaceElm.setAttribute('height', WALL_HEIGHT / 20);
+                    playerPlaceElm.object3D.position.y = 0.1;
+                    playerPlaceElm.setAttribute('color', 'green');
+                    playerPlaceElm.setAttribute('id', 'playerStart');
+                    playerPlaceElm.appendChild(playerText)
+                    el.appendChild(playerPlaceElm);
+                }
+          
+            // door - not locked
              if (currentPaintMode === "door" && currentEntity === 4 && !deleteMode && !heightMode) {
                 // custumHeightString = '0' + currentEntityCustom.toString();
                 const door = document.createElement('a-box');
@@ -158,7 +187,6 @@ AFRAME.registerComponent('editor-listener', {
                 el.object3D.position.y = 0;
                 el.appendChild(enemy1);
             }
-  
             if (currentEntity === 7) {
                 updateMap(index, prefabNew);
             } else {
@@ -492,6 +520,17 @@ function switchPaintMode(currentPaintMode) {
         wallHeight = 0;
         heightY = 0;
     }
+    if (currentPaintMode === "playerplace") {
+        // check if playerstart on map first 
+        // const playerMarker = document.getElementById('playerStart');
+        // console.log('player marker' +playerMarker)
+        // if(playerMarker===null || undefined){
+        currentEntity = "P";
+        wallHeight = 0;
+        heightY = 0;
+      
+      
+    }
     if (currentPaintMode === "water") {
         currentEntity = 6;
         wallHeight = 0;
@@ -511,6 +550,21 @@ deleteCheckbox.addEventListener('change', function () {
         deleteMode = false;
         currentEntity = setOption('wallType');
         console.log(deleteMode)
+    }
+});
+
+// Check if player place mode is on and init player place (only 1 allowed) if it is 
+const playerPlaceCheckbox = document.querySelector("input[name=playermode]");
+playerPlaceCheckbox.addEventListener('change', function () {
+    if (this.checked) {
+        playerPlaceMode = true;
+        currentEntity = "P";
+        console.log(playerPlaceMode)
+    }
+    if (!this.checked) {
+        playerPlaceMode = false;
+        currentEntity = setOption('wallType');
+        console.log(playerPlaceMode)
     }
 });
 

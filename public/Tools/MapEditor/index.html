@@ -51,6 +51,7 @@
     <a id="closebtn">&times;</a>
     <h2>Papyrus 3D Map Editor</h2>
     <h4>Paint Mode</h4>
+    <p class="m1">Select the entity you want to paint onto the map below</p>
     <select id="paintmode" class="m1">
         <option value="0">Walls</option>
         <option value="1">Enemies</option>
@@ -59,6 +60,10 @@
         <option value="6">Water</option>
         <option value="7">Chars</option>
     </select>
+    <div>
+    <label for="playerPlacemode">
+        <input type="checkbox" id="playermode" name="playermode" value="no"> Toggle PLAYER PLACE MODE
+    </label>
     <label for="deletemode">
         <input type="checkbox" id="deletemode" name="deletemode" value="no"> Toggle DELETE MODE
     </label>
@@ -67,6 +72,15 @@
         <input type="checkbox" id="enemymode" name="enemymode" value="no"> Toggle ENEMY MODE
     </label>
 </div>
+</div>
+    <h4>Wall Type</h4>
+    <p class="m1">Select the size of the wall you want to paint (if in walls mode)</p>
+    <select id="wallType" class="m1 ">
+        <option value="1">Full Height</option>
+        <option value="2">1/2 Height</option>
+        <option value="3">1/3 Height</option>
+        <option value="0">custum</option>
+    </select>
     <h4>Height (HEIGHTMODE)</h4>
     <div class="slidecontainer">
         <input type="range" min="1" max="20" value="1" class="slider" id="myRange">
@@ -75,18 +89,13 @@
             <input type="checkbox" id="heightmode" name="heightmode" value="no"> Toggle HEIGHT MODE
         </label>
       </div>
-    <h4>Wall Type</h4>
-    <select id="wallType" class="m1 ">
-        <option value="1">Full Height</option>
-        <option value="2">1/2 Height</option>
-        <option value="3">1/3 Height</option>
-        <option value="0">custum</option>
-    </select>
     <h4>Chars</h4>
+    <p class="m1">Enter the Char ID you want to add (when in Char paint Mode) to associate that char with the char model in your charecters json. </p>
     <div class="slidecontainer">
-        <input type="dropdown" min="1" max="20" value="1">
+        <input type="text" id = "charID" value="1" />
       </div>
     <h4>Map Template Size</h4>
+    <p class="m1">Select the size of the map you want to create</p>
     <select id="templateSize" class="m1">
         <option value="25">25 x 25</option>
         <option value="50">50 x 50</option>
