@@ -70,6 +70,7 @@ AFRAME.registerComponent('editor-listener', {
         let index = data.index;
         const el = this.el;
         this.el.addEventListener('mousedown', function (evt) {
+            console.log('current enttity should be '+currentEntity);
             const WALL_HEIGHT = wallHeight;
             if (currentPaintMode === "wall") {
                 el.setAttribute('material', 'src:#' + wallTexture);
@@ -103,22 +104,30 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
             }
-            // enemies add
-
-            if (currentEntity === 6 && !deleteMode && !heightMode) {
+            // door - not locked
+             if (currentPaintMode === "door" && currentEntity === 4 && !deleteMode && !heightMode) {
+                // custumHeightString = '0' + currentEntityCustom.toString();
+                const door = document.createElement('a-box');
+                door.setAttribute('height', WALL_HEIGHT);
+                door.object3D.position.y = 1.2;
+                door.setAttribute('material', 'src:#' + doorTexture);
+                el.appendChild(door);
+            }
+            // water
+            if (currentPaintMode === "water" && currentEntity === 6 && !deleteMode && !heightMode) {
                 const water = document.createElement('a-plane');
-                water.setAttribute('height', WALL_HEIGHT / 20);
-                // water.setAttribute('width', WALL_SIZE);
-                // water.setAttribute('depth', WALL_SIZE);
+                water.setAttribute('height', WALL_HEIGHT / 40);
+                water.setAttribute('width', WALL_HEIGHT / 7.5);
+                water.setAttribute('depth', WALL_HEIGHT / 10);
                 water.setAttribute('static-body', '');
                 water.setAttribute('rotation', '90 0 0');
                 water.setAttribute('scale', '1 5.72 2');
                 water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
-                water.object3D.position.y = 0.5;
+                water.object3D.position.y = 0.15;
                 el.appendChild(water);
                 }
-
-                if (currentEntity === 7 && !deleteMode && !heightMode) {
+                // char paint
+                if (currentPaintMode === "prefabs" && currentEntity === 7 && !deleteMode && !heightMode) {
                     // prefabs - 71T6 7:type prefav 1 number prefav T trigger flag 6 number dialog to trigger
                     // setup dummy box model with a text number on it 
                     let prefabBox = document.createElement('a-box');
@@ -128,17 +137,18 @@ AFRAME.registerComponent('editor-listener', {
                     let triggerPrefab = true;  // test val
                     let triggerCheck = triggerPrefab ? 'T' : null;
                     // create string for referencing prefab info with associated trigger and diag ref 
+                    // prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
                     prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
                     console.log('prefab string now' + prefabNew);
-                    el.setAttribute('class', 'floor');
-                    el.setAttribute('height', floorHeight);
-                    el.setAttribute('material', 'src:#' + floorTexture);
+                    prefabBox.setAttribute('class', 'floor');
+                    prefabBox.setAttribute('height', WALL_HEIGHT);
+                    prefabBox.setAttribute('color', 'green');
                     el.appendChild(prefabBox);
                     // set up different rotation presets?
                     //    prefabBox.setAttribute('rotation', prefabElmNum.rotation);
                 }
-
-            if (currentEntity === 9 && !deleteMode && !heightMode) {
+            // enemy paint
+            if (currentPaintMode === "enemies" && currentEntity === 9 && !deleteMode && !heightMode) {
                 console.log('enemy paint triggered')
                 const enemy1 = document.createElement('a-box');
                 enemy1.setAttribute('color', 'red');
@@ -431,18 +441,22 @@ function allHeightSwitch(currentEntity) {
         heightY = 0;
         console.log(wallHeight);
     }
-    // prefabs
-    else if (currentEntity == 5) {
+    else if (currentEntity == 4) {
+        console.log("current entity matched" + currentEntity);
+        wallHeight =2.5;
+    }
+    //water
+    else if (currentEntity == 6) {
         console.log("current entity matched" + currentEntity);
         wallHeight = 0;
         console.log(wallHeight);
     }
-    //water
-        else if (currentEntity == 6) {
-            console.log("current entity matched" + currentEntity);
-            wallHeight = 0;
-            console.log(wallHeight);
-        }
+    // prefabs
+    else if (currentEntity == 7) {
+        console.log("current entity matched" + currentEntity);
+        wallHeight = 0;
+        console.log(wallHeight);
+    }
     // enemies
     else if (currentEntity == 9) {
         console.log("current entity matched" + currentEntity);
@@ -469,14 +483,12 @@ function switchPaintMode(currentPaintMode) {
         heightY = 0;
     }
     if (currentPaintMode === "door") {
-        enemyTypeSelect.setAttribute('hidden', '');
-        enemyTitle.setAttribute('hidden', '');
+        currentEntity = 4;
         wallHeight = 2.5;
         heightY = 1;
     }
     if (currentPaintMode === "prefabs") {
-        enemyTypeSelect.setAttribute('hidden', '');
-        enemyTitle.setAttribute('hidden', '');
+        currentEntity = 7;
         wallHeight = 0;
         heightY = 0;
     }
