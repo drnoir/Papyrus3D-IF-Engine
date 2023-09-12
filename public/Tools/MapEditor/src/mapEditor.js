@@ -25,12 +25,9 @@ let heightY = 2.5
 let currentEntity = 1;
 let custumHeightString = '01'
 
-// textures
-let wallTexture;
-let floorTexture;
-let doorTexture;
-let wallTexture2;
-let wallTexture3;
+// reassingnle textures allocation
+let wallTexture; let floorTexture;
+let doorTexture; let wallTexture2; let wallTexture3;
 let waterTexture;
 
 // custum height mode
@@ -39,8 +36,10 @@ let custumHeightY = 1;
 let currentEntityCustom = 0;
 
 // possible options - wall, door, enemies
-let paintMode = ['wall', 'enemies', 'door', 'delete', 'height', 'prefabs', 'water'];
-let currentPrefab = 0; const prefabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let paintMode = ['wall', 'enemies', 'door', 'delete', 'height', 'prefabs', 'water', 'chars'];
+let currentPrefab = 0; 
+
+const prefabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 let currentPaintMode = paintMode[0];
 let deleteMode = false;
 
@@ -155,7 +154,6 @@ AFRAME.registerComponent('editor-listener', {
             } else {
                 updateMap(index, !heightMode ? currentEntity : custumHeightString);
             }
-
         });
     },
 });
