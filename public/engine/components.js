@@ -167,7 +167,6 @@ AFRAME.registerComponent('character', {
         animated: { type: 'boolean', default: false },
         glowOn: { type: 'boolean', default: false },
         charID: { type: 'number', default: 0 },
-        currentDiagID: { type: 'number', default: 0 },
         numDiag:  { type: 'number', default: 0 },
     },
     multiple: true,
@@ -181,19 +180,17 @@ AFRAME.registerComponent('character', {
         let animated = data.animated;
         let glowOn = data.glowOn;
         const elScale = this.el.scale;
-        let currentDiagID = data.currentDiagID;
         let numDiag = data.numDiag;
         if (animated) {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
-        // const triggerCharDialogue= data.triggerDialogue;
         const charID = data.charID;
         this.el.addEventListener('click', function (evt) {
             console.log('diagNum count'+numDiag)
             // currentDiagID++;
             if ( numDiag === 0){
             nextPassageForChar(charID,numDiag);
-            numDiag=1;  
+            numDiag++;  
             }
             else{
             nextPassageForChar(charID,numDiag);

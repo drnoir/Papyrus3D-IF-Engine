@@ -303,36 +303,24 @@ function populateDiag(currentChar, numDiag) {
     const dialogueUI = document.getElementById('dialogueID');
     // add button test function
     showDialogueUI();
-
-    // const choicesCheck = diag.passage[passageID].choices;
-    // console.log(choicesCheck);
-    // if (choicesCheck){
-    // createChoiceButtons(choicesCheck.length)
-    // }
-    // let newPassage; let newCharName; let newPassageID;
-
     nextPassageForChar(currentChar, numDiag);
     console.log(charDialogs)
-    // add to UI 
-    // dialogueUI.setAttribute('text', 'wrapCount:' + 100);
-    // dialogueUI.setAttribute('text', 'width:' + 3);
-    // dialogueUI.setAttribute('text', 'color:black');
-    // dialogueUI.setAttribute('text', 'value:' + newCharName + newPassageID+ '\n' + newPassage);
 }
 
 function nextPassageForChar(currentChar, numDiag) {
     showDialogueUI();
     const dialogueUI = document.getElementById('dialogueID');
-    // console.log(  'text TEST'+charDialogs[0][0].text)
-    let newPassage; let newCharName
+    // console.log(  'text TEST of 1 index'+charDialogs[0][0].text)
+    let newPassage; let newCharName;
     if (numDiag === 0) {
         // populate chars dialogues 
         returnDiag(currentChar);
-        newPassage = charDialogs[0][0].text;
+        newPassage = charDialogs[0].text;
         // newPassageID = charDialogs[0][0].diagID;
-        newCharName = charDialogs[0][0].char;
+        newCharName = charDialogs[0].char;
         console.log(charDialogs)
-        populateMessage(newCharName, newPassage)
+        populateMessage(newCharName, newPassage);
+        // numDiag++;
     }
     // if at end of dialogues reset everything
     if (numDiag + 1 === charDialogs.length) {
@@ -342,7 +330,7 @@ function nextPassageForChar(currentChar, numDiag) {
         charDialogs = [];
         populateMessage(newCharName, newPassage)
     }
-    if (numDiag > 0) {
+    if (numDiag >=1) {
         // standard iterating through dialogues 
         console.log(currentDiagID);
         newPassage = charDialogs[0][numDiag].text;
@@ -355,7 +343,7 @@ function nextPassageForChar(currentChar, numDiag) {
 
 function populateInteractions(interactionID, currentInteraction) {
     const dialogueUI = document.getElementById('dialogueID');
-    // add button test function
+    // add button test function for choice dialogiue
     showDialogueUI();
     // if (!passageBtn) {
     //     createChoiceButtons(currentInteraction);
@@ -363,13 +351,13 @@ function populateInteractions(interactionID, currentInteraction) {
     let newPassage = interactions.interactions[interactionID].text;
     let newCharName = interactions.interactions[interactionID].Object;
     currentDiagID = currentInteraction;
-    populateMessage(newCharName, newPassage)
-
+    populateMessage(newCharName, newPassage);
     setTimeout(hideDialogueUI, 12000);
 }
 
 // show a message from enviroment
 function populateMessage(char, message) {
+    console.log('populate dialogue box with'+char, message)
     const dialogueUI = document.getElementById('dialogueID');
     // add button test function
     showDialogueUI();
@@ -498,7 +486,6 @@ function createRooms() {
                 char.setAttribute('static-body', '');
                 char.setAttribute('glowfx', 'visible:true;');
                 char.setAttribute('character', 'charID:' + charNumber + ';' + 'numDiag:', diagCount + ';');
-
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
                 floor.setAttribute('width', WALL_SIZE);
@@ -926,9 +913,11 @@ function resetPlayerHealth() {
 // init diag Loading
 function returnDiag(charID) {
     for (charID in diag.passage) {
-        if (diag.passage.hasOwnProperty(charID)) {
+        // if (diag.passage.hasOwnProperty(charID)) {
+            console.log('diag loading test'+charID, diag.passage.charID)
+            if(diag.passage.charID===charID){
             charDialogs.push(diag.passage[charID]);
-            console.log('chardialogupdate' + charDialogs);
+            console.table(charDialogs);
         }
     }
 }

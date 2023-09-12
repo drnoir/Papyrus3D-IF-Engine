@@ -19,6 +19,10 @@
     {
       "id": "oldbrick",
       "path": "walls/oldbrick.JPG"
+    },
+    {
+      "id": "water",
+      "path": "nature/water.jpeg"
     }
   ]
 }

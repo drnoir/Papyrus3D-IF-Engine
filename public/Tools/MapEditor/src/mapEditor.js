@@ -1,5 +1,16 @@
 // map editor js - main js scrupt for the map editor for creating maps
 
+//ADD TORCHES * TOD'S 
+//PREFABS / TRIGGERS UI, 72, 72T2
+//CHAR ID's - Looks at enemeis - Char+num
+//Cylinders C
+//Doors / locked / keys, 4, 4L, KB, KY, KR
+//Exit 5 
+//trigger Floor + trigger 20 T20
+//damage floor 0HU20
+//WATER - 6
+// Playerstart P
+
 // global map editor vars 
 let sceneMetadata; let textures; let mapTemplate = [];
 // prefabs are represented just by dummy models I think is best?
@@ -87,7 +98,28 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('static-body', '');
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
-                else if (currentEntity === 5 && !deleteMode && !heightMode) {
+                else {
+                    el.object3D.position.y = 0;
+                    el.setAttribute('height', WALL_HEIGHT / 20);
+                    el.setAttribute('material', 'src:#' + floorTexture);
+                }
+            }
+            // enemies add
+
+            if (currentEntity === 6 && !deleteMode && !heightMode) {
+                const water = document.createElement('a-plane');
+                water.setAttribute('height', WALL_HEIGHT / 20);
+                // water.setAttribute('width', WALL_SIZE);
+                // water.setAttribute('depth', WALL_SIZE);
+                water.setAttribute('static-body', '');
+                water.setAttribute('rotation', '90 0 0');
+                water.setAttribute('scale', '1 5.72 2');
+                water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
+                water.object3D.position.y = 0.5;
+                el.appendChild(water);
+                }
+
+                if (currentEntity === 7 && !deleteMode && !heightMode) {
                     // prefabs - 71T6 7:type prefav 1 number prefav T trigger flag 6 number dialog to trigger
                     // setup dummy box model with a text number on it 
                     let prefabBox = document.createElement('a-box');
@@ -106,13 +138,7 @@ AFRAME.registerComponent('editor-listener', {
                     // set up different rotation presets?
                     //    prefabBox.setAttribute('rotation', prefabElmNum.rotation);
                 }
-                else {
-                    el.object3D.position.y = 0;
-                    el.setAttribute('height', WALL_HEIGHT / 20);
-                    el.setAttribute('material', 'src:#' + floorTexture);
-                }
-            }
-            // enemies add
+
             if (currentEntity === 9 && !deleteMode && !heightMode) {
                 console.log('enemy paint triggered')
                 const enemy1 = document.createElement('a-box');
@@ -123,21 +149,8 @@ AFRAME.registerComponent('editor-listener', {
                 el.object3D.position.y = 0;
                 el.appendChild(enemy1);
             }
-            // paint water mode
-            if (currentEntity === 6 && !deleteMode && !heightMode) {
-                const water = document.createElement('a-plane');
-                // water.setAttribute('height', WALL_HEIGHT / 20);
-                // water.setAttribute('width', WALL_HEIGHT / 20);
-                // water.setAttribute('depth', WALL_HEIGHT / 20);
-                // water.setAttribute('static-body', '');
-                water.setAttribute('rotation', '90 0 0');
-                water.setAttribute('scale', '1 1 1');
-                water.object3D.position.y = 0;
-                water.setAttribute('material', 'src:#water; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
-                el.appendChild(water);
-                }
-
-            if (currentEntity === 5) {
+  
+            if (currentEntity === 7) {
                 updateMap(index, prefabNew);
             } else {
                 updateMap(index, !heightMode ? currentEntity : custumHeightString);
@@ -171,7 +184,6 @@ AFRAME.registerComponent('map', {
 
 //create the blank map scene
 init();
-
 
 async function init() {
     let room = document.createElement('a-entity');
@@ -207,6 +219,7 @@ async function loadTextures(e) {
     doorTexture = textures.textures[2].id;
     wallTexture2 = textures.textures[3].id;
     wallTexture3 = textures.textures[4].id;
+    waterTexture = textures.textures[5].id
 }
 
 // function to create room geometry 
@@ -246,6 +259,19 @@ function createRooms() {
             const charPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 0 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const torchPosition = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 4 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const stairsPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} ${(y - (mapRes.height)) * WALL_SIZE} ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
+            
+            if (mapData[i] === 6) {
+                const water = document.createElement('a-plane');
+                water.setAttribute('height', WALL_HEIGHT / 20);
+                water.setAttribute('width', WALL_SIZE);
+                water.setAttribute('depth', WALL_SIZE);
+                water.setAttribute('static-body', '');
+                water.setAttribute('position', floorPos);
+                water.setAttribute('rotation', '90 0 0');
+                water.setAttribute('scale', '1 5.72 2');
+                water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
+                el.appendChild(water);
+            }
 
             // if the number is 1 - 4, create a wall
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0" || mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
