@@ -99,4 +99,5 @@ Not fully tested for all build types yet. Build is of the public folder with ent
 * 7 - Custom prefabs Example : 71T6 7:type prefav 1 number prefab T trigger flag 6 number dialog to trigger
 * 9 - Enemies 
 * P - Playerstart
+* t - light
 * KB - Key and then Blue for blue, y for tellow , R for red, G for Green

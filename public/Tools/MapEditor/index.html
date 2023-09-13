@@ -29,8 +29,7 @@
                      material="color:black;"
             ></a-mixin>
         </a-assets>
-        <a-entity light="type: ambient; color: #CCC;intensity: 0.2;"></a-entity>
-        <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
+        <a-entity light="type: ambient; color: #CCC;intensity: 0.36;"></a-entity>
         <a-entity id="rig" movement-controls="fly: true; speed: 0.8">
             <a-entity camera look-controls position="0 1.6 4" id="player">
                 <a-entity cursor="fuse: true; fuseTimeout: 500"
@@ -49,8 +48,7 @@
 </div>
 <div id="mySidenav" class="sidenav">
     <a id="closebtn">&times;</a>
-    <h2>Papyrus 3D Map Editor</h2>
-    <h4>Paint Mode</h4>
+    <h4>Walls and Paint Mode</h4>
     <p class="m1">Select the entity you want to paint onto the map below</p>
     <select id="paintmode" class="m1">
         <option value="0">Walls</option>
@@ -59,6 +57,7 @@
         <option value="5">Prefabs</option>
         <option value="6">Water</option>
         <option value="7">Chars</option>
+        <option value="8">Light</option>
     </select>
     <div class="m1">
     <label for="playerPlacemode">
@@ -88,12 +87,27 @@
         <label for="heightmode">
             <input type="checkbox" id="heightmode" name="heightmode" value="no"> Toggle HEIGHT MODE
         </label>
-      </div>
-    <div class="slidecontainer">
-    <h4>Chars</h4>
-    <p class="m1">Enter the Char ID you want to add (when in Char paint Mode) to associate that char with the char model in your charecters json. </p>
-        <input type="text" id = "charID" value="1" />
+      </div>    
+    <h4>Map Template Size</h4>
+    <p class="m1">Select the size of the map you want to create</p>
+    <p class="m1">PLEASE NOTE: Changing the size will wipe your current map</p>
+    <select id="templateSize" class="m1">
+        <option value="25">25 x 25</option>
+        <option value="50">50 x 50</option>
+        <option value="100">100 x 100</option>
+    </select>
+    <div>
+        <button id="downloadBtn" class="m1">Import Map</button>
+        <button id="downloadBtn" class="m1">Download Map</button>
     </div>
+</div>
+
+
+</div>
+<div id="mySidenav2" class="sidenav2">
+    <a id="closebtn2">&times;</a>
+    <h2>Papyrus 3D Map Editor: Prefabs</h2>
+    <h4>Prefab Options</h4>
     <div class="slidecontainer">
         <h4>Prefabs</h4>
         <p class="m1">Enter the Prefab ID you want to add (when in prefabs paint Mode) to associate that prefab model in your prefabs json. Also you may add a trigger flag 
@@ -117,20 +131,23 @@
             </label>
         </div>
       </div>
-    <h4>Map Template Size</h4>
-    <p class="m1">Select the size of the map you want to create</p>
-    <p class="m1">PLEASE NOTE: Changing the size will wipe your current map</p>
-    <select id="templateSize" class="m1">
-        <option value="25">25 x 25</option>
-        <option value="50">50 x 50</option>
-        <option value="100">100 x 100</option>
-    </select>
-    <div>
-        <button id="downloadBtn" class="m1">Import Map</button>
-        <button id="downloadBtn" class="m1">Download Map</button>
-    </div>
 </div>
-<div style="font-size:28px;cursor:pointer" id="openEditor" class="m1">&#9776; Open Editor Menu</div>
+
+<div id="mySidenav3" class="sidenav3">
+    <a id="closebtn3">&times;</a>
+    <h2>Papyrus 3D Map Editor: Charecters</h2>
+    <h4>Charecter Options</h4>
+    <div class="slidecontainer">
+        <h4>Chars</h4>
+        <p class="m1">Enter the Char ID you want to add (when in Char paint Mode) to associate that char with the char model in your charecters json. </p>
+            <input type="text" id = "charID" value="1" />
+        </div>
+</div>
+
+<div style="font-size:28px;cursor:pointer" id="openEditor" class="openEditor">&#9776; Open Wall Options Menu</div>
+<div style="font-size:28px;cursor:pointer" id="openEditor2" class="openEditor block">&#9776; Open Prefab Options Menu</div>
+<div style="font-size:28px;cursor:pointer" id="openEditor3" class="openEditor block2">&#9776; Open Charecters Options Menu</div>
+
 </body>
 <script src="src/UIEditor.js" type="module"></script>
 <script src="src/mapEditor.js" type="module"></script>
