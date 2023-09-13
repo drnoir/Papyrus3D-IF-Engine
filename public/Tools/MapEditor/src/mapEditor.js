@@ -40,6 +40,9 @@ let currentEntityCustom = 0;
 let paintMode = ['wall', 'enemies', 'door', 'delete', 'height', 'prefabs', 'water', 'chars'];
 let currentPrefab = 0; 
 
+// boolean for triggger mode when in prefabs mode
+let prefabTriggerMode = false;
+
 const prefabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 let currentPaintMode = paintMode[0];
 let deleteMode = false;
@@ -109,13 +112,9 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
             }
-            // door - not locked
+
             // check if playerstart on map first 
         const playerMarker = document.getElementById('playerStart');
-        // console.log('player marker' +playerMarker)
-        // const playerMarkers = playerMarker.children.length ?  playerMarker.children.length : 0;
-        //     console.log(playerMarkers)
-        
             if (playerPlaceMode && currentEntity === "P" && !deleteMode && !heightMode && playerMarker===null) {
                     // custumHeightString = '0' + currentEntityCustom.toString();
                     const playerPlaceElm = document.createElement('a-box');
@@ -135,9 +134,8 @@ AFRAME.registerComponent('editor-listener', {
                     alert('You have already placed the player start playerMarker, reset?');
             }
         }
-
             // door - not locked
-             if (currentPaintMode === "door" && currentEntity === 4 && !deleteMode && !heightMode) {
+        if (currentPaintMode === "door" && currentEntity === 4 && !deleteMode && !heightMode) {
                 // custumHeightString = '0' + currentEntityCustom.toString();
                 const door = document.createElement('a-box');
                 door.setAttribute('height', WALL_HEIGHT);
@@ -158,7 +156,7 @@ AFRAME.registerComponent('editor-listener', {
                 water.object3D.position.y = 0.15;
                 el.appendChild(water);
                 }
-                // char paint
+                // prefabs paint
                 if (currentPaintMode === "prefabs" && currentEntity === 7 && !deleteMode && !heightMode) {
                     // prefabs - 71T6 7:type prefav 1 number prefav T trigger flag 6 number dialog to trigger
                     // setup dummy box model with a text number on it 
@@ -166,12 +164,19 @@ AFRAME.registerComponent('editor-listener', {
                     let prefabElmNum = prefabs[currentPrefab];
                     console.log('prefab num' + prefabElmNum)
                     prefabBox.setAttribute('text:', 'value' + prefabElmNum);
-                    let triggerPrefab = true;  // test val
+
+                    // check if the prefab has interaction associated with it else do default
+                    if(prefabTriggerMode){
                     let triggerCheck = triggerPrefab ? 'T' : null;
                     // create string for referencing prefab info with associated trigger and diag ref 
                     // prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
                     prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
-                    console.log('prefab string now' + prefabNew);
+                    }
+                    else{
+                        prefabNew = '7'+prefabElmNum  
+                    }
+
+                    // console.log('prefab string now' + prefabNew);
                     prefabBox.setAttribute('class', 'floor');
                     prefabBox.setAttribute('height', WALL_HEIGHT);
                     prefabBox.setAttribute('color', 'green');

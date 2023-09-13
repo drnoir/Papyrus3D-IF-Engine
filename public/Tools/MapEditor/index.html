@@ -60,7 +60,7 @@
         <option value="6">Water</option>
         <option value="7">Chars</option>
     </select>
-    <div>
+    <div class="m1">
     <label for="playerPlacemode">
         <input type="checkbox" id="playermode" name="playermode" value="no"> Toggle PLAYER PLACE MODE
     </label>
@@ -89,13 +89,37 @@
             <input type="checkbox" id="heightmode" name="heightmode" value="no"> Toggle HEIGHT MODE
         </label>
       </div>
+    <div class="slidecontainer">
     <h4>Chars</h4>
     <p class="m1">Enter the Char ID you want to add (when in Char paint Mode) to associate that char with the char model in your charecters json. </p>
-    <div class="slidecontainer">
         <input type="text" id = "charID" value="1" />
+    </div>
+    <div class="slidecontainer">
+        <h4>Prefabs</h4>
+        <p class="m1">Enter the Prefab ID you want to add (when in prefabs paint Mode) to associate that prefab model in your prefabs json. Also you may add a trigger flag 
+            for triggering interactions and the number you want to trigger </p>
+            <p>EXAMPLE:<strong>71T6</strong> 7:type prefav 1 number prefab T trigger flag 6 number dialog to trigger</p>
+            
+            <div class ="m1">
+                <label for="prefabNum"> Prefab Number
+                <input type="text" id = "prefabNum" value="1" /> 
+                </label>
+            </div>
+
+            <div class ="m1">
+                <label for="prefabTriggermode">
+                    <input type="checkbox" id="prefabTriggermode" name="prefabTriggermode" value="no"> Toggle Prefab Trigger Interaction
+                </label>
+            </div>
+            <div class ="m1">
+            <label for="interactionID"> Interaction Number (IF TRIGGER MODE ON)
+            <input type="text" id = "interactionID" value="1" /> 
+            </label>
+        </div>
       </div>
     <h4>Map Template Size</h4>
     <p class="m1">Select the size of the map you want to create</p>
+    <p class="m1">PLEASE NOTE: Changing the size will wipe your current map</p>
     <select id="templateSize" class="m1">
         <option value="25">25 x 25</option>
         <option value="50">50 x 50</option>
