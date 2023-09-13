@@ -111,14 +111,12 @@ AFRAME.registerComponent('editor-listener', {
             }
             // door - not locked
             // check if playerstart on map first 
-        const playerMarker = document.getElementById('playerStart').parentNode;
-        console.log('player marker' +playerMarker)
-        const playerMarkers = playerMarker.children.length;
-            console.log(playerMarkers)
-            if (playerPlaceMode && currentEntity === "P" && !deleteMode && !heightMode && playerMarkers>=1) {
-                console.log('You have already placed the player start playerMarker, reset?');
-            }
-            if (playerPlaceMode && currentEntity === "P" && !deleteMode && !heightMode && playerMarkers===0) {
+        const playerMarker = document.getElementById('playerStart');
+        // console.log('player marker' +playerMarker)
+        // const playerMarkers = playerMarker.children.length ?  playerMarker.children.length : 0;
+        //     console.log(playerMarkers)
+        
+            if (playerPlaceMode && currentEntity === "P" && !deleteMode && !heightMode && playerMarker===null) {
                     // custumHeightString = '0' + currentEntityCustom.toString();
                     const playerPlaceElm = document.createElement('a-box');
                     const playerText = document.createElement('a-text');
@@ -132,7 +130,12 @@ AFRAME.registerComponent('editor-listener', {
                     playerPlaceElm.appendChild(playerText)
                     el.appendChild(playerPlaceElm);
                 }
-          
+            else  {
+                if (playerPlaceMode){
+                    alert('You have already placed the player start playerMarker, reset?');
+            }
+        }
+
             // door - not locked
              if (currentPaintMode === "door" && currentEntity === 4 && !deleteMode && !heightMode) {
                 // custumHeightString = '0' + currentEntityCustom.toString();
@@ -528,8 +531,6 @@ function switchPaintMode(currentPaintMode) {
         currentEntity = "P";
         wallHeight = 0;
         heightY = 0;
-      
-      
     }
     if (currentPaintMode === "water") {
         currentEntity = 6;
