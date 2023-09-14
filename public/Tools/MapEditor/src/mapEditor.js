@@ -195,6 +195,21 @@ AFRAME.registerComponent('editor-listener', {
                     // create string for referencing prefab info with associated trigger and diag ref 
                     // prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
                     prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
+
+                    let prefabTrigger = document.createElement('a-box');
+                    prefabTrigger.setAttribute('class', 'triggerPrefab');
+                    prefabTrigger.setAttribute('height', 1);
+                    prefabTrigger.setAttribute('scale', '0.1 0.1 0.1');
+                    prefabTrigger.setAttribute('color', 'blue');
+                    prefabTrigger.object3D.position.y = 0.6;
+                    prefabBox.appendChild(prefabTrigger);
+
+                    // create text for trigger num display
+                    const prefabText2 = document.createElement('a-text');
+                    prefabText2.setAttribute('value', 'Trigger Interaction:' + DiagTriggerNum);
+                    prefabText2.object3D.position.y = 1.2;
+                    prefabText2.object3D.position.x = -0.7;
+                    prefabBox.appendChild(prefabText2);
                 }
                 else {
                     prefabNew = '7' + prefabElmNum
@@ -205,8 +220,9 @@ AFRAME.registerComponent('editor-listener', {
                 prefabBox.setAttribute('scale', '1 3 1');
                 prefabBox.setAttribute('color', 'white');
 
+                // create text
                 const prefabText = document.createElement('a-text');
-                prefabText.setAttribute('value',  'Prefab Num:'+ prefabElmNum );
+                prefabText.setAttribute('value', 'Prefab Num:' + prefabElmNum);
                 prefabText.object3D.position.y = 0.8;
                 prefabText.object3D.position.x = -0.5;
                 prefabBox.appendChild(prefabText);
@@ -649,13 +665,13 @@ prefabTrigger.addEventListener('change', function () {
     }
 });
 
-function getPrefabNum(){
+function getPrefabNum() {
     const prefabID = document.getElementById('prefabNum').value;
     console.log(prefabID);
     return prefabID;
 }
 
-function getPrefabInteraction(){
+function getPrefabInteraction() {
     const interactionID = document.getElementById('interactionID').value;
     console.log(interactionID);
     return interactionID;
