@@ -113,7 +113,6 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
             }
-
             // check if playerstart on map first 
             const playerMarker = document.getElementById('playerStart');
             if (playerPlaceMode && currentEntity === "P" && !deleteMode && !heightMode && playerMarker === null) {
@@ -156,7 +155,6 @@ AFRAME.registerComponent('editor-listener', {
                 door.setAttribute('material', 'src:#' + doorTexture);
                 el.appendChild(door);
             }
-
             // light
             if (currentPaintMode === "lights" && currentEntity === 't' && !deleteMode && !heightMode) {
                 let light = document.createElement('a-entity');
@@ -165,7 +163,6 @@ AFRAME.registerComponent('editor-listener', {
                 el.object3D.position.y = 0.2;
                 el.appendChild(light);
             }
-
             // water
             if (currentPaintMode === "water" && currentEntity === 6 && !deleteMode && !heightMode) {
                 const water = document.createElement('a-plane');
@@ -195,7 +192,6 @@ AFRAME.registerComponent('editor-listener', {
                     // create string for referencing prefab info with associated trigger and diag ref 
                     // prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
                     prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
-
                     let prefabTrigger = document.createElement('a-box');
                     prefabTrigger.setAttribute('class', 'triggerPrefab');
                     prefabTrigger.setAttribute('height', 1);
@@ -282,7 +278,7 @@ async function init() {
     scene.appendChild(room);
     await loadTextures();
     await loadMapTemplateData(templateSize);
-    await createRooms();
+    await createRooms(mapTemplate);
 }
 
 // function to handle loading of template and textures data 
@@ -319,27 +315,22 @@ async function loadMap(mapToLoad) {
     mapSource = await res.json();
 }
 
-async function loadImportedMap(importedMap) {
-    // mapRes = await mapJSON;
-    console.log(importedMap)
-
-    // res = importedMap;
-    mapRes = importedMap;
-    mapTemplate =importedMap;
-
-    // mapTemplate= importedMap;
-    console.log( importedMap.length, importedMap);
-    console.log( 'mapRes'+mapRes);
-}
+// async function loadImportedMap(importedMap) {
+//     console.log(importedMap)
+//     mapTemplate = await importedMap;
+//     mapData = await importedMap;
+//     console.log(     mapTemplate  );
+// }
 
 // function to create room geometry 
-function createRooms() {
-    const mapData = mapTemplate;
+function createRooms(map) {
+    const mapData =map;
     console.log('map data on create rooms init' + mapData + ' mapRes'+ mapRes)
     let roomType = "Map Editor";
+
     // char info
-    const chars = mapRes.chars; const charNum = mapRes.charnumber;
-    let charLoopIndex = 0;
+    // const chars = mapRes.chars; const charNum = mapRes.charnumber;
+    // let charLoopIndex = 0;
 
     const WALL_SIZE = 0.8;
     const WALL_HEIGHT = wallHeight;
@@ -370,22 +361,8 @@ function createRooms() {
             const charPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 0 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const torchPosition = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 4 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const stairsPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} ${(y - (mapRes.height)) * WALL_SIZE} ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
-
-            if (mapData[i] === 6) {
-                const water = document.createElement('a-plane');
-                water.setAttribute('height', WALL_HEIGHT / 20);
-                water.setAttribute('width', WALL_SIZE);
-                water.setAttribute('depth', WALL_SIZE);
-                water.setAttribute('static-body', '');
-                water.setAttribute('position', floorPos);
-                water.setAttribute('rotation', '90 0 0');
-                water.setAttribute('scale', '1 5.72 2');
-                water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
-                el.appendChild(water);
-            }
-
-            // if the number is 1 - 4, create a wall
-            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0" || mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4) {
+        // if the number is 1 - 3, create a wall - 4 door
+            if ( mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4 || mapData[i] === 5) {
                 wall = document.createElement('a-box');
                 wall.setAttribute('width', WALL_SIZE);
                 wall.setAttribute('height', WALL_HEIGHT);
@@ -441,6 +418,46 @@ function createRooms() {
                     wall.setAttribute('position', quarterYposition);
                     wall.setAttribute('material', 'src:#' + wallTexture2);
                 }
+                //  door
+                if (mapData[i] === 4) {
+                    wall.setAttribute('id', 'door');
+                    // create component for door / lock
+                    wall.setAttribute('height', WALL_HEIGHT);
+                    // check if door should be locked or not 
+                    wall.setAttribute('scale', '1 1 0.89');
+                    wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
+            }
+
+            if ( typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0"){
+                let floorHeight1 = mapData[i].charAt(1) ? mapData[i].charAt(1) : 0;
+                let floorHeight2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
+                let floorHeight = mapData[i].charAt(1) && mapData[i].charAt(2) ? floorHeight1 + floorHeight2 : floorHeight1;
+                let floorTrigger = floorHeight > 9 ? mapData[i].charAt(3) : mapData[i].charAt(2);
+                let triggerCheck = floorTrigger === 'T' ? true : false;
+                console.log(triggerCheck);
+                if (triggerCheck) {
+                    console.log(floorTrigger, triggerCheck)
+                    wall.setAttribute('triggerdiagfloor', '');
+                    wall.setAttribute('glowfx', 'color:#ffde85;');
+                }
+                wall.setAttribute('class', 'wall');
+                wall.setAttribute('height', floorHeight);
+                wall.setAttribute('static-body', '');
+                wall.setAttribute('position', floorPos);
+                wall.setAttribute('material', 'src:#' + 'floor');
+            }
+            }
+            if (mapData[i] === 6) {
+                const water = document.createElement('a-plane');
+                water.setAttribute('height', WALL_HEIGHT / 20);
+                water.setAttribute('width', WALL_SIZE);
+                water.setAttribute('depth', WALL_SIZE);
+                water.setAttribute('static-body', '');
+                water.setAttribute('position', floorPos);
+                water.setAttribute('rotation', '90 0 0');
+                water.setAttribute('scale', '1 5.72 2');
+                water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
+                el.appendChild(water);
             }
         }
     }
@@ -726,17 +743,17 @@ importBtn.addEventListener('mousedown', (event) => {
 async function importMap(importedMapArr){
     console.log(importedMapArr)
     // clear scene
-    clearScene();
+    await clearScene();
     // add new room
     let room = document.createElement('a-entity');
     room.setAttribute('id', 'room');
-    scene.appendChild(room);
-    await loadTextures();
-
-
-    await loadImportedMap( importedMapArr);
+    await scene.appendChild(room);
+    // await loadTextures();
+    // await loadImportedMap( importedMapArr);
     // await loadMap(mapJSON)
-    await createRooms();
+    mapRes = importedMapArr;
+    console.log('mapRes pre create room'+mapRes)
+    await createRooms(mapRes);
 }
 
 function json2array(json){
