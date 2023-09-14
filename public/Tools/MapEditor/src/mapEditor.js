@@ -184,12 +184,14 @@ AFRAME.registerComponent('editor-listener', {
                 // prefabs - 71T6 7:type prefav 1 number prefav T trigger flag 6 number dialog to trigger
                 // setup dummy box model with a text number on it 
                 let prefabBox = document.createElement('a-box');
-                let prefabElmNum = prefabs[currentPrefab];
+                let prefabElmNum = getPrefabNum();
+                // let prefabElmNum = prefabs[currentPrefab];
                 console.log('prefab num' + prefabElmNum)
                 prefabBox.setAttribute('text:', 'value' + prefabElmNum);
                 // check if the prefab has interaction associated with it else do default
                 if (prefabTriggerMode) {
-                    let triggerCheck = triggerPrefab ? 'T' : null;
+                    let triggerCheck = prefabTriggerMode ? 'T' : null;
+                    const DiagTriggerNum = getPrefabInteraction();
                     // create string for referencing prefab info with associated trigger and diag ref 
                     // prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
                     prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
@@ -636,27 +638,25 @@ slider.oninput = function () {
     console.log('custum height Y' + custumHeightY);
 }
 
-
-// Get the modal
-const modal = document.getElementById("myModal");
-
-
-// Get the <span> element that closes the modal
-const span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on the button, open the modal
-function openModal() {
-    modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function () {
-    modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function (event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
+// Check if Height mode is on and init delete Mode if it is 
+const prefabTrigger = document.querySelector("input[name=prefabTriggerMode]");
+prefabTrigger.addEventListener('change', function () {
+    if (this.checked) {
+        prefabTriggerMode = true;
     }
+    if (!this.checked) {
+        prefabTriggerMode = false;
+    }
+});
+
+function getPrefabNum(){
+    const prefabID = document.getElementById('prefabNum').value;
+    console.log(prefabID);
+    return prefabID;
+}
+
+function getPrefabInteraction(){
+    const interactionID = document.getElementById('interactionID').value;
+    console.log(interactionID);
+    return interactionID;
 }
