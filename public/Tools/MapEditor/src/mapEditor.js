@@ -98,9 +98,9 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('height', WALL_HEIGHT / 20);
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
-                else if (currentEntity.charAt(0) === "0" && currentEntity.charAt(1) !== null && !deleteMode && heightMode) {
+                else if (currentEntity === 0   && !deleteMode && heightMode) {
                     console.log('custum wall height draw on scene');
-                    custumHeightString = '0' + currentEntityCustom.toString();
+                    custumHeightString = '0' + custumHeightY.toString();
                     let floorHeight = custumHeightY;
                     el.setAttribute('class', 'floor');
                     el.setAttribute('height', floorHeight);
