@@ -38,7 +38,7 @@ let currentEntityCustom = 0;
 
 // possible options - wall, door, enemies
 let paintMode = ['wall', 'enemies', 'door', 'delete', 'height', 'prefabs', 'water', 'chars', 'lights'];
-let currentPrefab = 0; 
+let currentPrefab = 0;
 
 // boolean for triggger mode when in prefabs mode
 let prefabTriggerMode = false;
@@ -78,18 +78,18 @@ AFRAME.registerComponent('editor-listener', {
         let index = data.index;
         const el = this.el;
         this.el.addEventListener('mousedown', function (evt) {
-            console.log('current enttity should be '+currentEntity);
+            console.log('current enttity should be ' + currentEntity);
             const WALL_HEIGHT = wallHeight;
             if (currentPaintMode === "wall") {
                 el.setAttribute('material', 'src:#' + wallTexture);
                 el.setAttribute('height', wallHeight);
-                if (currentEntity === 1 && !deleteMode&& !heightMode) {
+                if (currentEntity === 1 && !deleteMode && !heightMode) {
                     el.object3D.position.y = 2.5;
-                } else if (currentEntity === 2 && !deleteMode&& !heightMode) {
+                } else if (currentEntity === 2 && !deleteMode && !heightMode) {
                     el.object3D.position.y = 1;
                     el.setAttribute('material', 'src:#' + wallTexture2);
                 }
-                else if (currentEntity === 3 && !deleteMode&& !heightMode) {
+                else if (currentEntity === 3 && !deleteMode && !heightMode) {
                     el.object3D.position.y = 0.5;
                     el.setAttribute('material', 'src:#' + wallTexture3);
                 }
@@ -98,7 +98,7 @@ AFRAME.registerComponent('editor-listener', {
                     el.setAttribute('height', WALL_HEIGHT / 20);
                     el.setAttribute('material', 'src:#' + floorTexture);
                 }
-                else if (currentEntity.charAt(0) === "0" &&currentEntity.charAt(1) !==null && !deleteMode && heightMode) {
+                else if (currentEntity.charAt(0) === "0" && currentEntity.charAt(1) !== null && !deleteMode && heightMode) {
                     console.log('custum wall height draw on scene');
                     custumHeightString = '0' + currentEntityCustom.toString();
                     let floorHeight = custumHeightY;
@@ -115,23 +115,23 @@ AFRAME.registerComponent('editor-listener', {
             }
 
             // check if playerstart on map first 
-        const playerMarker = document.getElementById('playerStart');
-            if (playerPlaceMode && currentEntity === "P" && !deleteMode && !heightMode && playerMarker===null) {
-                    // custumHeightString = '0' + currentEntityCustom.toString();
-                    const playerPlaceElm = document.createElement('a-box');
-                    const playerText = document.createElement('a-text');
-                    playerText.setAttribute('value', 'PLAYER START' );
-                    playerText.object3D.position.y = 1;
-                    playerText.object3D.position.x = -0.5;
-                    playerPlaceElm.setAttribute('height', WALL_HEIGHT / 20);
-                    playerPlaceElm.object3D.position.y = 0.1;
-                    playerPlaceElm.setAttribute('color', 'green');
-                    playerPlaceElm.setAttribute('id', 'playerStart');
-                    playerPlaceElm.appendChild(playerText)
-                    el.appendChild(playerPlaceElm);
-                }
-            else  {
-                if (playerPlaceMode){
+            const playerMarker = document.getElementById('playerStart');
+            if (playerPlaceMode && currentEntity === "P" && !deleteMode && !heightMode && playerMarker === null) {
+                // custumHeightString = '0' + currentEntityCustom.toString();
+                const playerPlaceElm = document.createElement('a-box');
+                const playerText = document.createElement('a-text');
+                playerText.setAttribute('value', 'PLAYER START');
+                playerText.object3D.position.y = 1;
+                playerText.object3D.position.x = -0.5;
+                playerPlaceElm.setAttribute('height', WALL_HEIGHT / 20);
+                playerPlaceElm.object3D.position.y = 0.1;
+                playerPlaceElm.setAttribute('color', 'green');
+                playerPlaceElm.setAttribute('id', 'playerStart');
+                playerPlaceElm.appendChild(playerText)
+                el.appendChild(playerPlaceElm);
+            }
+            else {
+                if (playerPlaceMode) {
                     let txt;
                     if (confirm("You have already placed the Player Start Position, Would you like to reset it?")) {
                         const playerStartPos = document.getElementById('playerStart');
@@ -140,15 +140,15 @@ AFRAME.registerComponent('editor-listener', {
                         txt = "You pressed OK, Player position can now be reset";
                         // remove P from array and update with floor
                         currentEntity === 'P';
-                      } else {
+                    } else {
                         txt = "You pressed Cancel, Player Position will remain in place";
                         currentEntity === 0;
-                      }
-                  
+                    }
+
+                }
             }
-        }
             // door - not locked
-        if (currentPaintMode === "door" && currentEntity === 4 && !deleteMode && !heightMode) {
+            if (currentPaintMode === "door" && currentEntity === 4 && !deleteMode && !heightMode) {
                 // custumHeightString = '0' + currentEntityCustom.toString();
                 const door = document.createElement('a-box');
                 door.setAttribute('height', WALL_HEIGHT);
@@ -164,7 +164,7 @@ AFRAME.registerComponent('editor-listener', {
                 light.setAttribute('color' + 'yellow');
                 el.object3D.position.y = 0.2;
                 el.appendChild(light);
-                }
+            }
 
             // water
             if (currentPaintMode === "water" && currentEntity === 6 && !deleteMode && !heightMode) {
@@ -178,33 +178,41 @@ AFRAME.registerComponent('editor-listener', {
                 water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
                 water.object3D.position.y = 0.15;
                 el.appendChild(water);
-                }
-                // prefabs paint
-                if (currentPaintMode === "prefabs" && currentEntity === 7 && !deleteMode && !heightMode) {
-                    // prefabs - 71T6 7:type prefav 1 number prefav T trigger flag 6 number dialog to trigger
-                    // setup dummy box model with a text number on it 
-                    let prefabBox = document.createElement('a-box');
-                    let prefabElmNum = prefabs[currentPrefab];
-                    console.log('prefab num' + prefabElmNum)
-                    prefabBox.setAttribute('text:', 'value' + prefabElmNum);
-                    // check if the prefab has interaction associated with it else do default
-                    if(prefabTriggerMode){
+            }
+            // prefabs paint
+            if (currentPaintMode === "prefabs" && currentEntity === 7 && !deleteMode && !heightMode) {
+                // prefabs - 71T6 7:type prefav 1 number prefav T trigger flag 6 number dialog to trigger
+                // setup dummy box model with a text number on it 
+                let prefabBox = document.createElement('a-box');
+                let prefabElmNum = prefabs[currentPrefab];
+                console.log('prefab num' + prefabElmNum)
+                prefabBox.setAttribute('text:', 'value' + prefabElmNum);
+                // check if the prefab has interaction associated with it else do default
+                if (prefabTriggerMode) {
                     let triggerCheck = triggerPrefab ? 'T' : null;
                     // create string for referencing prefab info with associated trigger and diag ref 
                     // prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
                     prefabNew = 7 + prefabElmNum + triggerCheck + DiagTriggerNum.toString();
-                    }
-                    else{
-                        prefabNew = '7'+prefabElmNum  
-                    }
-                    // console.log('prefab string now' + prefabNew);
-                    prefabBox.setAttribute('class', 'floor');
-                    prefabBox.setAttribute('height', WALL_HEIGHT);
-                    prefabBox.setAttribute('color', 'green');
-                    el.appendChild(prefabBox);
-                    // set up different rotation presets?
-                    //    prefabBox.setAttribute('rotation', prefabElmNum.rotation);
                 }
+                else {
+                    prefabNew = '7' + prefabElmNum
+                }
+                // console.log('prefab string now' + prefabNew);
+                prefabBox.setAttribute('class', 'floor');
+                prefabBox.setAttribute('height', 1);
+                prefabBox.setAttribute('scale', '1 3 1');
+                prefabBox.setAttribute('color', 'white');
+
+                const prefabText = document.createElement('a-text');
+                prefabText.setAttribute('value',  'Prefab Num:'+ prefabElmNum );
+                prefabText.object3D.position.y = 0.8;
+                prefabText.object3D.position.x = -0.5;
+                prefabBox.appendChild(prefabText);
+                el.object3D.position.y = 0;
+                el.appendChild(prefabBox);
+                // set up different rotation presets?
+                //    prefabBox.setAttribute('rotation', prefabElmNum.rotation);
+            }
             // enemy paint
             if (currentPaintMode === "enemies" && currentEntity === 9 && !deleteMode && !heightMode) {
                 console.log('enemy paint triggered')
@@ -324,7 +332,7 @@ function createRooms() {
             const charPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 0 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const torchPosition = `${((x - (mapRes.width / 2)) * WALL_SIZE)} 4 ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
             const stairsPos = `${((x - (mapRes.width / 2)) * WALL_SIZE)} ${(y - (mapRes.height)) * WALL_SIZE} ${(y - (mapRes.height / 2)) * WALL_SIZE}`;
-            
+
             if (mapData[i] === 6) {
                 const water = document.createElement('a-plane');
                 water.setAttribute('height', WALL_HEIGHT / 20);
@@ -479,9 +487,9 @@ function allHeightSwitch(currentEntity) {
     }
     if (currentEntity == 0 && heightMode) {
         wallHeight = custumHeightY;
-        currentEntity = '0'+ custumHeightY;
-        custumHeightString =  '0'+ custumHeightY;
-        console.log(  currentEntity );
+        currentEntity = '0' + custumHeightY;
+        custumHeightString = '0' + custumHeightY;
+        console.log(currentEntity);
     }
     if (currentEntity == 1) {
         wallHeight = 5;
@@ -501,7 +509,7 @@ function allHeightSwitch(currentEntity) {
     }
     else if (currentEntity == 4) {
         console.log("current entity matched" + currentEntity);
-        wallHeight =2.5;
+        wallHeight = 2.5;
     }
     //water
     else if (currentEntity == 6) {
@@ -533,10 +541,10 @@ function switchPaintMode(currentPaintMode) {
         enemyTypeSelect.setAttribute('hidden', '');
         enemyTitle.setAttribute('hidden', '');
     }
-    if (currentPaintMode === "walls"  && heightMode) {
+    if (currentPaintMode === "walls" && heightMode) {
         enemyTypeSelect.setAttribute('hidden', '');
         enemyTitle.setAttribute('hidden', '');
-        custumHeightString =  '0'+ custumHeightY;
+        custumHeightString = '0' + custumHeightY;
     }
     if (currentPaintMode === "enemies") {
         console.log('current paint mode' + currentPaintMode);
@@ -625,7 +633,7 @@ output.innerHTML = slider.value;
 slider.oninput = function () {
     output.innerHTML = this.value;
     custumHeightY = this.value;
-    console.log('custum height Y'+ custumHeightY);
+    console.log('custum height Y' + custumHeightY);
 }
 
 
@@ -638,17 +646,17 @@ const span = document.getElementsByClassName("close")[0];
 
 // When the user clicks on the button, open the modal
 function openModal() {
-  modal.style.display = "block";
+    modal.style.display = "block";
 }
 
 // When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
+span.onclick = function () {
+    modal.style.display = "none";
 }
 
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
+window.onclick = function (event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
 }
