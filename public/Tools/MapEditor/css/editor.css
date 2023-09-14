@@ -53,8 +53,23 @@ a-scene {
 }
 .openEditor{
     position: fixed;
-    top:0;
+    top:80;
 }
+
+.toolContainer{
+    background-color: rgb(32, 56, 119);
+    opacity: 0.95;
+    position: absolute;
+    height:200px;
+    width:25%;
+    z-index: 9999;
+    position: fixed;
+    top:80;
+    left:80%;
+    border:white 5px solid;
+}
+
+
 
 .sidenav {
     height: 100%;
@@ -177,5 +192,4 @@ button, input[type="button"], input[type="submit"] {
     background: #04AA6D;
     cursor: pointer;
   }
-
 
