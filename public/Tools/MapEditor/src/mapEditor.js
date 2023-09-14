@@ -313,9 +313,29 @@ async function loadTextures(e) {
     waterTexture = textures.textures[5].id
 }
 
+async function loadMap(mapToLoad) {
+    let fetchURL = mapToLoad;
+    const res = await fetch(fetchURL)
+    mapSource = await res.json();
+}
+
+async function loadImportedMap(importedMap) {
+    // mapRes = await mapJSON;
+    console.log(importedMap)
+
+    // res = importedMap;
+    mapRes = importedMap;
+    mapTemplate =importedMap;
+
+    // mapTemplate= importedMap;
+    console.log( importedMap.length, importedMap);
+    console.log( 'mapRes'+mapRes);
+}
+
 // function to create room geometry 
 function createRooms() {
     const mapData = mapTemplate;
+    console.log('map data on create rooms init' + mapData + ' mapRes'+ mapRes)
     let roomType = "Map Editor";
     // char info
     const chars = mapRes.chars; const charNum = mapRes.charnumber;
@@ -628,7 +648,6 @@ playerPlaceCheckbox.addEventListener('change', function () {
     }
 });
 
-
 // Check if Height mode is on and init delete Mode if it is 
 const heightCheckbox = document.querySelector("input[name=heightmode]");
 heightCheckbox.addEventListener('change', function () {
@@ -665,6 +684,7 @@ prefabTrigger.addEventListener('change', function () {
     }
 });
 
+// prefab loading from menu
 function getPrefabNum() {
     const prefabID = document.getElementById('prefabNum').value;
     console.log(prefabID);
@@ -675,4 +695,55 @@ function getPrefabInteraction() {
     const interactionID = document.getElementById('interactionID').value;
     console.log(interactionID);
     return interactionID;
+}
+
+// importJSON - Code for importing a json file and loading 
+
+// import map json and loading
+const form = document.querySelector('jsonUpload');
+
+let mapJSON = [];
+let importedMapArr = [];
+
+document.getElementById('jsonUpload').addEventListener('change', function(e) {
+    let file = document.getElementById('jsonUpload').files[0];
+    (async () => {
+      const fileContent = await file.text();
+      mapJSON = fileContent;
+      console.log(mapJSON);
+      let parsedJSON = JSON.parse(mapJSON)
+      importedMapArr = parsedJSON.data;
+      console.log( importedMapArr);
+    })();
+  });
+
+const importBtn = document.getElementById('importBtn');
+importBtn.addEventListener('mousedown', (event) => {
+    // on click if map file and json selected init clear and load routine below
+    importMap(importedMapArr);
+});
+
+async function importMap(importedMapArr){
+    console.log(importedMapArr)
+    // clear scene
+    clearScene();
+    // add new room
+    let room = document.createElement('a-entity');
+    room.setAttribute('id', 'room');
+    scene.appendChild(room);
+    await loadTextures();
+
+
+    await loadImportedMap( importedMapArr);
+    // await loadMap(mapJSON)
+    await createRooms();
+}
+
+function json2array(json){
+    var result = [];
+    var keys = Object.keys(json);
+    keys.forEach(function(key){
+        result.push(json[key]);
+    });
+    return result;
 }

@@ -93,12 +93,13 @@
         <option value="50">50 x 50</option>
         <option value="100">100 x 100</option>
     </select>
-    <div>
-        <button id="importBtn" class="m1">Import Map</button>
+    <div class = "m1">
+        <input type="file" id="jsonUpload" />
+
+          <button id = "importBtn">Import Map JSON</button>
         <button id="downloadBtn" class="m1">Download Map</button>
     </div>
 </div>
-
 
 </div>
 <div id="mySidenav2" class="sidenav">
@@ -145,8 +146,6 @@
 <div style="font-size:28px;cursor:pointer" id="openEditor" class="openEditor">&#127912; Open Wall Options Menu</div>
 <div style="font-size:28px;cursor:pointer" id="openEditor2" class="openEditor block">&#9814; Open Prefab Options Menu</div>
 <div style="font-size:28px;cursor:pointer" id="openEditor3" class="openEditor block2">&#9977; Open Charecters Options Menu</div>
-
-
 
 </body>
 <script src="src/UIEditor.js" type="module"></script>
