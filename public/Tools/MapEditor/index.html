@@ -45,6 +45,7 @@
         <!-- Sky -->
         <a-sky id="sky" color="#00468b"></a-sky>
     </a-scene>
+
 </div>
 <div id="mySidenav" class="sidenav">
     <a id="closebtn">&times;</a>
@@ -66,11 +67,7 @@
     <label for="deletemode">
         <input type="checkbox" id="deletemode" name="deletemode" value="no"> Toggle DELETE MODE
     </label>
-    <div class="slidecontainer">
-    <label for="enemymode">
-        <input type="checkbox" id="enemymode" name="enemymode" value="no"> Toggle ENEMY MODE
-    </label>
-</div>
+
 </div>
     <h4>Wall Type</h4>
     <p class="m1">Select the size of the wall you want to paint (if in walls mode)</p>
@@ -97,7 +94,7 @@
         <option value="100">100 x 100</option>
     </select>
     <div>
-        <button id="downloadBtn" class="m1">Import Map</button>
+        <button id="importBtn" class="m1">Import Map</button>
         <button id="downloadBtn" class="m1">Download Map</button>
     </div>
 </div>
@@ -144,9 +141,11 @@
         </div>
 </div>
 
-<div style="font-size:28px;cursor:pointer" id="openEditor" class="openEditor">&#9776; Open Wall Options Menu</div>
-<div style="font-size:28px;cursor:pointer" id="openEditor2" class="openEditor block">&#9776; Open Prefab Options Menu</div>
-<div style="font-size:28px;cursor:pointer" id="openEditor3" class="openEditor block2">&#9776; Open Charecters Options Menu</div>
+<div style="font-size:28px;cursor:pointer" id="openEditor" class="openEditor">&#127912; Open Wall Options Menu</div>
+<div style="font-size:28px;cursor:pointer" id="openEditor2" class="openEditor block">&#9814; Open Prefab Options Menu</div>
+<div style="font-size:28px;cursor:pointer" id="openEditor3" class="openEditor block2">&#9977; Open Charecters Options Menu</div>
+
+
 
 </body>
 <script src="src/UIEditor.js" type="module"></script>
