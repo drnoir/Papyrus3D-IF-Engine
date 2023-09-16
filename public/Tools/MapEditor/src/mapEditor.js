@@ -161,6 +161,19 @@ AFRAME.registerComponent('editor-listener', {
                 door.setAttribute('material', 'src:#' + doorTexture);
                 el.appendChild(door);
             }
+            // door key door - not locked
+            if (currentPaintMode === "keyDoor" && currentEntity.charAt(0) === "4" && currentEntity.charAt(1) === "L" &&  !deleteMode && !heightMode) {
+                // custumHeightString = '0' + currentEntityCustom.toString();
+                const doorColor = currentEntity.charAt(2);
+                let doorPaintColor = returnKeyColor(doorColor);
+                console.log(doorPaintColor);
+                const door = document.createElement('a-box');
+                door.setAttribute('height', WALL_HEIGHT);
+                door.object3D.position.y = 1.2;
+                door.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
+                door.setAttribute('color', doorPaintColor);
+                el.appendChild(door);
+            }
             // light
             if (currentPaintMode === "lights" && currentEntity === 't' && !deleteMode && !heightMode) {
                 let light = document.createElement('a-entity');
@@ -834,18 +847,29 @@ keyModeBtn.addEventListener('change', function () {
     }
 });
 
+const keyDoorModeBtn  = document.querySelector("input[name=keyDoorMode]");
+const keyDoorColorBtn = document.getElementById('keyDoorColor');
+keyDoorModeBtn.addEventListener('change', function () {
+    if (this.checked) {
+        currentPaintMode = "keyDoor"
+        currentEntity = "4L"+keyDoorColorBtn.value.charAt(0).toUpperCase();
+        wallHeight = 2.5;
+        heightY = 0;
+    }
+});
+
 
 // KEYS
 
 
 function returnKeyColor(colorCode) {
-    if (colorCode == 'b') {
+    if (colorCode == 'b' || 'B') {
         return 'blue';
     }
-    if (colorCode == 'y') {
+    if (colorCode == 'y' || 'Y') {
         return 'yellow';
     }
-    if (colorCode == 'r') {
+    if (colorCode == 'r' ||  'R') {
         return 'red';
     }
 }
