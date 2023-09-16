@@ -28,7 +28,7 @@ let custumHeightString = '01'
 // reassingnle textures allocation
 let wallTexture; let floorTexture;
 let doorTexture; let wallTexture2; let wallTexture3;
-let waterTexture;
+let waterTexture; let keyTexture;
 
 // custum height mode
 let heightMode = false;
@@ -233,6 +233,24 @@ AFRAME.registerComponent('editor-listener', {
                 // set up different rotation presets?
                 //    prefabBox.setAttribute('rotation', prefabElmNum.rotation);
             }
+            // add keys
+                    if (currentPaintMode === "key" && currentEntity.charAt(0) === "K") {
+                        console.log("its a key!")
+                        // map data index 1 contains color coding b, y, r etc
+                        let key = document.createElement('a-box');
+                        let color = returnKeyColor(currentEntity.charAt(1));
+                        key.setAttribute('color', color);
+                        key.setAttribute('scale', '0.2, 0.2, 0.2');
+
+                        console.log(key);
+                        key.object3D.position.y = 0.2;
+                        key.setAttribute('material', 'src:#' + keyTexture);
+                        key.setAttribute('key', '');
+                        key.setAttribute('editor-listener', '');
+        
+                    
+                        el.appendChild(key);
+                    }
             // enemy paint
             if (currentPaintMode === "enemies" && currentEntity === 9 && !deleteMode && !heightMode) {
                 console.log('enemy paint triggered')
@@ -244,8 +262,7 @@ AFRAME.registerComponent('editor-listener', {
                 el.object3D.position.y = 0;
                 el.appendChild(enemy1);
             }
-
-                // char paint
+            // char paint
                 if (currentPaintMode === "chars"  && !deleteMode && !heightMode) {
                     console.log('enemy paint triggered')
                     const char1 = document.createElement('a-box');
@@ -332,7 +349,8 @@ async function loadTextures(e) {
     doorTexture = textures.textures[2].id;
     wallTexture2 = textures.textures[3].id;
     wallTexture3 = textures.textures[4].id;
-    waterTexture = textures.textures[5].id
+    waterTexture = textures.textures[5].id;
+    keyTexture = textures.textures[6].id;
 }
 
 async function loadMap(mapToLoad) {
@@ -801,4 +819,33 @@ function json2array(json){
         result.push(json[key]);
     });
     return result;
+}
+
+// trigger key mode
+const keyColorBtn = document.getElementById('keyColor');
+// Check if Height mode is on and init delete Mode if it is 
+const keyModeBtn  = document.querySelector("input[name=keyMode]");
+keyModeBtn.addEventListener('change', function () {
+    if (this.checked) {
+        currentPaintMode = "key"
+        currentEntity = "K"+keyColorBtn.value;
+        wallHeight = 0;
+        heightY = 0;
+    }
+});
+
+
+// KEYS
+
+
+function returnKeyColor(colorCode) {
+    if (colorCode == 'b') {
+        return 'blue';
+    }
+    if (colorCode == 'y') {
+        return 'yellow';
+    }
+    if (colorCode == 'r') {
+        return 'red';
+    }
 }
