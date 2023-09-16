@@ -51,6 +51,12 @@ let deleteMode = false;
 const charIDRef = document.getElementById('charID');
 let charID = charIDRef.value;
 
+charIDRef.addEventListener('input', function (evt) {
+    charID = charIDRef.value;
+    currentEntity = 'char'+charID;
+    console.log('char updated'+charID)
+});
+
 // scene elements
 const scene = document.querySelector('a-scene');
 const assets = document.querySelector('a-assets');
@@ -238,6 +244,26 @@ AFRAME.registerComponent('editor-listener', {
                 el.object3D.position.y = 0;
                 el.appendChild(enemy1);
             }
+
+                // char paint
+                if (currentPaintMode === "chars"  && !deleteMode && !heightMode) {
+                    console.log('enemy paint triggered')
+                    const char1 = document.createElement('a-box');
+                    char1.setAttribute('color', 'green');
+                    char1.setAttribute('scale', '0.8 5 0.8');
+
+                    // create text char display
+                    const charText = document.createElement('a-text');
+                    charText.setAttribute('value', 'Char' + charID);
+                    charText.object3D.position.y = 0.6;
+                    charText.object3D.position.x = -1;
+                    charText.setAttribute('scale', '4.4 1 1');
+                    char1.appendChild(charText);
+                    el.setAttribute('height', WALL_HEIGHT / 20);
+                    el.object3D.position.y = 0;
+                    el.appendChild(char1);
+                }
+
             if (currentEntity === 7) {
                 updateMap(index, prefabNew);
             } else {
@@ -583,6 +609,11 @@ function allHeightSwitch(currentEntity) {
         console.log("current entity matched" + currentEntity);
         wallHeight = 0;
     }
+    // chars
+    else if (currentEntity == 'chars') {
+        console.log("current entity matched" + currentEntity);
+        wallHeight = 0;
+    }
     else {
         wallHeight = 5;
     }
@@ -605,6 +636,13 @@ function switchPaintMode(currentPaintMode) {
         console.log('current paint mode' + currentPaintMode);
         currentEntity = 9;
         console.log('enemies')
+        wallHeight = 0;
+        heightY = 0;
+    }
+    if (currentPaintMode === "chars") {
+        console.log('current paint mode' + currentPaintMode);
+        currentEntity = 'char'+charID;
+        console.log('chars')
         wallHeight = 0;
         heightY = 0;
     }

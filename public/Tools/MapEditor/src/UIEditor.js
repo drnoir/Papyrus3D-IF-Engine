@@ -56,4 +56,26 @@ function closeNav3() {
     document.getElementById("mySidenav3").style.width = "0";
 };
 
+const menuUI4 =  document.getElementById('openEditor4');
+const closeUI4 = document.getElementById('closebtn4');
+
+menuUI4.addEventListener('mousedown', (event) => {
+    openNav4();
+});
+
+closeUI4.addEventListener('mousedown', (event) => {
+    closeNav4();
+});
+
+function openNav4() {
+    document.getElementById("mySidenav4").style.width = "500px";
+}
+
+function closeNav4() {
+    document.getElementById("mySidenav4").style.width = "0";
+};
+
+
+
+
 

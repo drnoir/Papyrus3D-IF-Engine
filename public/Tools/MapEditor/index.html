@@ -85,19 +85,6 @@
             <input type="checkbox" id="heightmode" name="heightmode" value="no"> Toggle HEIGHT MODE
         </label>
       </div>    
-    <h4>Map Template Size</h4>
-    <p class="m1">Select the size of the map you want to create</p>
-    <p class="m1">PLEASE NOTE: Changing the size will wipe your current map</p>
-    <select id="templateSize" class="m1">
-        <option value="25">25 x 25</option>
-        <option value="50">50 x 50</option>
-        <option value="100">100 x 100</option>
-    </select>
-    <div class = "m1">
-        <input type="file" id="jsonUpload" />
-          <button id = "importBtn">Import Map JSON</button>
-        <button id="downloadBtn" class="m1">Download Map</button>
-    </div>
 </div>
 
 </div>
@@ -142,11 +129,30 @@
         </div>
 </div>
 
+<div id="mySidenav4" class="sidenav">
+    <a id="closebtn4">&times;</a>
+    <h2 class="m1">Papyrus 3D Map Editor: Import / Export Maps</h2>
+    <h4 class="m1">Map Options / Import / Export</h4>
+    <h4>Map Template Size</h4>
+    <p class="m1">Select the size of the map you want to create</p>
+    <p class="m1">PLEASE NOTE: Changing the size will wipe your current map</p>
+    <select id="templateSize" class="m1">
+        <option value="25">25 x 25</option>
+        <option value="50">50 x 50</option>
+        <option value="100">100 x 100</option>
+    </select>
+    <div class = "m1">
+        <input type="file" id="jsonUpload" />
+          <button id = "importBtn">Import Map JSON</button>
+        <button id="downloadBtn" class="m1">Download Map</button>
+    </div>
+</div>
+
 <div class="toolContainer">
     <div style="font-size:28px;cursor:pointer" id="openEditor" class="openEditor">&#127912; Open Paint</div>
     <div style="font-size:28px;cursor:pointer" id="openEditor2" class="openEditor block">&#9814; Open Prefabs</div>
     <div style="font-size:28px;cursor:pointer" id="openEditor3" class="openEditor block2">&#9977; Open Charecters</div>
-</div>
+    <div style="font-size:28px;cursor:pointer" id="openEditor4" class="block3">&#128190; Import / Export Maps</div>
 </body>
 <script src="src/UIEditor.js" type="module"></script>
 <script src="src/mapEditor.js" type="module"></script>
