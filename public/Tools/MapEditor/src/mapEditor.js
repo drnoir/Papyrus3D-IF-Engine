@@ -184,15 +184,16 @@ AFRAME.registerComponent('editor-listener', {
             }
             // water
             if (currentPaintMode === "water" && currentEntity === 6 && !deleteMode && !heightMode) {
-                const water = document.createElement('a-plane');
+                const water = document.createElement('a-box');
                 water.setAttribute('height', WALL_HEIGHT / 40);
-                water.setAttribute('width', WALL_HEIGHT / 7.5);
-                water.setAttribute('depth', WALL_HEIGHT / 10);
-                water.setAttribute('static-body', '');
-                water.setAttribute('rotation', '90 0 0');
-                water.setAttribute('scale', '1 5.72 2');
+                // water.setAttribute('width', WALL_SIZE);
+                // water.setAttribute('depth', WALL_SIZE);
+                // water.setAttribute('static-body', '');
+                // water.setAttribute('position', floorPos);
+                // water.setAttribute('rotation', '90 0 0');
+                water.setAttribute('scale', '0.8 0.8 0.8');
                 water.setAttribute('material', 'src:#' + waterTexture + '; color:#86c5da; opacity: 0.85; transparent: true;side: double; shader:phong; reflectivity: 0.9; shininess: 70;');
-                water.object3D.position.y = 0.15;
+                water.object3D.position.y = 0.16;
                 el.appendChild(water);
             }
             // prefabs paint
@@ -682,6 +683,11 @@ function switchPaintMode(currentPaintMode) {
         wallHeight = 2.5;
         heightY = 1;
     }
+    if (currentPaintMode === "water") {
+        currentEntity = 6;
+        wallHeight = 0;
+        heightY = 0;
+    }
     if (currentPaintMode === "prefabs") {
         currentEntity = 7;
         wallHeight = 0;
@@ -697,11 +703,7 @@ function switchPaintMode(currentPaintMode) {
         wallHeight = 0;
         heightY = 0;
     }
-    if (currentPaintMode === "water") {
-        currentEntity = 6;
-        wallHeight = 0;
-        heightY = 0;
-    }
+
 }
 
 // Check if Delete mode is on and init delete Mode if it is 
@@ -860,8 +862,6 @@ keyDoorModeBtn.addEventListener('change', function () {
 
 
 // KEYS
-
-
 function returnKeyColor(colorCode) {
     if (colorCode == 'b' || 'B') {
         return 'blue';
