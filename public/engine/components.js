@@ -2,7 +2,9 @@
 // Components for papyrus engine VR / AR
 // Dependency tree - A-Frame / A-Frame Extras / Papyrus
 // ENGINE CORE IMPORTS
-import { nextScene, loadData, populateDiag,nextPassageForChar, populateInteractions,populateMessage, shootAt, gotKey,getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth,    setPlayerHealth,clearScene, loadNewLevel } from "./papyrus.js";
+import { nextScene, loadData, populateDiag,
+    // nextPassageForChar, 
+    populateInteractions,populateMessage, shootAt, gotKey,getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth,    setPlayerHealth,clearScene, loadNewLevel } from "./papyrus.js";
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -189,11 +191,12 @@ AFRAME.registerComponent('character', {
             console.log('diagNum count'+numDiag)
             // currentDiagID++;
             if ( numDiag === 0){
-            nextPassageForChar(charID,numDiag);
-            numDiag++;  
+            console.log(charID, numDiag)
+            populateDiag(charID,numDiag);
+            numDiag=1; 
             }
             else{
-            nextPassageForChar(charID,numDiag);
+            populateDiag(charID,numDiag);
             numDiag++;
             }
                    

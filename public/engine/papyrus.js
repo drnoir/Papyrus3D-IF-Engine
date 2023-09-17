@@ -298,47 +298,23 @@ function createChoiceButtons(amount, charID) {
 }
 
 function populateDiag(currentChar, numDiag) {
-
-    const dialogueUI = document.getElementById('dialogueID');
     // add button test function
     showDialogueUI();
-    nextPassageForChar(currentChar, numDiag);
-    console.log(charDialogs)
+   
+    // reset check back to start
+    if (numDiag === diag.passage[currentChar-1].length) {
+        numDiag = 0;
+    }
+
+    console.log('current char' + currentChar, diag.passage[currentChar-1][numDiag].text)
+    // populate dialog with text / name
+    let newDiagPassage = diag.passage[currentChar-1][numDiag].text;
+    let newCharName = diag.passage[currentChar-1][numDiag].char;
+    currentDiagID = currentChar;
+    populateMessage(newCharName, newDiagPassage);
+    setTimeout(hideDialogueUI, 12000);
 }
 
-function nextPassageForChar(currentChar, numDiag) {
-    showDialogueUI();
-    const dialogueUI = document.getElementById('dialogueID');
-    // console.log(  'text TEST of 1 index'+charDialogs[0][0].text)
-    let newPassage; let newCharName;
-    if (numDiag === 0) {
-        // populate chars dialogues 
-        returnDiag(currentChar);
-        newPassage = charDialogs[0].text;
-        // newPassageID = charDialogs[0][0].diagID;
-        newCharName = charDialogs[0].char;
-        console.log(charDialogs)
-        populateMessage(newCharName, newPassage);
-        // numDiag++;
-    }
-    // if at end of dialogues reset everything
-    if (numDiag + 1 === charDialogs.length) {
-        console.log(numDiag, charDialogs.length);
-        numDiag = 0;
-        // reset diags array to empty
-        charDialogs = [];
-        populateMessage(newCharName, newPassage)
-    }
-    if (numDiag >=1) {
-        // standard iterating through dialogues 
-        console.log(currentDiagID);
-        newPassage = charDialogs[0][numDiag].text;
-        newCharName = charDialogs[0][numDiag].char;
-        populateMessage(newCharName, newPassage)
-        // setup diagID for next 
-        // numDiag++;
-    }
-}
 
 function populateInteractions(interactionID, currentInteraction) {
     const dialogueUI = document.getElementById('dialogueID');
@@ -356,7 +332,7 @@ function populateInteractions(interactionID, currentInteraction) {
 
 // show a message from enviroment
 function populateMessage(char, message) {
-    console.log('populate dialogue box with'+char, message)
+    console.log('populate dialogue box with' + char, message)
     const dialogueUI = document.getElementById('dialogueID');
     // add button test function
     showDialogueUI();
@@ -910,16 +886,23 @@ function resetPlayerHealth() {
 
 
 // init diag Loading
-function returnDiag(charID) {
-    for (charID in diag.passage) {
-        // if (diag.passage.hasOwnProperty(charID)) {
-            console.log('diag loading test'+charID, diag.passage.charID)
-            if(diag.passage.charID===charID){
-            charDialogs.push(diag.passage[charID]);
-            console.table(charDialogs);
-        }
-    }
-}
+// function returnDiag(charID) {
+
+//     for (let i = 0; i < diag.passage.length; i++) {
+//         if(diag.passage[i].charID===charID){
+//             charDialogs.push(diag.passage[i].text);
+//       }
+//     }
+// for (charID in diag.passage) {
+//     // if (diag.passage.hasOwnProperty(charID)) {
+//         console.log('diag loading test'+charID, diag.passage.charID)
+//         if(diag.passage.charID===charID){
+//         charDialogs.push(diag.passage[charID]);
+//         console.table(charDialogs);
+//         console.log(diag.passage.charID);
+//     }
+// }
+// }
 
 // calc dialogue lengths per char 
 function countDialogue(charID) {
@@ -988,4 +971,9 @@ function playerDeath() {
 
 
 // EXPORTS 
-export { nextScene, loadNewLevel, populateDiag, nextPassageForChar, populateInteractions, populateMessage, clearScene, loadData, shootAt, gotKey, getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth, setPlayerHealth, playerDeath };
+export {
+    nextScene, loadNewLevel, populateDiag,
+    // nextPassageForChar, 
+
+    populateInteractions, populateMessage, clearScene, loadData, shootAt, gotKey, getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth, setPlayerHealth, playerDeath
+};
