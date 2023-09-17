@@ -16,7 +16,7 @@
       "name": "cop",
       "id": 3,
       "model":"models/copwalk.glb",
-      "scale" : "0.007 0.007 0.007"
+      "scale" : "0.009 0.009 0.009"
     }
   ]
 }

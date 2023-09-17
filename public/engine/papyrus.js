@@ -18,6 +18,9 @@ let CombatDMGDiceNumber = 6;
 // dialogueUI Elements Based on a-frame defaults 
 const scene = document.querySelector('a-scene'); const assets = document.querySelector('a-assets');
 
+// init load
+loadData(1);
+
 // DATA LOADING ROUTINES
 async function loadData() {
     //config and diagloue loading
@@ -136,6 +139,7 @@ function addChar(charNumber) {
     char.setAttribute('id', chars.characters[indexCharNumber].id);
     char.setAttribute('name', chars.characters[indexCharNumber].name);
     char.setAttribute('gltf-model', modelID);
+    // char.setAttribute('dynamic-body', "shape: box; mass: 2");
     char.setAttribute('scale', chars.characters[indexCharNumber].scale);
     char.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     charDiagIDs.push(charNumber);
@@ -458,7 +462,7 @@ function createRooms() {
                 console.log('diagcountchar' + diagCount);
                 console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
-                char.setAttribute('static-body', '');
+                // char.setAttribute('dynamic-body', '');
                 // char.setAttribute('glowfx', 'visible:true;');
                 char.setAttribute('character', 'charID:' + charNumber + ';' + 'numDiag:', diagCount + ';');
                 const floor = document.createElement('a-box');
