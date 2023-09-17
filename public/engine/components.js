@@ -167,6 +167,7 @@ AFRAME.registerComponent('character', {
         rotation: { type: 'string', default: '0 0 0' },
         scale: { type: 'string', default: '1 1 1' },
         animated: { type: 'boolean', default: false },
+        patrol: { type: 'boolean', default: false },
         glowOn: { type: 'boolean', default: false },
         charID: { type: 'number', default: 0 },
         numDiag:  { type: 'number', default: 0 },
@@ -180,6 +181,7 @@ AFRAME.registerComponent('character', {
         let pos = data.position;
         let rot = data.rotation;
         let animated = data.animated;
+        let patrol = data.patrol;
         let glowOn = data.glowOn;
         const elScale = this.el.scale;
         let numDiag = data.numDiag;
@@ -202,11 +204,119 @@ AFRAME.registerComponent('character', {
                    
         })
     },
+    tick: function (time, timeDelta) {
+        const data = this.data;
+        let patrol = data.patrol;
+        let wallDistance = this.distanceCheck();
+        console.log('enemy distance checks'+ wallDistance)
+        if ( !wallDistance && patrol){
+            this.patrol();
+        }
+    },
+    patrol: function () {
+        const el = this.el;
+        let data = this.data;
+        let speed = 0.006;
+        el.setAttribute('animation-mixer', 'clip: *; loop: repeat; '); //  NEEDS A TEST WITH MODEL WITH ANIMATION
+        let randomDirection = Math.floor(Math.random() * 3);
+        let randRot = Math.floor(Math.random() *10);
+        let randomRotChance = Math.floor(Math.random() * 2000);
+        console.log(randomRotChance);
+        let randomUpDown = randomUporDown();
+    
+        // random direction and movement check if ant is on the floor
+        // if (randomRotChance >= 1500) {
+        //     if (randomUpDown === 'plus' && randomRotChance >= 1500){
+        //     el.object3D.rotation.y += randRot;
+        //     }
+        //     if (randomUpDown === 'minus'  && randomRotChance >=1500){
+        //         el.object3D.rotation.y -= randRot;
+        //         }
+        // }
+        if (randomDirection < 1) {
+            if (randomUpDown=== 'plus'){
+            el.object3D.position.x+=speed;
+            el.object3D.position.z+=speed;
+            }
+            if (randomUpDown === 'minus'){
+                el.object3D.position.x-=speed;
+                el.object3D.position.z-=speed;
+            }
+        }
+        if (randomDirection < 2) {
+            if (randomUpDown=== 'plus'){
+                el.object3D.position.x+=speed;
+                el.object3D.position.z+=speed;
+                }
+                if (randomUpDown === 'minus'){
+                    el.object3D.position.x-=speed;
+                    el.object3D.position.z-=speed;
+                }
+            // if (randomRotChance >750) {
+            //     el.object3D.rotation.y -= randRot;
+            // }
+        }
+        if (randomDirection > 2 && randomDirection < 3) {
+            if (randomUpDown=== 'plus'){
+                el.object3D.position.x+=speed;
+                el.object3D.position.z+=speed;
+                }
+                if (randomUpDown === 'minus'){
+                    el.object3D.position.x-=speed;
+                    el.object3D.position.z-=speed;
+                }
+        }
+        if (randomDirection > 3 && randomDirection < 4) {
+            if (randomUpDown=== 'plus'){
+                el.object3D.position.x+=speed;
+                el.object3D.position.z+=speed;
+                }
+                if (randomUpDown === 'minus'){
+                    el.object3D.position.x-=speed;
+                    el.object3D.position.z-=speed;
+                }
+        }
+    },
+
+    distanceCheck: function (dt) {
+        const el = this.el;
+        const wall = document.getElementsByClassName('wall')[0];
+        let speed = 0.006;
+        console.log(wall);
+        let wallPos = wall.object3D.position;
+        let distanceToWall = el.object3D.position.distanceTo(wallPos);
+    //    console.log(distanceToWall
+        console.log(distanceToWall);
+        // move away if a wall    
+        if (distanceToWall <6) {
+            // let floorPos = floor.getAttribute(position);
+          el.object3D.position.x=wallPos.x-=speed;
+          el.object3D.position.z=wallPos.z-=speed;
+        }
+
+        let goAwayFromWall =  distanceToWall <1 ? true : false;
+        console.log('move away from wall'+goAwayFromWall);
+        return goAwayFromWall;
+      
+    },
     remove: function () {
         this.el.destroy();
     },
 
 });
+
+function randomUporDown(){
+    let randomChance =  Math.random()*350;
+    console.log('RANDOMNUM FOR DIR'+randomChance);
+
+    if(randomChance<50){
+        return 'minus'
+    }
+    else{
+        return 'plus'
+    }
+
+}
 
 // ENEMY AI - Pathing and behaviours - BUGGY MOVEMENT
 // REFACTOR THIS SO THAT ENEMY MOVEMENT CHECKS FOR 0 (FLOOR) INSTEAD OF CHECKING A BUNCH OF OTHER SHITE
@@ -534,8 +644,8 @@ AFRAME.registerComponent('door', {
 
         this.el.addEventListener('click', function (evt) {
             if (!locked) {
-                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1;
-                console.log(x, y, z, newX);
+                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y-1;
+                console.log(x, y, z, newX,newY);
                 el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
                 let doorAudio = document.querySelector("#dooropen");
                 doorAudio.play();
@@ -543,9 +653,9 @@ AFRAME.registerComponent('door', {
             else if (key) {
                 const playerKeys = getPlayerKeysInfo();
                 if (playerKeys.find((element) => element === 'blue' || 'yellow' || 'red' )){
-                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1;
-                console.log(x, y, z, newX);
-                el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
+                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y-1;
+                console.log(x, y, z, newX, newY);
+                el.setAttribute('animation', "property: position; to:" + newX + y+ z + "; loop:  false; dur: 5000");
                 let doorAudio = document.querySelector("#dooropen");
                 doorAudio.play();
                 populateMessage(keyColor+' door', keyColor+' door opened')
@@ -567,8 +677,8 @@ AFRAME.registerComponent('door', {
         function resetAnim(el) {
             console.log(el, 'triggered door close')
             let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
-            let newX = x + 3;
-            el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000")
+            let newY = y + 3;
+            el.setAttribute('animation', "property: position; to:" + x +  newY + z + "; loop:  false; dur: 5000")
         }
     },
     remove: function () {

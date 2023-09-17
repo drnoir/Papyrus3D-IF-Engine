@@ -13,9 +13,9 @@
       "scale" : "0.01 0.01 0.01"
     },
     {
-      "name": "woman",
+      "name": "cop",
       "id": 3,
-      "model":"models/woman.glb",
+      "model":"models/copwalk.glb",
       "scale" : "0.007 0.007 0.007"
     }
   ]
