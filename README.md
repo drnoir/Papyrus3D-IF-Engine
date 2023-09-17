@@ -9,6 +9,7 @@ Edit the json files in the public folder and then use the preview and export but
 Allow for customisation and export of games as a separate html / javascript bundle or an exe.
 
 Multi-Platform support - Desktop, Mobile, VR / AR.
+
 Game build in the public folder. Currently, a test game but will be replaced with a generic template you can build on. Soon there will be a demos folder for example games once Alpha is ready for release.
 
 ### A note on GNU licensing / Licensing for any games built with  Papyrus3D
@@ -19,23 +20,22 @@ If you appriciate the work I have put into this project for free and want to don
 
 ### Features
 * Component system for character loading and enemy loading
-* Map Editor WIP- basic map editor for easy creation of scenes
+* Map Editor - basic map editor for easy creation of scenes - /Tools/MapEditor/
 * Define 3D Scenes with character components and assets
 * Create unique repayable games that the engine can generate based on easily editable JSON templates
 * Customise scenes with different colours textures, background elements etc
 * Gaze based movement system ensuring maximum multi platform support
-
-### WIP FEATURES
-* custom dialogue system for multiple chars
-* keys and unlockable doors
-* Trigger events on choices / interactions
+* Dialogue system for multiple chars
+* Color keys and unlockable doors
 * interactive objects
-* Basic enemy AI and Attack system (Optional) WIP
+* torch  lighting
 
-### Possible future Features
-* torch / advanced lighting
+### Future planned FEATURES
+* Trigger events on choices / interactions (choices to come soon)
+* Basic enemy AI and Attack system (Optional) WIP
 * Posters for walls with custom textures
 * More custom textures / material options
+
 Please leave feature requests if you are interested in the project.  
 
 ### Current Tech Stack / dependencies
@@ -76,6 +76,7 @@ Not fully tested for all build types yet. Build is of the public folder with ent
 
 ## Documentation (WIP) 
 (Will be added when Engine is in Alpha. I will also produce a series of video tutorials)
+
 * Creating Your Story
 * Adding characters and editing story config
 * Customizing UI 
@@ -96,8 +97,9 @@ Not fully tested for all build types yet. Build is of the public folder with ent
 * 4 - door
 * 5 - exit door
 * 6 - Water
-* 7 - Custom prefabs Example : 71T6 7:type prefav 1 number prefab T trigger flag 6 number dialog to trigger
+* 7 + Options - Custom prefabs Example : 71T6 7:type prefav 1 number prefab T trigger flag 6 number dialog to trigger
 * 9 - Enemies 
 * P - Playerstart
 * t - light
 * KB - Key and then Blue for blue, y for tellow , R for red, G for Green
+* 4LB - Locked door and key color

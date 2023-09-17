@@ -7,9 +7,9 @@
       "scale" : "0.5 0.5 0.5"
     },
     {
-      "name": "grunt",
+      "name": "man",
       "id": 2,
-      "model": "models/grunt.glb",
+      "model": "modelsman/Walking.glb",
       "scale" : "0.01 0.01 0.01"
     },
     {

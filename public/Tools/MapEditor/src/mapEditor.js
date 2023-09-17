@@ -37,13 +37,12 @@ let custumHeightY = 1;
 let currentEntityCustom = 0;
 
 // possible options - wall, door, enemies
-let paintMode = ['wall', 'enemies', 'door', 'delete', 'height', 'prefabs', 'water', 'chars', 'lights'];
+let paintMode = ['wall', 'enemies', 'door', 'delete', 'height', 'prefabs', 'water', 'chars', 'lights',  'exit'];
 let currentPrefab = 0;
-
 // boolean for triggger mode when in prefabs mode
 let prefabTriggerMode = false;
-
 const prefabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
 let currentPaintMode = paintMode[0];
 let deleteMode = false;
 
@@ -71,6 +70,16 @@ function clearScene() {
     const el = document.getElementById('room');
     el.parentNode.removeChild(el);
 }
+
+async function loadChars() {
+    const res = await fetch('../../characters.json')
+    chars = await res.json();
+    console.log(chars);
+    var CharNumtext = document.createTextNode('Num of characters '+chars.characters.length);
+    const charNum = document.getElementById('charNum');
+    charNum.appendChild(CharNumtext);
+}
+
 
 AFRAME.registerComponent('editor-listener', {
     schema: {
@@ -173,6 +182,15 @@ AFRAME.registerComponent('editor-listener', {
                 door.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
                 door.setAttribute('color', doorPaintColor);
                 el.appendChild(door);
+            }
+            // door - Exit
+           if (currentPaintMode === "exit" && currentEntity === 5 && !deleteMode && !heightMode) {
+                            // custumHeightString = '0' + currentEntityCustom.toString();
+                            const door = document.createElement('a-box');
+                            door.setAttribute('height', WALL_HEIGHT);
+                            door.object3D.position.y = 1.2;
+                            door.setAttribute('material', 'src:#' + doorTexture);
+                            el.appendChild(door);
             }
             // light
             if (currentPaintMode === "lights" && currentEntity === 't' && !deleteMode && !heightMode) {
@@ -334,6 +352,7 @@ async function init() {
     room.setAttribute('id', 'room');
     scene.appendChild(room);
     await loadTextures();
+    loadChars();
     await loadMapTemplateData(templateSize);
     await createRooms(mapTemplate);
 }
@@ -680,6 +699,11 @@ function switchPaintMode(currentPaintMode) {
     }
     if (currentPaintMode === "door") {
         currentEntity = 4;
+        wallHeight = 2.5;
+        heightY = 1;
+    }
+    if (currentPaintMode === "exit") {
+        currentEntity = 5;
         wallHeight = 2.5;
         heightY = 1;
     }

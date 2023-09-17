@@ -167,7 +167,7 @@ AFRAME.registerComponent('character', {
         rotation: { type: 'string', default: '0 0 0' },
         scale: { type: 'string', default: '1 1 1' },
         animated: { type: 'boolean', default: false },
-        patrol: { type: 'boolean', default: false },
+        patrol: { type: 'boolean', default: true },
         glowOn: { type: 'boolean', default: false },
         charID: { type: 'number', default: 0 },
         numDiag:  { type: 'number', default: 0 },

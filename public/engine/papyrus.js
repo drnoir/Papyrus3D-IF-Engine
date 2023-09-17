@@ -444,7 +444,7 @@ function createRooms() {
             const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(WALL_HEIGHT / 2)} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const halfYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const quarterYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-            const charPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0.5 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const charPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const torchPosition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const keyPosition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0.4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const stairsPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(y - (mapSource.height)) * WALL_SIZE} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
@@ -459,7 +459,7 @@ function createRooms() {
                 console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
                 char.setAttribute('static-body', '');
-                char.setAttribute('glowfx', 'visible:true;');
+                // char.setAttribute('glowfx', 'visible:true;');
                 char.setAttribute('character', 'charID:' + charNumber + ';' + 'numDiag:', diagCount + ';');
                 const floor = document.createElement('a-box');
                 floor.setAttribute('height', WALL_HEIGHT / 20);
