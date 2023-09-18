@@ -136,10 +136,17 @@ function addChar(charNumber) {
     console.log('char param passed' + charNumber)
     let modelID = '#' + chars.characters[indexCharNumber].name;
     let char = document.createElement('a-entity');
+
     char.setAttribute('id', chars.characters[indexCharNumber].id);
     char.setAttribute('name', chars.characters[indexCharNumber].name);
     char.setAttribute('gltf-model', modelID);
-    // char.setAttribute('dynamic-body', "shape: box; mass: 2");
+
+    // char.setAttribute('dynamic-body', "mass:6; angularDamping: 0.3; linearDamping:0; shape:sphere;sphereRadius:0.65;");
+    //  char.setAttribute('velocity', '1 0 0');
+  
+    // let body = char.body // el = aframe entity
+    // char.setAttribute('velocity', '0.1 0 0');
+
     char.setAttribute('scale', chars.characters[indexCharNumber].scale);
     char.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     charDiagIDs.push(charNumber);
@@ -448,7 +455,7 @@ function createRooms() {
             const position = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(WALL_HEIGHT / 2)} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const halfYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const quarterYposition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
-            const charPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
+            const charPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0.1 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const torchPosition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const keyPosition = `${((x - (mapSource.width / 2)) * WALL_SIZE)} 0.4 ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
             const stairsPos = `${((x - (mapSource.width / 2)) * WALL_SIZE)} ${(y - (mapSource.height)) * WALL_SIZE} ${(y - (mapSource.height / 2)) * WALL_SIZE}`;
@@ -459,6 +466,7 @@ function createRooms() {
                 console.log(mapData[i].charAt(4));
                 let char = addChar(charNumber);
                 let diagCount = countDialogue(charNumber);
+                char.setAttribute('rotation', '0 0 0')
                 console.log('diagcountchar' + diagCount);
                 console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
@@ -474,6 +482,12 @@ function createRooms() {
                 floor.setAttribute('editor-listener', '');
                 floor.setAttribute('material', 'src:#' + floorTexture);
                 el.appendChild(floor);
+
+                // let charBoundingBox = document.createElement('a-entity');
+                char.setAttribute('dynamic-body', 'mass:0;shape: sphere; sphereRadius: 0.65');
+                char.components["dynamic-body"].syncToPhysics();
+            //    char.appendChild(charBoundingBox);
+
                 el.appendChild(char);
             }
             // playercam
