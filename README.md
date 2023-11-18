@@ -21,6 +21,7 @@ If you appriciate the work I have put into this project for free and want to don
 ### Features
 * Component system for character loading and enemy loading
 * Map Editor - basic map editor for easy creation of scenes - /Tools/MapEditor/
+* Random map generation - Proceudral maps with randomPapyrus.js
 * Define 3D Scenes with character components and assets
 * Create unique repayable games that the engine can generate based on easily editable JSON templates
 * Customise scenes with different colours textures, background elements etc
@@ -73,6 +74,9 @@ Not fully tested for all build types yet. Build is of the public folder with ent
 
 # screen grabs of current version
 ![alt text](https://github.com/drnoir/Papyrus3D-IF-Engine/blob/main/screengrab.png?raw=true)
+![alt text](https://github.com/drnoir/Papyrus3D-IF-Engine/blob/main/screengrab2.png?raw=true)
+![alt text](https://github.com/drnoir/Papyrus3D-IF-Engine/blob/main/screengrab3.png?raw=true)
+![alt text](https://github.com/drnoir/Papyrus3D-IF-Engine/blob/main/screengrab4.png?raw=true)
 
 ## Documentation (WIP) 
 (Will be added when Engine is in Alpha. I will also produce a series of video tutorials)

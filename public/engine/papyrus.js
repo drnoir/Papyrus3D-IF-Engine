@@ -1,4 +1,6 @@
 // PAPYRUS 3D ENGINE CODE 
+
+
 // Reassignable global game stare vars
 let player;
 // CONFIG CHARECTERS AND ENEMIES STORE
@@ -10,6 +12,8 @@ let lockedDoors = [];
 let textures; let prefabs;
 // diaglog UI Globals / shit 
 let currentDiagID = 0; let currentScene = 1; let nextSceneToLoad = currentScene + 1;
+let randomMode = false;
+
 let charDialogs = [];
 let currentChar; let mapSource = 0; let currentInteraction = 0;
 // combat var defaults SIMULATED DICE - Combat system is based on D and D - INIT vals / max 
@@ -18,29 +22,29 @@ let CombatDMGDiceNumber = 6;
 // dialogueUI Elements Based on a-frame defaults 
 const scene = document.querySelector('a-scene'); const assets = document.querySelector('a-assets');
 
-// DATA LOADING ROUTINES
-async function loadData() {
-    //config and diagloue loading
-    await loadPlayer();
-    await setupPlayerInfo();
-    await loadTextures(currentScene);
-    await loadConfig();
-    await loadChars();
-    await loadEnemies();
-    await loadPrefabs();
-    await loadDiag(currentScene);
-    await loadInteractions(currentScene);
-    //scene loading / aFrame loading
-    await loadSceneMetaData(currentScene);
-    await loadMap(currentScene);
-    // run create scene routine
-    await createRooms();
-    // await populateDiag(0, 0);
+  // DATA LOADING ROUTINES
+    async function loadData() {
+        //config and diagloue loading
+        await loadPlayer();
+        await setupPlayerInfo();
+        await loadTextures(currentScene);
+        await loadConfig();
+        await loadChars();
+        await loadEnemies();
+        await loadPrefabs();
+        await loadDiag(currentScene);
+        await loadInteractions(currentScene);
+        //scene loading / aFrame loading
+        await loadSceneMetaData(currentScene);
+        await loadMap(currentScene);
+        // run create scene routine
+        await createRooms();
+        // await populateDiag(0, 0);
 
-    // testing dialogue.json UI population
-    const sound = document.querySelector('[sound]');
-    sound.components.sound.playSound();
-}
+        // testing dialogue.json UI population
+        const sound = document.querySelector('[sound]');
+        sound.components.sound.playSound();
+    }
 
 // Load engine Config file (JSON) - As the engine relies on configurable json there can be custum values 
 async function loadConfig() {
@@ -96,6 +100,7 @@ async function loadMap(mapToLoad) {
     const res = await fetch(fetchURL)
     mapSource = await res.json();
 }
+
 
 async function loadTextures(textureScene) {
     let fetchURL = './scenes/scene' + textureScene + '/textures.json';
@@ -300,16 +305,16 @@ function createChoiceButtons(amount, charID) {
 function populateDiag(currentChar, numDiag) {
     // add button test function
     showDialogueUI();
-   
+
     // reset check back to start
-    if (numDiag === diag.passage[currentChar-1].length) {
+    if (numDiag === diag.passage[currentChar - 1].length) {
         numDiag = 0;
     }
 
-    console.log('current char' + currentChar, diag.passage[currentChar-1][numDiag].text)
+    console.log('current char' + currentChar, diag.passage[currentChar - 1][numDiag].text)
     // populate dialog with text / name
-    let newDiagPassage = diag.passage[currentChar-1][numDiag].text;
-    let newCharName = diag.passage[currentChar-1][numDiag].char;
+    let newDiagPassage = diag.passage[currentChar - 1][numDiag].text;
+    let newCharName = diag.passage[currentChar - 1][numDiag].char;
     currentDiagID = currentChar;
     populateMessage(newCharName, newDiagPassage);
     setTimeout(hideDialogueUI, 12000);

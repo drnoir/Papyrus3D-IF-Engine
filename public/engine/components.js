@@ -11,9 +11,6 @@ AFRAME.registerComponent('cursor-listener', {
         let lastIndex = -1;
         // const COLORS = ['red', 'green'];
         this.el.addEventListener('click', function (evt) {
-            // lastIndex = (lastIndex + 1) % COLORS.length;
-            // this.setAttribute('material', 'color', COLORS[lastIndex]);
-            console.log('I was clicked at: ', evt.detail.intersection.point);
             nextScene();
         });
     }
@@ -167,7 +164,7 @@ AFRAME.registerComponent('character', {
         rotation: { type: 'string', default: '0 0 0' },
         scale: { type: 'string', default: '1 1 1' },
         animated: { type: 'boolean', default: false },
-        patrol: { type: 'boolean', default: true },
+        patrol: { type: 'boolean', default: false},
         glowOn: { type: 'boolean', default: false },
         charID: { type: 'number', default: 0 },
         numDiag:  { type: 'number', default: 0 },
@@ -190,8 +187,6 @@ AFRAME.registerComponent('character', {
         }
         const charID = data.charID;
         this.el.addEventListener('click', function (evt) {
-            console.log('diagNum count'+numDiag)
-            // currentDiagID++;
             if ( numDiag === 0){
             console.log(charID, numDiag)
             populateDiag(charID,numDiag);
@@ -208,7 +203,6 @@ AFRAME.registerComponent('character', {
         const data = this.data;
         let patrol = data.patrol;
         let wallDistance = this.distanceCheck();
-        console.log('enemy distance checks'+ wallDistance)
         if ( !wallDistance && patrol){
             this.patrol();
         }
@@ -221,7 +215,6 @@ AFRAME.registerComponent('character', {
         let randomDirection = Math.floor(Math.random() * 3);
         let randRot = Math.floor(Math.random() *10);
         let randomRotChance = Math.floor(Math.random() * 2000);
-        console.log(randomRotChance);
         let randomUpDown = randomUporDown();
     
         // random direction and movement check if ant is on the floor
@@ -282,11 +275,9 @@ AFRAME.registerComponent('character', {
         const el = this.el;
         const wall = document.getElementsByClassName('wall')[0];
         let speed = 0.006;
-        console.log(wall);
+        // console.log(wall);
         let wallPos = wall.object3D.position;
         let distanceToWall = el.object3D.position.distanceTo(wallPos);
-    //    console.log(distanceToWall
-        console.log(distanceToWall);
         // move away if a wall    
         if (distanceToWall <6) {
             // let floorPos = floor.getAttribute(position);
@@ -307,7 +298,7 @@ AFRAME.registerComponent('character', {
 
 function randomUporDown(){
     let randomChance =  Math.random()*350;
-    console.log('RANDOMNUM FOR DIR'+randomChance);
+    // console.log('RANDOMNUM FOR DIR'+randomChance);
 
     if(randomChance<50){
         return 'minus'
@@ -395,13 +386,13 @@ AFRAME.registerComponent('enemy', {
         el.appendChild(healthBar);
         // on gaze cursor interaction
         el.addEventListener('click', function (evt) {
-            console.log('click detect', newEnemy);
+            // console.log('click detect', newEnemy);
             let newMeleeAttack = shootAt(0);
             if (newMeleeAttack > 0 && lifeStatus === 'alive') {
                 // new health is for UI , health is the enemies health
                 health = -newMeleeAttack;
                 // healthBarVal = health / 10 * 3;
-                console.log('enemy health reassigned to ' + health)
+                // console.log('enemy health reassigned to ' + health)
                 healthBarTracker.setAttribute('width', healthBarVal);
                 if (lifeStatus === 'alive' && health >1) {
                     let player = document.getElementById('playercam');
@@ -429,7 +420,7 @@ AFRAME.registerComponent('enemy', {
     tick: function (time, timeDelta) {
         let playerDistance = this.distanceToPlayer();
         let wallDistance = this.distanceCheck();
-        console.log('enemy distance checks'+playerDistance, wallDistance)
+        // console.log('enemy distance checks'+playerDistance, wallDistance)
         if (playerDistance || !wallDistance){
             this.moveRandom();
         }
@@ -482,11 +473,11 @@ AFRAME.registerComponent('enemy', {
     distanceCheck: function (dt) {
         // const wall = document.querySelector('a-box');
         const wall = document.getElementsByClassName('wall')[0];
-        console.log(wall);
+        // console.log(wall);
         let wallPos = wall.object3D.position
         let distanceToWall = this.el.getAttribute("position").distanceTo(wallPos)
     //    console.log(distanceToWall
-        console.log(distanceToWall);
+        // console.log(distanceToWall);
         // move away if a wall    
         if (distanceToWall <5) {
             // let floorPos = floor.getAttribute(position);
@@ -495,7 +486,7 @@ AFRAME.registerComponent('enemy', {
         }
 
         let goAwayFromWall =  distanceToWall <1 ? true : false;
-        console.log('move away from wall'+goAwayFromWall);
+        // console.log('move away from wall'+goAwayFromWall);
         return goAwayFromWall;
       
     },
@@ -507,8 +498,8 @@ AFRAME.registerComponent('enemy', {
             vec3 = this.el.object3D.worldToLocal(target.object3D.position.clone());
             var camFromOrca = currentPosition.distanceTo(target.object3D.position);
             if (camFromOrca<=3) {
-                console.log('enemy move player triggered - player is close - move towards player');
-                console.log(distanceBetween);
+                // console.log('enemy move player triggered - player is close - move towards player');
+                // console.log(distanceBetween);
                 this.el.object3D.position.x += 1;
                 this.el.object3D.position.multiplyScalar(2);
                 this.el.object3D.position.sub(vec3);
@@ -565,7 +556,7 @@ AFRAME.registerComponent('playermovement', {
             const playercam = document.getElementById('playercam')
             const playercamPos = document.getElementById('playercam').object3D.position;
             // distance checking
-            console.log(newPos.x, newPos.z);
+            // console.log(newPos.x, newPos.z);
             let distanceCheck = playercamPos.distanceTo(newPos);
             console.log(distanceCheck);
             if (distanceCheck <=3.5) {
@@ -582,7 +573,6 @@ AFRAME.registerComponent('triggerdiagfloor', {
     },
     init: function () {
         this.el.addEventListener('click', function (evt) {
-            console.log('Dialogue would trigger here TEST');
             populateDiag(5, 0);
             if (this.data.selfdestruct) {
                 this.remove();
@@ -645,7 +635,6 @@ AFRAME.registerComponent('door', {
         this.el.addEventListener('click', function (evt) {
             if (!locked) {
                 let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y-1;
-                console.log(x, y, z, newX,newY);
                 el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
                 let doorAudio = document.querySelector("#dooropen");
                 doorAudio.play();
@@ -654,7 +643,6 @@ AFRAME.registerComponent('door', {
                 const playerKeys = getPlayerKeysInfo();
                 if (playerKeys.find((element) => element === 'blue' || 'yellow' || 'red' )){
                 let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y-1;
-                console.log(x, y, z, newX, newY);
                 el.setAttribute('animation', "property: position; to:" + newX + y+ z + "; loop:  false; dur: 5000");
                 let doorAudio = document.querySelector("#dooropen");
                 doorAudio.play();
@@ -675,7 +663,6 @@ AFRAME.registerComponent('door', {
         const el = this.el;
         setTimeout(resetAnim(el), 8000);
         function resetAnim(el) {
-            console.log(el, 'triggered door close')
             let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
             let newY = y + 3;
             el.setAttribute('animation', "property: position; to:" + x +  newY + z + "; loop:  false; dur: 5000")
@@ -729,7 +716,7 @@ AFRAME.registerComponent("load-texture", {
             function (tex) {
                 let mesh = el.getObject3D('mesh')
                 mesh.material.map = tex;
-                console.log(tex);
+
             },
             // onProgress
             undefined,

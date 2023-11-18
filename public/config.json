@@ -7,5 +7,6 @@
   "CombatDiceNumber": 20,
   "ChecksDiceNumber": 4,
   "CombatDMGDiceNumber": 6,
-  "Gun" : false
+  "Gun" : false,
+  "randomMode" : false
 }

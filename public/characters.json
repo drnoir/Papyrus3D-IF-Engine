@@ -10,13 +10,13 @@
       "name": "man",
       "id": 2,
       "model": "modelsman/Walking.glb",
-      "scale" : "0.01 0.01 0.01"
+      "scale" : "0.08 0.08 0.08"
     },
     {
       "name": "cop",
       "id": 3,
       "model":"models/copwalk.glb",
-      "scale" : "0.007 0.007 0.007"
+      "scale" : "0.01 0.01 0.01"
     }
   ]
 }
