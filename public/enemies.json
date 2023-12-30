@@ -12,11 +12,12 @@
     {
       "name": "grunt",
       "id": "grunt",
-      "model": "models/grunt.glb",
+      "model": "models/reds/red_03.glb",
       "health": 10,
-      "scale": 1,
+      "scale": 4,
       "strength" : 4,
-      "constitution" : 12
+      "constitution" : 12,
+      "animations": ["Animation 1","Animation 2","Animation 3","Animation 4","Animation 5"]
     }
   ]
 }

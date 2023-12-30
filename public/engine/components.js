@@ -320,7 +320,7 @@ AFRAME.registerComponent('enemy', {
         format: { type: 'string', default: 'glb' },
         position: { type: 'string', default: '0 0.1 0' },
         rotation: { type: 'string', default: '0 0 0' },
-        scale: { type: 'string', default: '1 1 1' },
+        scale: { type: 'string', default: '1.0 1.0 1.0' },
         animated: { type: 'boolean', default: false },
         glowOn: { type: 'boolean', default: false },
         id: { type: 'number', default: 0 },

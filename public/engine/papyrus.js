@@ -431,12 +431,11 @@ function createRooms() {
                     floor.setAttribute('position', floorPos);
                     // wall.setAttribute('load-texture', '');
                     floor.setAttribute('editor-listener', '');
-                    floor.setAttribute('material', 'src:#' + floorTexture);
+                    floor.setAttribute('material', 'src:#floor');
                     newRoom.appendChild(floor);
                 }
             }
         }
-
         enviroment.setAttribute('environment', "ground:hills; groundYScale:0.5; playArea:500;  dressingAmount: 5; dressingVariance:1 2 1; shadow:true;");
         enviroment.setAttribute('position', '0 -5 10')
         newRoom.appendChild(enviroment);
@@ -473,7 +472,7 @@ function createRooms() {
                 floor.setAttribute('static-body', '');
                 floor.setAttribute('position', floorPos);
                 floor.setAttribute('editor-listener', '');
-                floor.setAttribute('material', 'src:#' + floorTexture);
+                floor.setAttribute('material', 'src:#floor');
                 el.appendChild(floor);
                 el.appendChild(char);
             }
