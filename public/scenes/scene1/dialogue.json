@@ -1,27 +1,70 @@
 {
   "passage": [
-    [ {
-      "char": "Tech",
-      "charID": 1,
-      "diagID": 0,
-      "position": "-1.5, 0, -4",
-      "text": "Hey new guy! Come and open that door, it's Alison, one of the tech's at this facility. I'm through the next room, let's have a quick chat. Just open the door ahead and see me, I'm next to the computer on your right."
-    },
-    {
-      "char": "Tech",
-      "charID": 1,
-      "diagID": 1,
-      "position": "-1.5, 0, -6",
-      "text": "So new guy guy, whatever you name is.... We got a bit of an infestation problem that needs sorting out"
-    },
-    {
-      "char": "Tech",
-      "charID": 1,
-      "diagID": 2,
-      "position": "-1.5, 0, -4",
-      "text": "Go and use your pistol to take out these goddamn huge mutant ants. Union doesn't pay me enough for this shit, and its your first day so.... ",
-      "choices" : ["Yes Ok", "No Way"]
-    }],
+    [ 
+      {
+        "char": "Tech1",
+        "id": 1,
+        "message": "Hello! How are you?",
+        "options": [
+          {
+            "text": "I'm good!",
+            "nextId": 2
+          },
+          {
+            "text": "Not great.",
+            "nextId": 3
+          }
+        ]
+      },
+      {
+        "char": "Tech1",
+        "id": 2,
+        "message": "That's great to hear! What can I do for you?",
+        "options": [
+          {
+            "text": "Tell me a joke.",
+            "nextId": 4
+          },
+          {
+            "text": "Ask about the weather.",
+            "nextId": 5
+          }
+        ]
+      },
+      {
+        "char": "Tech1",
+        "id": 3,
+        "message": "I'm sorry to hear that. Let me know if there's anything I can do.",
+        "options": [
+          {
+            "text": "Thanks.",
+            "nextId": null
+          }
+        ]
+      },
+      {
+        "char": "Tech1",
+        "id": 4,
+        "message": "Why did the computer go to therapy? It had too many bytes of emotional baggage!",
+        "options": [
+          {
+            "text": "That's a good one!",
+            "nextId": null
+          }
+        ]
+      },
+      {
+        "char": "Tech1",
+        "id": 5,
+        "message": "The weather is always sunny in virtual reality!",
+        "options": [
+          {
+            "text": "Nice!",
+            "nextId": null
+          }
+        ]
+      }
+    ],
         [
             {
                 "char": "Tech2",

@@ -168,6 +168,7 @@ AFRAME.registerComponent('character', {
         glowOn: { type: 'boolean', default: false },
         charID: { type: 'number', default: 0 },
         numDiag:  { type: 'number', default: 0 },
+        Char :  { type: 'string', default: 'clickableChar' },
     },
     multiple: true,
     init: function () {

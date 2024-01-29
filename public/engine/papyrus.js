@@ -1,6 +1,4 @@
 // PAPYRUS 3D ENGINE CODE 
-
-
 // Reassignable global game stare vars
 let player;
 // CONFIG CHARECTERS AND ENEMIES STORE
@@ -888,26 +886,6 @@ function resetPlayerHealth() {
     }
 }
 
-
-// init diag Loading
-// function returnDiag(charID) {
-
-//     for (let i = 0; i < diag.passage.length; i++) {
-//         if(diag.passage[i].charID===charID){
-//             charDialogs.push(diag.passage[i].text);
-//       }
-//     }
-// for (charID in diag.passage) {
-//     // if (diag.passage.hasOwnProperty(charID)) {
-//         console.log('diag loading test'+charID, diag.passage.charID)
-//         if(diag.passage.charID===charID){
-//         charDialogs.push(diag.passage[charID]);
-//         console.table(charDialogs);
-//         console.log(diag.passage.charID);
-//     }
-// }
-// }
-
 // calc dialogue lengths per char 
 function countDialogue(charID) {
     let counter = 0;
@@ -977,7 +955,5 @@ function playerDeath() {
 // EXPORTS 
 export {
     nextScene, loadNewLevel, populateDiag,
-    // nextPassageForChar, 
-
     populateInteractions, populateMessage, clearScene, loadData, shootAt, gotKey, getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth, setPlayerHealth, playerDeath
 };

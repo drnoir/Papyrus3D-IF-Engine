@@ -80,7 +80,6 @@ async function loadChars() {
     charNum.appendChild(CharNumtext);
 }
 
-
 AFRAME.registerComponent('editor-listener', {
     schema: {
         parse: AFRAME.utils.styleParser.parse,
@@ -158,7 +157,6 @@ AFRAME.registerComponent('editor-listener', {
                         txt = "You pressed Cancel, Player Position will remain in place";
                         currentEntity === 0;
                     }
-
                 }
             }
             // door - not locked
