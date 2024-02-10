@@ -892,8 +892,6 @@ function createRooms() {
                 floor.setAttribute('position', floorPos);
                 floor.setAttribute('editor-listener', '');
                 floor.setAttribute('material', 'src:#' + 'floor');
-                // floor.setAttribute('playermovement', '');
-                // floor.setAttribute('playermovement', '');
                 wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
                 wall.setAttribute('exit', 'toLoad:' + nextSceneToLoad++ + ';');
 
