@@ -6,54 +6,56 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js" integrity="sha512-rVwZ9RF3FKH6TH80cvAnWssdlHPvHfOFDXW0empc5E9gkzD1B7CiySJb4SCC8SgBILhTg7AFM8m3TR1wesZ6FQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="FileSaver.min.js"></script>
+    <link rel="stylesheet" href="css/random.css">
 </head>
 <body>
-    <button>Export Map</button>
+    <button id = "exportMap">Export Map</button>
     <a-scene>
         <a-assets>
             <!-- models -->
-            <a-asset-item id="bob" src='./models/geek.glb'></a-asset-item>
-            <a-asset-item id="woman" src='./models/woman.glb'></a-asset-item>
-            <a-asset-item id="man" src='./models/man/Walking.glb'></a-asset-item>
-            <a-asset-item id="grunt" src='./models/grunt.glb'></a-asset-item>
-            <a-asset-item id="lady" src='./models/lady.glb'></a-asset-item>
-            <a-asset-item id="cop" src='./models/copwalk.glb'></a-asset-item>
-            <a-asset-item id="glow" src="./glow.png"></a-asset-item>
-            <a-asset-item id="gun" src="./models/fps_gun.glb"></a-asset-item>
-            <a-asset-item id="chest" src="./models/prefabs/chest.glb"></a-asset-item>
-            <a-asset-item id="computer" src="./models/prefabs/computer.glb"></a-asset-item>
-            <a-asset-item id="switchboard" src="./models/prefabs/switchboard.gltf"></a-asset-item>
-            <a-asset-item id="clock" src="./models/prefabs/clock.glb"></a-asset-item>
-            <a-asset-item id="table" src="./models/prefabs/table.glb"></a-asset-item>
-            <a-asset-item id="pipe3" src="./models/prefabs/pipe_3.glb"></a-asset-item>
-            <a-asset-item id="pipe4" src="./models/prefabs/pipe_3.glb"></a-asset-item>
-            <a-asset-item id="cylinder" src='./models/cylinder.glb'></a-asset-item>
+            <a-asset-item id="bob" src='models/geek.glb'></a-asset-item>
+            <a-asset-item id="woman" src='models/woman.glb'></a-asset-item>
+            <a-asset-item id="man" src='models/man/Walking.glb'></a-asset-item>
+            <a-asset-item id="grunt" src='models/grunt.glb'></a-asset-item>
+            <a-asset-item id="lady" src='models/lady.glb'></a-asset-item>
+            <a-asset-item id="cop" src='models/copwalk.glb'></a-asset-item>
+            <a-asset-item id="glow" src="glow.png"></a-asset-item>
+            <a-asset-item id="gun" src="models/fps_gun.glb"></a-asset-item>
+            <a-asset-item id="chest" src="models/prefabs/chest.glb"></a-asset-item>
+            <a-asset-item id="computer" src="models/prefabs/computer.glb"></a-asset-item>
+            <a-asset-item id="switchboard" src="models/prefabs/switchboard.gltf"></a-asset-item>
+            <a-asset-item id="clock" src="models/prefabs/clock.glb"></a-asset-item>
+            <a-asset-item id="table" src="models/prefabs/table.glb"></a-asset-item>
+            <a-asset-item id="pipe3" src="models/prefabs/pipe_3.glb"></a-asset-item>
+            <a-asset-item id="pipe4" src="models/prefabs/pipe_3.glb"></a-asset-item>
+            <a-asset-item id="cylinder" src='models/cylinder.glb'></a-asset-item>
 
-            <audio id="music" src="./sound/music.mp3" preload="auto"></audio>
-            <audio id="hit" src="./sound/hit.wav" preload="auto"></audio>
-            <audio id="death" src="./sound/death.wav" preload="auto"></audio>
-            <audio id="attack" src="./sound/attack.wav" preload="auto"></audio>
-            <audio id="playerhit" src="./sound/playerpain.wav" preload="auto"></audio>
-            <audio id="playerdeath" src="./sound/playerdeath.wav" preload="auto"></audio>
-            <audio id="playerpain" src="./sound/playerpain.wav" preload="auto"></audio>
-            <audio id="playerattack" src="./sound/playerpunch.wav" preload="auto"></audio>
-            <audio id="pistolshot" src="./sound/pistolshot.mp3" preload="auto"></audio>
-            <audio id="dooropen" src="./sound/dooropen.mp3" preload="auto"></audio>
-            <audio id="keypickup" src="./sound/keypickup.mp3" preload="auto"></audio>
+            <audio id="music" src="sound/music.mp3" preload="auto"></audio>
+            <audio id="hit" src="sound/hit.wav" preload="auto"></audio>
+            <audio id="death" src="sound/death.wav" preload="auto"></audio>
+            <audio id="attack" src="sound/attack.wav" preload="auto"></audio>
+            <audio id="playerhit" src="sound/playerpain.wav" preload="auto"></audio>
+            <audio id="playerdeath" src="sound/playerdeath.wav" preload="auto"></audio>
+            <audio id="playerpain" src="sound/playerpain.wav" preload="auto"></audio>
+            <audio id="playerattack" src="sound/playerpunch.wav" preload="auto"></audio>
+            <audio id="pistolshot" src="sound/pistolshot.mp3" preload="auto"></audio>
+            <audio id="dooropen" src="sound/dooropen.mp3" preload="auto"></audio>
+            <audio id="keypickup" src="sound/keypickup.mp3" preload="auto"></audio>
 
             <!--textures-->
-            <img id="brick" src="./textures/walls/sewerwall.jpg">
-            <img id="door" src="./textures/structures/metaldoor.jpg">
-            <img id="floor" src="./textures/structures/whitegrav.JPG">
-            <img id="wooddoor" src="./textures/wood/wooddoor.jpg">
+            <img id="brick" src="textures/walls/sewerwall.jpg">
+            <img id="door" src="textures/structures/metaldoor.jpg">
+            <img id="floor" src="textures/structures/whitegrav.JPG">
+            <img id="wooddoor" src="textures/wood/wooddoor.jpg">
             <img id="grunge" src="textures/structures/whiterock.jpg">
-            <img id="orangebrick" src="./textures/walls/orangebrick.jpg">
-            <img id="muzzle" src="./textures/gun/muzzle.png">
-            <img id="water" src="./textures/nature/water.jpeg">
-            <img id="poster" src="./textures/posters/soviet.jpg">
-            <img id="exit" src="./textures/structures/pattern.JPG">
-            <img id="key" src="./textures/structures/metaldoor.jpg">
-            <img id="sky" src="./textures/night.jpg">
+            <img id="orangebrick" src="textures/walls/orangebrick.jpg">
+            <img id="muzzle" src="textures/gun/muzzle.png">
+            <img id="water" src="textures/nature/water.jpeg">
+            <img id="poster" src="textures/posters/soviet.jpg">
+            <img id="exit" src="textures/structures/pattern.JPG">
+            <img id="key" src="textures/structures/metaldoor.jpg">
+            <img id="sky" src="textures/night.jpg">
 
         </a-assets>
         <!-- // sound fx -->

@@ -1,0 +1,22 @@
+{
+  "characters": [
+    {
+      "name": "bob",
+      "id": 1,
+      "model": "models/geek.glb",
+      "scale" : "0.5 0.5 0.5"
+    },
+    {
+      "name": "man",
+      "id": 2,
+      "model": "modelsman/Walking.glb",
+      "scale" : "0.08 0.08 0.08"
+    },
+    {
+      "name": "cop",
+      "id": 3,
+      "model":"models/copwalk.glb",
+      "scale" : "0.01 0.01 0.01"
+    }
+  ]
+}

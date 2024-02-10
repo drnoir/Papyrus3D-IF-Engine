@@ -19,6 +19,8 @@ let CombatDiceNumber = 6;
 let CombatDMGDiceNumber = 6;
 // dialogueUI Elements Based on a-frame defaults 
 const scene = document.querySelector('a-scene'); const assets = document.querySelector('a-assets');
+// save number global
+let saveNum = 1;
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -139,14 +141,14 @@ async function loadChars() {
 }
 
 async function loadDiag(sceneToLoad) {
-    let fetchURL = './scenes/scene' + sceneToLoad + '/dialogue.json';
+    let fetchURL = 'dialogue.json';
     const res = await fetch(fetchURL)
     diag = await res.json();
     console.log(diag);
 }
 
 async function loadInteractions(sceneToLoad) {
-    let fetchURL = './scenes/scene' + sceneToLoad + '/interactions.json';
+    let fetchURL = 'interactions.json';
     const res = await fetch(fetchURL)
     interactions = await res.json();
     console.log(interactions);
@@ -163,14 +165,14 @@ async function loadPrefabs() {
     console.log(prefabs);
 }
 
-async function loadTextures(textureScene) {
-    let fetchURL = './scenes/scene' + textureScene + '/textures.json';
+async function loadTextures() {
+    let fetchURL = 'textures.json';
     const res = await fetch(fetchURL)
     textures = await res.json();
 }
 
 async function loadSceneMetaData(metaDataToLoad) {
-    let fetchURL = './scenes/scene' + metaDataToLoad + '/scene.json';
+    let fetchURL = 'scene.json';
     const res = await fetch(fetchURL)
     sceneMetadata = await res.json();
 }
@@ -190,6 +192,31 @@ function setupPlayerInfo() {
         playerFaceStateDead: player.playerFaceStateDead,
     }
 }
+
+// map export button
+const downloadBtn = document.getElementById('exportMap');
+downloadBtn.addEventListener('mousedown', (event) => {
+    exportJSON();
+});
+
+//JSON export function
+function exportJSON() {
+    let fileName = 'newRandPapyusMap' + saveNum + '.json';
+    // structure the map for consumption by engine
+    // for every width length - add a space - FOR EXAMPLE 25 - ADD NEW LINEBREAK EVERY 25 ARR ELEMENTS
+    // let structArr = addNewlines(mapTemplate, templateSize);
+    let JSONBlog = JSON.stringify(mapSource);
+    // Create a blob of the data
+    const fileToSave = new Blob([JSONBlog], {
+        type: 'application/json'
+    });
+
+    //Save the file
+    saveAs(fileToSave, fileName);
+    // increment save num for file names
+    saveNum++;
+}
+
 
 // CHARECETERS AND ENEMIES =--<
 //Add chareceter to scene function 

@@ -15,6 +15,11 @@ button, input[type="button"]{
     display: inline-block;
     font-size: 16px;
     margin: auto 1em;
+    z-index:9999;
+}
+
+#exportMap{
+    position: fixed;
 }
 
 
