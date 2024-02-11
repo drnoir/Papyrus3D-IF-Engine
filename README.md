@@ -1,6 +1,6 @@
 ## Papyrus 3D - Interactive Fiction Engine by Chris Godber
 #### GNU GENERAL PUBLIC LICENSE
-##### Current Version: 0.1.2
+##### Current Version: 0.1.3
 ![alt text](https://raw.githubusercontent.com/drnoir/Papyrus3D-IF-Engine/main/Papyrus3D.jpg)
 
 ### SIMPLE OPEN SOURCE WebGL GAME ENGINE / FRAMEWORK FOR VR / AR / Web (Pre-Alpha 0.1.2)

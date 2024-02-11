@@ -187,6 +187,18 @@ AFRAME.registerComponent('character', {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
         const charID = data.charID;
+
+        this.el.addEventListener('click', function (evt) {
+            populateInteractions(interactionNum);
+        })
+            // this.el.addEventListener('click', function (evt) {
+            // const nextId = this.el.getAttribute('next-id');
+            // console.log('clicked char');
+            // if (nextId !== null) {
+            //   this.el.sceneEl.components.dialogue.currentId = nextId;
+            //   this.el.sceneEl.components.dialogue.loadDialogue();
+            // }
+        //   })
         this.el.addEventListener('click', function (evt) {
             if ( numDiag === 0){
             console.log(charID, numDiag)
@@ -197,20 +209,24 @@ AFRAME.registerComponent('character', {
             populateDiag(charID,numDiag);
             numDiag++;
             }
-                   
+        //     const nextId = this.el.getAttribute('next-id');
+        //     console.log('clicked char');
+        //     if (nextId !== null) {
+        //       this.el.sceneEl.components.dialogue.currentId = nextId;
+        //       this.el.sceneEl.components.dialogue.loadDialogue();
+        //     }   
         })
     },
     tick: function (time, timeDelta) {
         const data = this.data;
         let patrol = data.patrol;
-        let wallDistance = this.distanceCheck();
-        if ( !wallDistance && patrol){
-            this.patrol();
-        }
+        // let wallDistance = this.distanceCheck();
+        // if ( !wallDistance && patrol){
+        //     this.patrol();
+        // }
     },
     patrol: function () {
         const el = this.el;
-        let data = this.data;
         let speed = 0.006;
         el.setAttribute('animation-mixer', 'clip: *; loop: repeat; '); //  NEEDS A TEST WITH MODEL WITH ANIMATION
         let randomDirection = Math.floor(Math.random() * 3);

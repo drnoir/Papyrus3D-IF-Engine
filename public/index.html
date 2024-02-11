@@ -14,6 +14,7 @@
 
 <body>
     <a-scene>
+        <a-entity light="type: ambient; color: #CCC;intensity: 0.4;"></a-entity>
         <a-assets>
             <!-- models -->
             <a-asset-item id="Tech1" src='./models/geek.glb'></a-asset-item>
@@ -93,13 +94,10 @@
                     cursor="fuse: true;" material="color: white; shader: flat" position="0 0 -1"
                     geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" scale="0.1 0.1 0.1">
                 </a-entity>
-                <!-- dialogue UI -->
-                <a-entity position="0 1.6 0">
-                    <a-text id="message" color="black" wrap-count="40" value=""></a-text>
-                    <a-entity id="options" position="0 -0.5 0" visible="true">
-                        <!-- Options will be dynamically added here -->
-                    </a-entity>
-                </a-entity>
+                <a-entity dialogueUI id="dialogueID" position="0 0.9 -1.5" rotation="0 0 0" depth="0.001"
+                geometry="primitive: plane; width:3.5; height: 0.35"
+                material=" opacity: 1; color:#fff" visible="false">
+            </a-entity>
             </a-entity>
         </a-entity>
         <!-- Rooms-->

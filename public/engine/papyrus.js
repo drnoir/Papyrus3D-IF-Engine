@@ -140,11 +140,10 @@ function addChar(charNumber) {
     char.setAttribute('gltf-model', modelID);
     char.setAttribute('scale', chars.characters[indexCharNumber].scale);
     char.setAttribute('character', 'modelPath:'+modelID);
-    char.setAttribute('clickableChar', '');
     char.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     charDiagIDs.push(charNumber);
     // returnDiag(charNumber);
-    console.log(charDiagIDs);
+    console.log('char ids'+charDiagIDs);
     return char;
 }
 
@@ -321,7 +320,7 @@ function populateDiag(currentChar, numDiag) {
 
 
 function populateInteractions(interactionID, currentInteraction) {
-    const dialogueUI = document.getElementById('dialogueID');
+
     // add button test function for choice dialogiue
     showDialogueUI();
     // if (!passageBtn) {
@@ -461,6 +460,7 @@ function createRooms() {
                 console.log('diagcountchar' + diagCount); console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
                 char.setAttribute('static-body', '');
+                char.setAttribute('clickableChar', '');
                 // char.setAttribute('glowfx', 'visible:true;');
                 char.setAttribute('character', 'charID:' + charNumber + ';' + 'numDiag:', diagCount + ';');
                 const floor = document.createElement('a-box');
@@ -470,6 +470,7 @@ function createRooms() {
                 floor.setAttribute('static-body', '');
                 floor.setAttribute('position', floorPos);
                 floor.setAttribute('editor-listener', '');
+              
                 floor.setAttribute('material', 'src:#floor');
                 el.appendChild(floor);
                 el.appendChild(char);
