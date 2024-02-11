@@ -131,7 +131,6 @@ function setupPlayerInfo() {
 // CHARECETERS AND ENEMIES =--<
 //Add chareceter to scene function 
 function addChar(charNumber) {
-    // console.log(chars.characters[charID].id, chars.characters[charID].name);
     let indexCharNumber = charNumber - 1;
     console.log('char param passed' + charNumber)
     let modelID = '#' + chars.characters[indexCharNumber].name;
@@ -140,6 +139,8 @@ function addChar(charNumber) {
     char.setAttribute('name', chars.characters[indexCharNumber].name);
     char.setAttribute('gltf-model', modelID);
     char.setAttribute('scale', chars.characters[indexCharNumber].scale);
+    char.setAttribute('character', 'modelPath:'+modelID);
+    char.setAttribute('clickableChar', '');
     char.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     charDiagIDs.push(charNumber);
     // returnDiag(charNumber);
@@ -457,8 +458,7 @@ function createRooms() {
                 console.log(mapData[i].charAt(4));
                 let char = addChar(charNumber);
                 let diagCount = countDialogue(charNumber);
-                console.log('diagcountchar' + diagCount);
-                console.log('char ran and char is' + char)
+                console.log('diagcountchar' + diagCount); console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
                 char.setAttribute('static-body', '');
                 // char.setAttribute('glowfx', 'visible:true;');

@@ -16,7 +16,7 @@
     <a-scene>
         <a-assets>
             <!-- models -->
-            <a-asset-item id="bob" src='./models/geek.glb'></a-asset-item>
+            <a-asset-item id="Tech1" src='./models/geek.glb'></a-asset-item>
             <a-asset-item id="woman" src='./models/woman.glb'></a-asset-item>
             <a-asset-item id="man" src='./models/man/Walking.glb'></a-asset-item>
             <a-asset-item id="grunt" src='./models/reds/red_03.glb'></a-asset-item>
@@ -56,6 +56,7 @@
             <img id="poster" src="./textures/posters/soviet.jpg">
             <img id="exit" src="./textures/structures/pattern.JPG">
             <img id="key" src="./textures/structures/metaldoor.jpg">
+            <img id="sky" src="textures/night.jpg">
         </a-assets>
         <!-- // sound fx -->
         <a-entity sound="src: #music" autoplay="true" volume="6" loop="true" positional="false"
@@ -95,7 +96,7 @@
                 <!-- dialogue UI -->
                 <a-entity position="0 1.6 0">
                     <a-text id="message" color="black" wrap-count="40" value=""></a-text>
-                    <a-entity id="options" position="0 -0.5 0" visible="false">
+                    <a-entity id="options" position="0 -0.5 0" visible="true">
                         <!-- Options will be dynamically added here -->
                     </a-entity>
                 </a-entity>
@@ -103,6 +104,7 @@
         </a-entity>
         <!-- Rooms-->
         <a-entity id="room"></a-entity>
+        <a-sky src="#sky"></a-sky>
         <!-- Sky -->
     </a-scene>
 </body>
