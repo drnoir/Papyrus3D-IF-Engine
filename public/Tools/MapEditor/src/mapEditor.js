@@ -357,7 +357,7 @@ async function loadMapTemplateData(templateSize) {
 }
 
 async function loadTextures(e) {
-    let fetchURL = './textures/textures.json';
+    let fetchURL = './textures.json';
     const res = await fetch(fetchURL)
     textures = await res.json();
     // allocate textures from JSON config
@@ -785,36 +785,62 @@ const form = document.querySelector('jsonUpload');
 let mapJSON = [];
 let importedMapArr = [];
 
-document.getElementById('jsonUpload').addEventListener('change', function (e) {
-    let file = document.getElementById('jsonUpload').files[0];
-    (async () => {
-        const fileContent = await file.text();
-        mapJSON = fileContent;
-        let parsedJSON = JSON.parse(mapJSON)
-        importedMapArr = parsedJSON.data;
-    })();
-});
+// document.getElementById('jsonUpload').addEventListener('change', function (e) {
+//     let file = document.getElementById('jsonUpload').files[0];
+//     console.log('file uppload'+file);
+//     (async () => {
+//         const fileContent = await file.text();
+//         mapJSON = fileContent;
+//         let parsedJSON = JSON.parse(mapJSON)
+//         importedMapArr = parsedJSON.data;
+//     })();
+// });
+
+    const input = document.getElementById('jsonUpload');
+
+    input.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            try {
+                const jsonContent = JSON.parse(e.target.result);
+                console.log(jsonContent);
+                mapJSON = jsonContent; // Assigning the JSON content to mapJSON variable
+                console.log('JSON content:', mapJSON);
+            } catch (error) {
+                console.error('Error parsing JSON file:', error);
+            }
+        };
+
+        reader.readAsText(file);
+    });
+
+    // Trigger the file input
+    input.click();
+
 
 const importBtn = document.getElementById('importBtn');
 importBtn.addEventListener('mousedown', (event) => {
     // on click if map file and json selected init clear and load routine below
-    importMap(importedMapArr);
+    importMap(mapJSON);
 });
 
-async function importMap(importedMapArr) {
-    console.log(importedMapArr)
-    if (importedMapArr.length>0){
+async function importMap(mapJSON) {
+    mapRes = mapJSON;
+    console.log(mapJSON)
+    if (mapJSON.length>0){
     // clear scene
     await clearScene();
     // add new room
-    let room = document.createElement('a-entity');
-    room.setAttribute('id', 'room');
-    await scene.appendChild(room);
-    mapRes = importedMapArr;
+    // let room = document.createElement('a-entity');
+    // room.setAttribute('id', 'room');
+    // await scene.appendChild(room);
+  
     console.log('mapRes pre create room' + mapRes)
     // factor in length
-    templateSize = importedMapArr / importedMapArr; // this
-    await createRooms(mapRes);
+    templateSize = mapJSON/ mapJSON; // this
+    await createRooms(mapJSON);
     }
     else{
         alert('Please select a json file to import');

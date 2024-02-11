@@ -1,0 +1,32 @@
+{
+  "textures": [
+    {
+      "id": "brick",
+      "path": "textures/structures/conrete.JPG"
+    },
+    {
+      "id": "floor",
+      "path": "textures/structures/whitegrav.JPG"
+    },
+    {
+      "id": "door",
+      "path": "textures/wood/bigdoor.JPG"
+    },
+    {
+      "id": "orangebrick",
+      "path": "textures/walls/orangebrick.JPG"
+    },
+    {
+      "id": "exit",
+      "path": "textures/structures/pattern.JPG"
+    },
+    {
+      "id": "water",
+      "path": "textures/nature/water.jpeg"
+    },
+    {
+      "id": "key",
+      "path": "textures/structures/metaldoor.jpg"
+    }
+  ]
+}
