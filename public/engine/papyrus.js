@@ -13,7 +13,7 @@ let currentDiagID = 0; let currentScene = 1; let nextSceneToLoad = currentScene 
 let randomMode = false;
 
 let charDialogs = [];
-let currentChar; let mapSource = 0; let currentInteraction = 0;
+let currentChar=0; let mapSource = 0; let currentInteraction = 0;
 // combat var defaults SIMULATED DICE - Combat system is based on D and D - INIT vals / max 
 let CombatDiceNumber = 6;
 let CombatDMGDiceNumber = 6;
@@ -140,6 +140,8 @@ function addChar(charNumber) {
     char.setAttribute('gltf-model', modelID);
     char.setAttribute('scale', chars.characters[indexCharNumber].scale);
     char.setAttribute('character', 'modelPath:'+modelID);
+    // add dialogue handler componenet 
+    char.setAttribute('dialogue-handler', '');
     char.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     charDiagIDs.push(charNumber);
     // returnDiag(charNumber);
@@ -157,7 +159,7 @@ function addEnemy(enemyID) {
     enemy.setAttribute('id', enemies.enemies[enemyID].name);
     enemy.setAttribute('name', enemies.enemies[enemyID].name);
     enemy.setAttribute('gltf-model', modelID);
-    enemy.setAttribute('scale', "0.01 0.01 0.01");
+    enemy.setAttribute('scale', "1 1 1");
     enemy.setAttribute('enemy', '');
     enemy.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     enemy.setAttribute('animation-mixer', { timeScale: 1 });
@@ -169,7 +171,7 @@ function addTorch(torchColor, torchIndex) {
     let torch = document.createElement('a-box');
     torch.setAttribute('id', torch + [torchIndex]);
     let fire = document.createElement('a-entity');
-    fire.setAttribute('light', 'type: point; intensity: 0.25; distance: 1; decay: 0');
+    fire.setAttribute('light', 'type: point; intensity: 0.35; distance: 1; decay: 0');
     fire.setAttribute('color' + torchColor);
     torch.appendChild(fire);
     return torch;
@@ -309,11 +311,12 @@ function populateDiag(currentChar, numDiag) {
         numDiag = 0;
     }
 
-    console.log('current char' + currentChar, diag.passage[currentChar - 1][numDiag].text)
+    console.log('current char' + currentChar, diag.passage[currentChar- 1][numDiag].text)
     // populate dialog with text / name
-    let newDiagPassage = diag.passage[currentChar - 1][numDiag].text;
-    let newCharName = diag.passage[currentChar - 1][numDiag].char;
-    currentDiagID = currentChar;
+    let newDiagPassage = diag.passage[currentChar- 1][numDiag].text;
+    let newCharName = diag.passage[currentChar- 1][numDiag].char;
+
+    currentDiagID = currentChar-1;
     populateMessage(newCharName, newDiagPassage);
     setTimeout(hideDialogueUI, 12000);
 }
@@ -460,7 +463,6 @@ function createRooms() {
                 console.log('diagcountchar' + diagCount); console.log('char ran and char is' + char)
                 char.setAttribute('position', charPos);
                 char.setAttribute('static-body', '');
-                char.setAttribute('clickableChar', '');
                 // char.setAttribute('glowfx', 'visible:true;');
                 char.setAttribute('character', 'charID:' + charNumber + ';' + 'numDiag:', diagCount + ';');
                 const floor = document.createElement('a-box');
@@ -470,7 +472,6 @@ function createRooms() {
                 floor.setAttribute('static-body', '');
                 floor.setAttribute('position', floorPos);
                 floor.setAttribute('editor-listener', '');
-              
                 floor.setAttribute('material', 'src:#floor');
                 el.appendChild(floor);
                 el.appendChild(char);

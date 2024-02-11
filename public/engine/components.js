@@ -2,14 +2,14 @@
 // Components for papyrus engine VR / AR
 // Dependency tree - A-Frame / A-Frame Extras / Papyrus
 // ENGINE CORE IMPORTS
-import { nextScene, loadData, populateDiag,
+import {
+    nextScene, loadData, populateDiag,
     // nextPassageForChar, 
-    populateInteractions,populateMessage, shootAt, gotKey,getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth,    setPlayerHealth,clearScene, loadNewLevel } from "./papyrus.js";
+    populateInteractions, populateMessage, shootAt, gotKey, getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth, setPlayerHealth, clearScene, loadNewLevel
+} from "./papyrus.js";
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
-        let lastIndex = -1;
-        // const COLORS = ['red', 'green'];
         this.el.addEventListener('click', function (evt) {
             nextScene();
         });
@@ -131,7 +131,7 @@ AFRAME.registerComponent('playercam', {
         newCursor.setAttribute('cursor', 'fuse: true; fiseTimeout:500');
         newCursor.setAttribute('geometry', 'primitive: ring; radiusInner: 0.02; radiusOuter: 0.03');
         newCursor.setAttribute('material', 'color: black; shader: flat');
-     
+
         // function to load player face
         // check if model GLB or Obj - create func for this
         if (format === "glb") {
@@ -155,6 +155,58 @@ AFRAME.registerComponent('playercam', {
     },
 });
 
+AFRAME.registerComponent('dialogue-handler', {
+    schema: {
+       scene: { type: 'number', default: 1 },
+    },
+    init: function() {
+      var dialogueContainer = document.getElementById('dialogueID');
+      var dialogueText = document.getElementById('dialogueText');
+      var choicesContainer = document.getElementById('choices');
+      const sceneNum = this.data.scene;
+      // Load dialogue from JSON file
+      fetch('/scenes/'+'scene'+sceneNum+'/'+'dialogue.json')
+        .then(response => response.json())
+        .then(dialogue => {
+          this.dialogue = dialogue;
+        });
+
+      // Handle click event
+      this.el.addEventListener('click', () => {
+        console.log('click handler for char diag triggered')
+        if (this.dialogue) {
+          // Display dialogue
+          dialogueText.setAttribute('value', this.dialogue.text);
+
+          // Clear existing choices
+          while (choicesContainer.firstChild) {
+            choicesContainer.removeChild(choicesContainer.firstChild);
+          }
+
+          // Display choices if available
+          if (this.dialogue.choices && this.dialogue.choices.length > 0) {
+            this.dialogue.choices.forEach(choice => {
+              var choiceEntity = document.createElement('a-text');
+              choiceEntity.setAttribute('value', choice.text);
+              choiceEntity.setAttribute('color', 'white');
+              choiceEntity.setAttribute('width', '3');
+              choiceEntity.setAttribute('align', 'center');
+              choiceEntity.addEventListener('click', () => {
+                // Handle choice selection
+                dialogueText.setAttribute('value', choice.response);
+                if (choice.nextDialogue) {
+                  // Load next dialogue
+                  this.dialogue = this.dialogue.nextDialogue;
+                }
+              });
+              choicesContainer.appendChild(choiceEntity);
+            });
+          }
+        }
+      });
+    }
+  });
+
 // CHAR 
 AFRAME.registerComponent('character', {
     schema: {
@@ -164,11 +216,10 @@ AFRAME.registerComponent('character', {
         rotation: { type: 'string', default: '0 0 0' },
         scale: { type: 'string', default: '1 1 1' },
         animated: { type: 'boolean', default: false },
-        patrol: { type: 'boolean', default: false},
+        patrol: { type: 'boolean', default: false },
         glowOn: { type: 'boolean', default: false },
-        charID: { type: 'number', default: 0 },
-        numDiag:  { type: 'number', default: 0 },
-        Char :  { type: 'string', default: 'clickableChar' },
+        charID: { type: 'number', default: 1 },
+        numDiag: { type: 'number', default: 1 },
     },
     multiple: true,
     init: function () {
@@ -183,39 +234,19 @@ AFRAME.registerComponent('character', {
         let glowOn = data.glowOn;
         const elScale = this.el.scale;
         let numDiag = data.numDiag;
+        const charID = data.charID;
+
+        // el.addEventListener('click', function (evt) {
+        //     console.log('dialog triggered');
+        //     populateDiag(charID, 1);
+        //     numDiag++;
+        // })
+
         if (animated) {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
-        const charID = data.charID;
 
-        this.el.addEventListener('click', function (evt) {
-            populateInteractions(interactionNum);
-        })
-            // this.el.addEventListener('click', function (evt) {
-            // const nextId = this.el.getAttribute('next-id');
-            // console.log('clicked char');
-            // if (nextId !== null) {
-            //   this.el.sceneEl.components.dialogue.currentId = nextId;
-            //   this.el.sceneEl.components.dialogue.loadDialogue();
-            // }
-        //   })
-        this.el.addEventListener('click', function (evt) {
-            if ( numDiag === 0){
-            console.log(charID, numDiag)
-            populateDiag(charID,numDiag);
-            numDiag=1; 
-            }
-            else{
-            populateDiag(charID,numDiag);
-            numDiag++;
-            }
-        //     const nextId = this.el.getAttribute('next-id');
-        //     console.log('clicked char');
-        //     if (nextId !== null) {
-        //       this.el.sceneEl.components.dialogue.currentId = nextId;
-        //       this.el.sceneEl.components.dialogue.loadDialogue();
-        //     }   
-        })
+    
     },
     tick: function (time, timeDelta) {
         const data = this.data;
@@ -230,10 +261,10 @@ AFRAME.registerComponent('character', {
         let speed = 0.006;
         el.setAttribute('animation-mixer', 'clip: *; loop: repeat; '); //  NEEDS A TEST WITH MODEL WITH ANIMATION
         let randomDirection = Math.floor(Math.random() * 3);
-        let randRot = Math.floor(Math.random() *10);
+        let randRot = Math.floor(Math.random() * 10);
         let randomRotChance = Math.floor(Math.random() * 2000);
         let randomUpDown = randomUporDown();
-    
+
         // random direction and movement check if ant is on the floor
         // if (randomRotChance >= 1500) {
         //     if (randomUpDown === 'plus' && randomRotChance >= 1500){
@@ -244,47 +275,47 @@ AFRAME.registerComponent('character', {
         //         }
         // }
         if (randomDirection < 1) {
-            if (randomUpDown=== 'plus'){
-            el.object3D.position.x+=speed;
-            el.object3D.position.z+=speed;
+            if (randomUpDown === 'plus') {
+                el.object3D.position.x += speed;
+                el.object3D.position.z += speed;
             }
-            if (randomUpDown === 'minus'){
-                el.object3D.position.x-=speed;
-                el.object3D.position.z-=speed;
+            if (randomUpDown === 'minus') {
+                el.object3D.position.x -= speed;
+                el.object3D.position.z -= speed;
             }
         }
         if (randomDirection < 2) {
-            if (randomUpDown=== 'plus'){
-                el.object3D.position.x+=speed;
-                el.object3D.position.z+=speed;
-                }
-                if (randomUpDown === 'minus'){
-                    el.object3D.position.x-=speed;
-                    el.object3D.position.z-=speed;
-                }
+            if (randomUpDown === 'plus') {
+                el.object3D.position.x += speed;
+                el.object3D.position.z += speed;
+            }
+            if (randomUpDown === 'minus') {
+                el.object3D.position.x -= speed;
+                el.object3D.position.z -= speed;
+            }
             // if (randomRotChance >750) {
             //     el.object3D.rotation.y -= randRot;
             // }
         }
         if (randomDirection > 2 && randomDirection < 3) {
-            if (randomUpDown=== 'plus'){
-                el.object3D.position.x+=speed;
-                el.object3D.position.z+=speed;
-                }
-                if (randomUpDown === 'minus'){
-                    el.object3D.position.x-=speed;
-                    el.object3D.position.z-=speed;
-                }
+            if (randomUpDown === 'plus') {
+                el.object3D.position.x += speed;
+                el.object3D.position.z += speed;
+            }
+            if (randomUpDown === 'minus') {
+                el.object3D.position.x -= speed;
+                el.object3D.position.z -= speed;
+            }
         }
         if (randomDirection > 3 && randomDirection < 4) {
-            if (randomUpDown=== 'plus'){
-                el.object3D.position.x+=speed;
-                el.object3D.position.z+=speed;
-                }
-                if (randomUpDown === 'minus'){
-                    el.object3D.position.x-=speed;
-                    el.object3D.position.z-=speed;
-                }
+            if (randomUpDown === 'plus') {
+                el.object3D.position.x += speed;
+                el.object3D.position.z += speed;
+            }
+            if (randomUpDown === 'minus') {
+                el.object3D.position.x -= speed;
+                el.object3D.position.z -= speed;
+            }
         }
     },
 
@@ -296,16 +327,16 @@ AFRAME.registerComponent('character', {
         let wallPos = wall.object3D.position;
         let distanceToWall = el.object3D.position.distanceTo(wallPos);
         // move away if a wall    
-        if (distanceToWall <6) {
+        if (distanceToWall < 6) {
             // let floorPos = floor.getAttribute(position);
-          el.object3D.position.x=wallPos.x-=speed;
-          el.object3D.position.z=wallPos.z-=speed;
+            el.object3D.position.x = wallPos.x -= speed;
+            el.object3D.position.z = wallPos.z -= speed;
         }
 
-        let goAwayFromWall =  distanceToWall <1 ? true : false;
-        console.log('move away from wall'+goAwayFromWall);
+        let goAwayFromWall = distanceToWall < 1 ? true : false;
+        console.log('move away from wall' + goAwayFromWall);
         return goAwayFromWall;
-      
+
     },
     remove: function () {
         this.el.destroy();
@@ -313,14 +344,14 @@ AFRAME.registerComponent('character', {
 
 });
 
-function randomUporDown(){
-    let randomChance =  Math.random()*350;
+function randomUporDown() {
+    let randomChance = Math.random() * 350;
     // console.log('RANDOMNUM FOR DIR'+randomChance);
 
-    if(randomChance<50){
+    if (randomChance < 50) {
         return 'minus'
     }
-    else{
+    else {
         return 'plus'
     }
 
@@ -411,9 +442,9 @@ AFRAME.registerComponent('enemy', {
                 // healthBarVal = health / 10 * 3;
                 // console.log('enemy health reassigned to ' + health)
                 healthBarTracker.setAttribute('width', healthBarVal);
-                if (lifeStatus === 'alive' && health >1) {
+                if (lifeStatus === 'alive' && health > 1) {
                     let player = document.getElementById('playercam');
-                    let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target)<5;
+                    let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target) < 5;
                     // move away if a wall    
                     if (distanceToPlayerCheck < 0.2) {
                         console.log(distanceToPlayerCheck)
@@ -438,7 +469,7 @@ AFRAME.registerComponent('enemy', {
         let playerDistance = this.distanceToPlayer();
         let wallDistance = this.distanceCheck();
         // console.log('enemy distance checks'+playerDistance, wallDistance)
-        if (playerDistance || !wallDistance){
+        if (playerDistance || !wallDistance) {
             this.moveRandom();
         }
     },
@@ -452,8 +483,8 @@ AFRAME.registerComponent('enemy', {
         let randomRotChance = Math.floor(Math.random() * 1000);
         // random direction and movement check if ant is on the floor
         if (randomDirection < 1) {
-            el.object3D.position.x += speed ;
-            el.object3D.position.z += speed ;
+            el.object3D.position.x += speed;
+            el.object3D.position.z += speed;
             if (randomRotChance > 850) {
                 el.object3D.rotation.y += randRot;
             }
@@ -461,7 +492,7 @@ AFRAME.registerComponent('enemy', {
         if (randomDirection < 2) {
             el.object3D.position.x -= speed;
             el.object3D.position.z -= speed;
-            if (randomRotChance >750) {
+            if (randomRotChance > 750) {
                 el.object3D.rotation.y -= randRot;
             }
         }
@@ -475,7 +506,7 @@ AFRAME.registerComponent('enemy', {
     distanceToPlayer: function () {
         // console.log('distanceToPlayerCheck');
         const target = document.getElementById('playercam');
-        let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target)<=3;
+        let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target) <= 3;
         // console.log(distanceToPlayerCheck);
         // move towards player and attack or move randomly (Patrol later?)
         if (distanceToPlayerCheck) {
@@ -483,9 +514,9 @@ AFRAME.registerComponent('enemy', {
             this.moveToPlayer();
             this.enemyCombatAttack();
         }
-        let goAwayFromPlayer =  distanceToPlayerCheck <=3 ? true : false;
-        console.log('move from player check'+goAwayFromPlayer)
-        return  goAwayFromPlayer;
+        let goAwayFromPlayer = distanceToPlayerCheck <= 3 ? true : false;
+        console.log('move from player check' + goAwayFromPlayer)
+        return goAwayFromPlayer;
     },
     distanceCheck: function (dt) {
         // const wall = document.querySelector('a-box');
@@ -493,41 +524,41 @@ AFRAME.registerComponent('enemy', {
         // console.log(wall);
         let wallPos = wall.object3D.position
         let distanceToWall = this.el.getAttribute("position").distanceTo(wallPos)
-    //    console.log(distanceToWall
+        //    console.log(distanceToWall
         // console.log(distanceToWall);
         // move away if a wall    
-        if (distanceToWall <5) {
+        if (distanceToWall < 5) {
             // let floorPos = floor.getAttribute(position);
-           this.el.object3D.position.x+= 0.1;
-            this.el.object3D.position.z+= 0.1;
+            this.el.object3D.position.x += 0.1;
+            this.el.object3D.position.z += 0.1;
         }
 
-        let goAwayFromWall =  distanceToWall <1 ? true : false;
+        let goAwayFromWall = distanceToWall < 1 ? true : false;
         // console.log('move away from wall'+goAwayFromWall);
         return goAwayFromWall;
-      
+
     },
     moveToPlayer: function () {
-            const el = this.el;
-            const target = document.getElementById('playercam');
-            let vec3 = new THREE.Vector3();
-            const currentPosition = el.getAttribute("position");
-            vec3 = this.el.object3D.worldToLocal(target.object3D.position.clone());
-            var camFromOrca = currentPosition.distanceTo(target.object3D.position);
-            if (camFromOrca<=3) {
-                // console.log('enemy move player triggered - player is close - move towards player');
-                // console.log(distanceBetween);
-                this.el.object3D.position.x += 1;
-                this.el.object3D.position.multiplyScalar(2);
-                this.el.object3D.position.sub(vec3);
+        const el = this.el;
+        const target = document.getElementById('playercam');
+        let vec3 = new THREE.Vector3();
+        const currentPosition = el.getAttribute("position");
+        vec3 = this.el.object3D.worldToLocal(target.object3D.position.clone());
+        var camFromOrca = currentPosition.distanceTo(target.object3D.position);
+        if (camFromOrca <= 3) {
+            // console.log('enemy move player triggered - player is close - move towards player');
+            // console.log(distanceBetween);
+            this.el.object3D.position.x += 1;
+            this.el.object3D.position.multiplyScalar(2);
+            this.el.object3D.position.sub(vec3);
 
-                this.el.object3D.position.z += 1;
-                this.el.object3D.position.multiplyScalar(2);
-                this.el.object3D.position.sub(vec3);
-            }
-            let goToPlayer = camFromOrca <=3 ? true : false;
-            return goToPlayer;
-   
+            this.el.object3D.position.z += 1;
+            this.el.object3D.position.multiplyScalar(2);
+            this.el.object3D.position.sub(vec3);
+        }
+        let goToPlayer = camFromOrca <= 3 ? true : false;
+        return goToPlayer;
+
     },
     remove: function () {
         const el = this.el;
@@ -576,10 +607,10 @@ AFRAME.registerComponent('playermovement', {
             // console.log(newPos.x, newPos.z);
             let distanceCheck = playercamPos.distanceTo(newPos);
             console.log(distanceCheck);
-            if (distanceCheck <=3.5) {
+            if (distanceCheck <= 3.5) {
                 playercam.object3D.position.set(newPos.x, 1.5, newPos.z);
             }
-            })
+        })
     }
 });
 
@@ -631,18 +662,18 @@ AFRAME.registerComponent('door', {
     schema: {
         locked: { type: 'boolean', default: false },
         doorLockNum: { type: 'number', default: 0 },
-        key: {type: 'boolean', default: false},
-        keyColor: {type: 'string', default: 'blue'},
+        key: { type: 'boolean', default: false },
+        keyColor: { type: 'string', default: 'blue' },
     },
     init: function () {
         const el = this.el;
         const data = this.data;
         let locked = data.locked;
         let key = data.key;
-        let keyColor= data.keyColor;
+        let keyColor = data.keyColor;
         this.closeDoor = AFRAME.utils.bind(this.closeDoor, this);
 
-        if (key){
+        if (key) {
             el.setAttribute('color', keyColor);
             locked = true;
         }
@@ -651,23 +682,23 @@ AFRAME.registerComponent('door', {
 
         this.el.addEventListener('click', function (evt) {
             if (!locked) {
-                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y-1;
+                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
                 el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
                 let doorAudio = document.querySelector("#dooropen");
                 doorAudio.play();
             }
             else if (key) {
                 const playerKeys = getPlayerKeysInfo();
-                if (playerKeys.find((element) => element === 'blue' || 'yellow' || 'red' )){
-                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y-1;
-                el.setAttribute('animation', "property: position; to:" + newX + y+ z + "; loop:  false; dur: 5000");
-                let doorAudio = document.querySelector("#dooropen");
-                doorAudio.play();
-                populateMessage(keyColor+' door', keyColor+' door opened')
-                locked = false;
+                if (playerKeys.find((element) => element === 'blue' || 'yellow' || 'red')) {
+                    let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
+                    el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
+                    let doorAudio = document.querySelector("#dooropen");
+                    doorAudio.play();
+                    populateMessage(keyColor + ' door', keyColor + ' door opened')
+                    locked = false;
                 }
-                else{
-                    populateMessage('Locked '+keyColor+' Key Door', 'This door is locked, you need to find a '+keyColor+' key to open it');
+                else {
+                    populateMessage('Locked ' + keyColor + ' Key Door', 'This door is locked, you need to find a ' + keyColor + ' key to open it');
                 }
             }
             // locked door checks
@@ -682,7 +713,7 @@ AFRAME.registerComponent('door', {
         function resetAnim(el) {
             let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
             let newY = y + 3;
-            el.setAttribute('animation', "property: position; to:" + x +  newY + z + "; loop:  false; dur: 5000")
+            el.setAttribute('animation', "property: position; to:" + x + newY + z + "; loop:  false; dur: 5000")
         }
     },
     remove: function () {
@@ -694,8 +725,8 @@ AFRAME.registerComponent('door', {
 // key pickup componenet
 AFRAME.registerComponent("key", {
     schema: {
-        color: {type: 'string', default: 'blue'},
-        keyNumber: {type: 'number', default: 1},
+        color: { type: 'string', default: 'blue' },
+        keyNumber: { type: 'number', default: 1 },
     },
     init: function () {
         const data = this.data;
@@ -707,10 +738,10 @@ AFRAME.registerComponent("key", {
             let keyPickAudio = document.querySelector("#keypickup");
             keyPickAudio.play();
             this.remove();
-            populateMessage('Blue Key', 'You have collected the '+color+' key')
+            populateMessage('Blue Key', 'You have collected the ' + color + ' key')
         })
-    
-    
+
+
     },
     remove: function () {
         const el = this.el;
@@ -747,14 +778,14 @@ AFRAME.registerComponent("load-texture", {
 
 AFRAME.registerComponent("triggerdmg", {
     schema: {
-        dmgAmount : {type: 'number', default: 20}
+        dmgAmount: { type: 'number', default: 20 }
     },
     init: function () {
         const data = this.data;
         const el = this.el;
         let dmgAmount = data.dmgAmount;
-        const healthbarComp  = document.querySelector('[healthbar]').components.healthbar;
-    
+        const healthbarComp = document.querySelector('[healthbar]').components.healthbar;
+
         this.el.addEventListener('click', function (evt) {
             healthbarComp.reduceHealthBar(dmgAmount)
         })
@@ -810,32 +841,32 @@ AFRAME.registerComponent('healthbar', {
     },
 
     init: function () {
-        const data = this.data; 
+        const data = this.data;
         let health = data.health;
-        
-         // health bar UI
-         const healthBarContainer = document.getElementById('healthbarUI');
-         const healthBar = document.createElement('a-box');
-         const healthBarTracker = document.createElement('a-box');
 
-         healthBar.setAttribute('height', 0.1);
-         healthBar.setAttribute('id', 'healthBar');
-         healthBar.setAttribute('position', '-1.8 -0.38 0');
-         healthBar.setAttribute('width', health/250);
-         healthBar.setAttribute('depth', 0.01);
-         healthBar.setAttribute('material', 'color:white');
-         healthBarTracker.setAttribute('id', 'healthBarTracker');
-         healthBarTracker.setAttribute('height', 0.1);
-         healthBarTracker.setAttribute('width', health/250);
-         healthBarTracker.setAttribute('depth', 0.015);
-         healthBarTracker.setAttribute('position', '0 0 0');
-         healthBarTracker.setAttribute('material', 'color:green');
-         healthBar.appendChild(healthBarTracker);
-         healthBarContainer.appendChild(healthBar);
+        // health bar UI
+        const healthBarContainer = document.getElementById('healthbarUI');
+        const healthBar = document.createElement('a-box');
+        const healthBarTracker = document.createElement('a-box');
+
+        healthBar.setAttribute('height', 0.1);
+        healthBar.setAttribute('id', 'healthBar');
+        healthBar.setAttribute('position', '-1.8 -0.38 0');
+        healthBar.setAttribute('width', health / 250);
+        healthBar.setAttribute('depth', 0.01);
+        healthBar.setAttribute('material', 'color:white');
+        healthBarTracker.setAttribute('id', 'healthBarTracker');
+        healthBarTracker.setAttribute('height', 0.1);
+        healthBarTracker.setAttribute('width', health / 250);
+        healthBarTracker.setAttribute('depth', 0.015);
+        healthBarTracker.setAttribute('position', '0 0 0');
+        healthBarTracker.setAttribute('material', 'color:green');
+        healthBar.appendChild(healthBarTracker);
+        healthBarContainer.appendChild(healthBar);
     },
     reduceHealthBar: function (amount, health) {
         const el = this.el;
-        const data = this.data; 
+        const data = this.data;
         let healthUpdate = getPlayerHealth();
         const healthBarTracker = document.getElementById('healthBarTracker');
         // play player pain audio
@@ -843,9 +874,9 @@ AFRAME.registerComponent('healthbar', {
         painAudio.play();
         // set new player health and update UI
         setPlayerHealth(amount);
-        const healthBarVal100 =  (healthUpdate-amount)/250;
-        healthBarTracker.setAttribute('width', healthBarVal100 );
-      
+        const healthBarVal100 = (healthUpdate - amount) / 250;
+        healthBarTracker.setAttribute('width', healthBarVal100);
+
     },
     remove: function () {
         const el = this.el;

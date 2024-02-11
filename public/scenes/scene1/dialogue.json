@@ -8,13 +8,13 @@
     },
     {
       "char": "Tech1",
-      "id" : 1,
+      "id" : 2,
       "position": "-1.5, 0, -6",
       "text": "So new guy guy, whatever you name is.... We got a bit of an infestation problem that needs sorting out"
     },
     {
       "char": "Tech1",
-      "id" : 1,
+      "id" : 3,
       "position": "-1.5, 0, -4",
       "text": "Go and use your pistol to take out these goddamn huge mutant ants. Union doesn't pay me enough for this shit, and its your first day so.... ",
       "choices" : ["Yes Ok", "No Way"]
