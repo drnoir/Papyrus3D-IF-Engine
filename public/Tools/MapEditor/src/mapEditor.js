@@ -377,8 +377,15 @@ async function loadMap(mapToLoad) {
 }
 
 async function loadImportedMap(importedMap) {
-    mapTemplate = await importedMap;
-    mapData = await importedMap;
+    // mapTemplate = await importedMap;
+    // mapData = await importedMap;
+   
+   
+    mapRes = importedMap;
+    mapTemplate = mapRes.data;
+    // console.log(mapRes.length);
+
+    // init();
 }
 
 // function to create room geometry 

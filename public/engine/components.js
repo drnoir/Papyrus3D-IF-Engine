@@ -7,6 +7,7 @@ import {
     // nextPassageForChar, 
     populateInteractions, populateMessage, shootAt, gotKey, getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth, setPlayerHealth, clearScene, loadNewLevel
 } from "./papyrus.js";
+
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
@@ -155,60 +156,11 @@ AFRAME.registerComponent('playercam', {
     },
 });
 
-AFRAME.registerComponent('dialogue-handler', {
-    schema: {
-       scene: { type: 'number', default: 1 },
-    },
-    init: function() {
-      var dialogueContainer = document.getElementById('dialogueID');
-      var dialogueText = document.getElementById('dialogueText');
-      var choicesContainer = document.getElementById('choices');
-      const sceneNum = this.data.scene;
-      // Load dialogue from JSON file
-      fetch('/scenes/'+'scene'+sceneNum+'/'+'dialogue.json')
-        .then(response => response.json())
-        .then(dialogue => {
-          this.dialogue = dialogue;
-        });
 
-      // Handle click event
-      this.el.addEventListener('click', () => {
-        console.log('click handler for char diag triggered')
-        if (this.dialogue) {
-          // Display dialogue
-          dialogueText.setAttribute('value', this.dialogue.text);
-
-          // Clear existing choices
-          while (choicesContainer.firstChild) {
-            choicesContainer.removeChild(choicesContainer.firstChild);
-          }
-
-          // Display choices if available
-          if (this.dialogue.choices && this.dialogue.choices.length > 0) {
-            this.dialogue.choices.forEach(choice => {
-              var choiceEntity = document.createElement('a-text');
-              choiceEntity.setAttribute('value', choice.text);
-              choiceEntity.setAttribute('color', 'white');
-              choiceEntity.setAttribute('width', '3');
-              choiceEntity.setAttribute('align', 'center');
-              choiceEntity.addEventListener('click', () => {
-                // Handle choice selection
-                dialogueText.setAttribute('value', choice.response);
-                if (choice.nextDialogue) {
-                  // Load next dialogue
-                  this.dialogue = this.dialogue.nextDialogue;
-                }
-              });
-              choicesContainer.appendChild(choiceEntity);
-            });
-          }
-        }
-      });
-    }
-  });
 
 // CHAR 
 AFRAME.registerComponent('character', {
+    multiple: true,
     schema: {
         color: { type: 'color', default: 'white' },
         modelPath: { type: 'string', default: 'models/model.glb' },
@@ -221,7 +173,7 @@ AFRAME.registerComponent('character', {
         charID: { type: 'number', default: 1 },
         numDiag: { type: 'number', default: 1 },
     },
-    multiple: true,
+
     init: function () {
         const data = this.data;
         const el = this.el;
@@ -236,17 +188,19 @@ AFRAME.registerComponent('character', {
         let numDiag = data.numDiag;
         const charID = data.charID;
 
-        // el.addEventListener('click', function (evt) {
-        //     console.log('dialog triggered');
-        //     populateDiag(charID, 1);
-        //     numDiag++;
-        // })
+        this.el.addEventListener('click', function (evt) {
+            console.log(evt.detail.intersection.point);
+            console.log('dialog triggered');
+            populateDiag(charID, numDiag);
+            numDiag++;
+        });
+
 
         if (animated) {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
 
-    
+
     },
     tick: function (time, timeDelta) {
         const data = this.data;
@@ -266,14 +220,14 @@ AFRAME.registerComponent('character', {
         let randomUpDown = randomUporDown();
 
         // random direction and movement check if ant is on the floor
-        // if (randomRotChance >= 1500) {
-        //     if (randomUpDown === 'plus' && randomRotChance >= 1500){
-        //     el.object3D.rotation.y += randRot;
-        //     }
-        //     if (randomUpDown === 'minus'  && randomRotChance >=1500){
-        //         el.object3D.rotation.y -= randRot;
-        //         }
-        // }
+        if (randomRotChance >= 1500) {
+            if (randomUpDown === 'plus' && randomRotChance >= 1500) {
+                el.object3D.rotation.y += randRot;
+            }
+            if (randomUpDown === 'minus' && randomRotChance >= 1500) {
+                el.object3D.rotation.y -= randRot;
+            }
+        }
         if (randomDirection < 1) {
             if (randomUpDown === 'plus') {
                 el.object3D.position.x += speed;
@@ -324,7 +278,7 @@ AFRAME.registerComponent('character', {
         const wall = document.getElementsByClassName('wall')[0];
         let speed = 0.006;
         // console.log(wall);
-        let wallPos = wall.object3D.position;
+        let wallPos = wall.getAttribute("position");
         let distanceToWall = el.object3D.position.distanceTo(wallPos);
         // move away if a wall    
         if (distanceToWall < 6) {
@@ -357,214 +311,226 @@ function randomUporDown() {
 
 }
 
-// ENEMY AI - Pathing and behaviours - BUGGY MOVEMENT
-// REFACTOR THIS SO THAT ENEMY MOVEMENT CHECKS FOR 0 (FLOOR) INSTEAD OF CHECKING A BUNCH OF OTHER SHITE
-AFRAME.registerComponent('enemy', {
-    schema: {
-        color: { type: 'color', default: 'white' },
-        modelPath: { type: 'string', default: './models/deadcop.glb' },
-        modelID: { type: 'string', default: 'enemy1' },
-        modelMat: { type: 'string', default: 'demonMat' },
-        format: { type: 'string', default: 'glb' },
-        position: { type: 'string', default: '0 0.1 0' },
-        rotation: { type: 'string', default: '0 0 0' },
-        scale: { type: 'string', default: '1.0 1.0 1.0' },
-        animated: { type: 'boolean', default: false },
-        glowOn: { type: 'boolean', default: false },
-        id: { type: 'number', default: 0 },
-        constitution: { type: 'number', default: 10 },
-        strength: { type: 'number', default: 5 },
-        health: { type: 'number', default: 5 },
-        status: { type: 'string', default: 'alive' },
-        speed: { type: 'number', default: 0.015 },
-        patrol: { type: 'boolean', default: true }
-    },
-    multiple: true,
-    init: function () {
-        let data = this.data;
-        const el = this.el;
-        // this is super important for combat - don't delete it
-        const id = data.id;
-        const modelID = data.modelID;
-        const modelMat = data.modelID;
-        let scale = data.scale;
-        let pos = data.position;
-        let rot = data.rotation;
-        let format = data.format;
-        let animated = data.animated;
-        let glowOn = data.glowOn;
-        let health = data.health;
-        let lifeStatus = data.status;
-        // create a char based on attributes
-        const newEnemy = document.createElement('a-entity');
-        // newEnemy.setAttribute('position', pos);
-        newEnemy.object3D.position.set(pos);
-        newEnemy.setAttribute('glowFX', 'visible:' + glowOn);
+AFRAME.registerComponent('enemy',
+    {
+        multiple: true,
+        schema: {
+            color: { type: 'color', default: 'white' },
+            modelPath: { type: 'string', default: './models/grunt.glb' },
+            modelID: { type: 'string', default: 'enemy1' },
+            modelMat: { type: 'string', default: 'demonMat' },
+            format: { type: 'string', default: 'glb' },
+            position: { type: 'string', default: '0 0.1 0' },
+            rotation: { type: 'string', default: '0 0 0' },
+            scale: { type: 'string', default: '1.0 1.0 1.0' },
+            animated: { type: 'boolean', default: false },
+            glowOn: { type: 'boolean', default: false },
+            id: { type: 'number', default: 0 },
+            constitution: { type: 'number', default: 10 },
+            strength: { type: 'number', default: 5 },
+            health: { type: 'number', default: 15 },
+            status: { type: 'string', default: 'alive' },
+            speed: { type: 'number', default: 0.010 },
+            patrol: { type: 'boolean', default: true }
+        },
+        init: function () {
+            this.patrolPoints = [
+                { x: 3, y: 1, z: -3 },
+                { x: 5, y: 1, z: -5 },
+                { x: 8, y: 1, z: -8 },
+                { x: 10, y: 1, z: -10 },
 
-        // health bar UI
-        const healthBar = document.createElement('a-box');
-        const healthBarTracker = document.createElement('a-box');
-        let healthBarVal = health / 10 * 3;
-        healthBar.setAttribute('height', 0.2);
-        healthBar.setAttribute('position', '0 1.5 0');
-        healthBar.setAttribute('width', 1);
-        healthBar.setAttribute('depth', 0.1);
-        healthBar.setAttribute('material', 'color:white');
-        healthBarTracker.setAttribute('height', 0.2);
-        healthBarTracker.setAttribute('width', 1);
-        healthBarTracker.setAttribute('depth', 0.15);
-        healthBarTracker.setAttribute('position', '0 0 0');
-        healthBarTracker.setAttribute('material', 'color:red');
-        healthBarTracker.setAttribute('HealthBarid', id);
-        healthBar.appendChild(healthBarTracker);
+            ];
+            let data = this.data;
+            this.attackDistance = 2;
+            this.deathThreshold = 0; // Placeholder for health points
+            let lifeStatus = data.status;
+            // Start random movement behavior
+            lifeStatus === 'alive' ? this.randomMovementInterval = setInterval(this.randomMovement.bind(this), 3000) : null;
+            this.lastRotationTime = 0;
 
-        // check if model GLB or Obj - this can probably be made into a util function and put into papyrus core
-        if (format === "glb") {
-            newEnemy.setAttribute('gltf-model', '#' + modelID);
-        } else {
-            newEnemy.setAttribute('obj-model', 'obj:#' + modelID + ';' + 'mtl:#' + modelMat + ';');
-        }
-        //check for scale and animation
-        newEnemy.setAttribute('scale', scale);
-        if (animated) {
-            newEnemy.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
-        }
-        newEnemy.setAttribute('rotation', rot);
-        el.appendChild(newEnemy);
-        el.appendChild(healthBar);
-        // on gaze cursor interaction
-        el.addEventListener('click', function (evt) {
-            // console.log('click detect', newEnemy);
-            let newMeleeAttack = shootAt(0);
-            if (newMeleeAttack > 0 && lifeStatus === 'alive') {
-                // new health is for UI , health is the enemies health
-                health = -newMeleeAttack;
-                // healthBarVal = health / 10 * 3;
-                // console.log('enemy health reassigned to ' + health)
-                healthBarTracker.setAttribute('width', healthBarVal);
-                if (lifeStatus === 'alive' && health > 1) {
-                    let player = document.getElementById('playercam');
-                    let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target) < 5;
-                    // move away if a wall    
-                    if (distanceToPlayerCheck < 0.2) {
-                        console.log(distanceToPlayerCheck)
-                        enemyCombatAttack();
+            const el = this.el;
+            // this is super important for combat - don't delete it
+            const id = data.id;
+            const modelID = data.modelID;
+            const modelMat = data.modelID;
+            let scale = data.scale;
+            let pos = data.position;
+            let rot = data.rotation;
+            let format = data.format;
+            let animated = data.animated;
+            let glowOn = data.glowOn;
+            let health = data.health;
+
+            // create a char based on attributes
+            const newEnemy = document.createElement('a-entity');
+            // newEnemy.setAttribute('position', pos);
+            newEnemy.object3D.position.set(pos);
+            newEnemy.setAttribute('glowFX', 'visible:' + glowOn);
+
+            // health bar UI
+            const healthBar = document.createElement('a-box');
+            const healthBarTracker = document.createElement('a-box');
+            let healthBarVal = health / 10 * 3;
+            healthBar.setAttribute('height', 0.8);
+            healthBar.setAttribute('position', '0 3 0');
+            healthBar.setAttribute('width', 1);
+            healthBar.setAttribute('depth', 0.1);
+            healthBar.setAttribute('material', 'color:white');
+            healthBarTracker.setAttribute('height', 0.8);
+            healthBarTracker.setAttribute('width', 1);
+            healthBarTracker.setAttribute('depth', 0.15);
+            healthBarTracker.setAttribute('position', '0 0 0');
+            healthBarTracker.setAttribute('material', 'color:red');
+            healthBarTracker.setAttribute('HealthBarid', 'healthbar' + id);
+            healthBar.appendChild(healthBarTracker);
+            newEnemy.appendChild(healthBar);
+
+            // check if model GLB or Obj - this can probably be made into a util function and put into papyrus core
+            if (format === "glb") {
+                newEnemy.setAttribute('gltf-model', '#' + modelID);
+            } else {
+                newEnemy.setAttribute('obj-model', 'obj:#' + modelID + ';' + 'mtl:#' + modelMat + ';');
+            }
+            //check for scale and animation
+            newEnemy.setAttribute('scale', scale);
+            if (animated) {
+                newEnemy.setAttribute('animation-mixer', 'clip:Walking; loop: repeat;'); // change this
+            }
+            newEnemy.setAttribute('rotation', rot);
+            el.appendChild(newEnemy);
+            el.appendChild(healthBar);
+            // on gaze cursor interaction
+            el.addEventListener('click', function (evt) {
+                // console.log('click detect', newEnemy);
+                let newMeleeAttack = shootAt(0);
+                console.log('melle attack' + newMeleeAttack)
+                if (newMeleeAttack > 0 && lifeStatus === 'alive') {
+                    // new health is for UI , health is the enemies health
+                    console.log('work out health called')
+                    let data = this.data;
+                    health = health = -newMeleeAttack;
+                    console.log('newhealth' + health)
+                    // healthBarVal = health / 10 * 3;
+                    // console.log('enemy health reassigned to ' + health)
+                    healthBarTracker.setAttribute('width', healthBarVal);
+                    const enemyHealthBar = 'healthbar' + id
+                    const healthbarComp = document.querySelector(enemyHealthBar).components.healthbar;
+                    healthbarComp.reduceHealthBar(newMeleeAttack);
+
+                    if (health <= 0) {
+                        lifeStatus = 'dead';
+                        console.log('enemy dead triggered' + '+health' + health + 'lifeStatus' + lifeStatus)
+                        let deathAudio = document.querySelector("#death");
+                        deathAudio.play();
+                        console.log('Enemy is dead');
+                        el.emit(`enemydead`, null, false);
+                        this.die();
+                    } else {
+                        // after being shot at move to player and attack
+                        const playerPosition = document.querySelector('#playercam').getAttribute('position');
+                        let moveToPos = { x: playerPosition.x, y: 0.1, x: playerPosition.z }
+                        moveTo(moveToPos);
+                        console.log('move towards player')
                     }
-                } else {
-                    // enemy dies
-                    lifeStatus = 'dead';
-                    let deathAudio = document.querySelector("#death");
-                    deathAudio.play();
-                    console.log('Enemy is dead');
-                    el.emit(`enemydead`, null, false);
-                    // create death effect - explode?
-
-                    // delay removal then remove
-                    this.remove();
                 }
+            });
+        },
+
+        randomMovement: function () {
+            if (!this.el.isPlaying) return;
+            const randomPoint = this.getRandomPatrolPoint();
+            this.el.setAttribute('animation-mixer', 'clip:Walking; loop: repeat;');
+            this.moveTo(randomPoint);
+            this.rotate();
+        },
+
+        moveTo: function (position) {
+            this.el.setAttribute('animation', {
+                property: 'position',
+                dur: 12000,
+                to: position,
+                easing: 'linear'
+            });
+        },
+
+        rotate: function () {
+            const rotation = { x: 0, y: Math.random() * 360, z: 0 };
+            this.el.setAttribute('animation__rotation', {
+                property: 'rotation',
+                dur: 6000,
+                to: rotation
+            });
+        },
+
+        getRandomPatrolPoint: function () {
+            return this.patrolPoints[Math.floor(Math.random() * this.patrolPoints.length)];
+        },
+
+        tick: function (time, delta) {
+            const playerPosition = document.querySelector('#playercam').getAttribute('position');
+            const currentPosition = this.el.getAttribute('position');
+            const distanceToPlayer = this.calculateDistance(playerPosition, currentPosition);
+
+            let data = this.data;
+            let lifeStatus = data.status;
+            let health = data.health;
+
+            if (distanceToPlayer <= this.attackDistance && lifeStatus === "alive") {
+                this.attack();
+                this.moveTo(playerPosition);
+            } else if (this.detectWall() && lifeStatus === "alive") {
+                this.avoidWall();
+            } else if (time - this.lastRotationTime > this.rotationInterval && lifeStatus === "alive") {
+                this.rotate();
+                this.lastRotationTime = time;
             }
-        });
-    },
-    tick: function (time, timeDelta) {
-        let playerDistance = this.distanceToPlayer();
-        let wallDistance = this.distanceCheck();
-        // console.log('enemy distance checks'+playerDistance, wallDistance)
-        if (playerDistance || !wallDistance) {
-            this.moveRandom();
-        }
-    },
-    moveRandom: function () {
-        const el = this.el;
-        let data = this.data;
-        let speed = data.speed;
-        el.setAttribute('animation-mixer', 'clip: Run; loop: repeat; '); //  NEEDS A TEST WITH MODEL WITH ANIMATION
-        let randomDirection = Math.floor(Math.random() * 5);
-        let randRot = Math.floor(Math.random() * 1);
-        let randomRotChance = Math.floor(Math.random() * 1000);
-        // random direction and movement check if ant is on the floor
-        if (randomDirection < 1) {
-            el.object3D.position.x += speed;
-            el.object3D.position.z += speed;
-            if (randomRotChance > 850) {
-                el.object3D.rotation.y += randRot;
-            }
-        }
-        if (randomDirection < 2) {
-            el.object3D.position.x -= speed;
-            el.object3D.position.z -= speed;
-            if (randomRotChance > 750) {
-                el.object3D.rotation.y -= randRot;
-            }
-        }
-        if (randomDirection > 2 && randomDirection < 3) {
-            el.object3D.position.z -= speed;
-        }
-        if (randomDirection > 3 && randomDirection < 4) {
-            el.object3D.position.z += speed;
-        }
-    },
-    distanceToPlayer: function () {
-        // console.log('distanceToPlayerCheck');
-        const target = document.getElementById('playercam');
-        let distanceToPlayerCheck = this.el.object3D.position.distanceTo(target) <= 3;
-        // console.log(distanceToPlayerCheck);
-        // move towards player and attack or move randomly (Patrol later?)
-        if (distanceToPlayerCheck) {
-            console.log('enemy is close to player, attack!');
-            this.moveToPlayer();
-            this.enemyCombatAttack();
-        }
-        let goAwayFromPlayer = distanceToPlayerCheck <= 3 ? true : false;
-        console.log('move from player check' + goAwayFromPlayer)
-        return goAwayFromPlayer;
-    },
-    distanceCheck: function (dt) {
-        // const wall = document.querySelector('a-box');
-        const wall = document.getElementsByClassName('wall')[0];
-        // console.log(wall);
-        let wallPos = wall.object3D.position
-        let distanceToWall = this.el.getAttribute("position").distanceTo(wallPos)
-        //    console.log(distanceToWall
-        // console.log(distanceToWall);
-        // move away if a wall    
-        if (distanceToWall < 5) {
-            // let floorPos = floor.getAttribute(position);
-            this.el.object3D.position.x += 0.1;
-            this.el.object3D.position.z += 0.1;
-        }
 
-        let goAwayFromWall = distanceToWall < 1 ? true : false;
-        // console.log('move away from wall'+goAwayFromWall);
-        return goAwayFromWall;
+        },
 
-    },
-    moveToPlayer: function () {
-        const el = this.el;
-        const target = document.getElementById('playercam');
-        let vec3 = new THREE.Vector3();
-        const currentPosition = el.getAttribute("position");
-        vec3 = this.el.object3D.worldToLocal(target.object3D.position.clone());
-        var camFromOrca = currentPosition.distanceTo(target.object3D.position);
-        if (camFromOrca <= 3) {
-            // console.log('enemy move player triggered - player is close - move towards player');
-            // console.log(distanceBetween);
-            this.el.object3D.position.x += 1;
-            this.el.object3D.position.multiplyScalar(2);
-            this.el.object3D.position.sub(vec3);
+        calculateDistance: function (pos1, pos2) {
+            const dx = pos1.x - pos2.x;
+            const dy = pos1.y - pos2.y;
+            const dz = pos1.z - pos2.z;
+            return Math.sqrt(dx * dx + dy * dy + dz * dz);
+        },
 
-            this.el.object3D.position.z += 1;
-            this.el.object3D.position.multiplyScalar(2);
-            this.el.object3D.position.sub(vec3);
-        }
-        let goToPlayer = camFromOrca <= 3 ? true : false;
-        return goToPlayer;
+        detectWall: function () {
+            const wallPosition = document.querySelector('.wall').getAttribute('position');
+            const enemyPosition = this.el.getAttribute('position');
+            const distanceToWall = this.calculateDistance(wallPosition, enemyPosition);
+            return distanceToWall < 2; // Assume wall detection within 2 units
+        },
 
-    },
-    remove: function () {
-        const el = this.el;
-        el.destroy();
-    },
-});
+        avoidWall: function () {
+            const currentPosition = this.el.getAttribute('position');
+            const newTarget = { x: currentPosition.x + 2, y: currentPosition.y, z: currentPosition.z }; // Move away from the wall
+            this.moveTo(newTarget);
+        },
+
+        die: function () {
+            clearInterval(this.randomMovementInterval);
+            // Other death logic here, e.g., remove entity, play death animation, etc.
+            console.log("Enemy died!");
+            this.el.setAttribute('animation-mixer', 'clip:DeathAni;  loop: once; clampWhenFinished: true;');
+        },
+
+        attack: function (targetPosition) {
+            // Implement your attack logic here
+            console.log('Attacking the target!');
+            this.el.setAttribute('animation-mixer', 'clip:Attack;  loop: once; clampWhenFinished: true;');
+            // this.el.setAttribute('animation-mixer', { clip: 'Attack' }, {loop:once},{clampWhenFinished: true});
+            this.el.setAttribute('animation-mixer', { timeScale: 1 });
+            let dmgAmount = enemyCombatAttack();
+            const healthbarComp = document.querySelector('[healthbar]').components.healthbar;
+            healthbarComp.reduceHealthBar(dmgAmount);
+        },
+
+        remove: function () {
+            const el = this.el;
+            el.destroy();
+        },
+    });
 
 AFRAME.registerComponent('intersection-spawn', {
     schema: {
@@ -871,6 +837,55 @@ AFRAME.registerComponent('healthbar', {
         const healthBarTracker = document.getElementById('healthBarTracker');
         // play player pain audio
         let painAudio = document.querySelector("#playerpain");
+        painAudio.play();
+        // set new player health and update UI
+        setPlayerHealth(amount);
+        const healthBarVal100 = (healthUpdate - amount) / 250;
+        healthBarTracker.setAttribute('width', healthBarVal100);
+
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+});
+
+// component for  healthbar 
+AFRAME.registerComponent('Enemyhealthbar', {
+    schema: {
+        health: { type: 'number', default: 20 },
+    },
+
+    init: function () {
+        const data = this.data;
+        let health = data.health;
+        const el = this.el;
+        // health bar UI
+        const enemyhealthBar = document.createElement('a-box');
+        const enemyHealthBarTracker = document.createElement('a-box');
+        const pos = el.getAttribute('position');
+        enemyhealthBar.setAttribute('height', 0.1);
+        enemyhealthBar.setAttribute('id', 'healthBar');
+        enemyhealthBar.setAttribute('position', { x: 1, y: 2, z: 3 });
+        enemyhealthBar.setAttribute('width', health / 250);
+        enemyhealthBar.setAttribute('depth', 0.01);
+        enemyhealthBar.setAttribute('material', 'color:white');
+        enemyHealthBarTracker.setAttribute('id', 'healthBarTracker');
+        enemyHealthBarTracker.setAttribute('height', 0.1);
+        enemyHealthBarTracker.setAttribute('width', health / 250);
+        enemyHealthBarTracker.setAttribute('depth', 0.015);
+        enemyHealthBarTracker.setAttribute('position', '0 0 0');
+        enemyHealthBarTracker.setAttribute('material', 'color:green');
+        enemyhealthBar.appendChild(healthBarTracker);
+        el.appendChild(healthBar);
+    },
+    reduceHealthBar: function (amount, health) {
+        const el = this.el;
+        const data = this.data;
+
+        const healthBarTracker = document.getElementById(' enemyHealthBarTracker');
+        // play player pain audio
+        let enemyPainAudio = document.querySelector("#playerpain");
         painAudio.play();
         // set new player health and update UI
         setPlayerHealth(amount);

@@ -1,7 +1,7 @@
 {
   "name": "papyrus3dengine",
   "version": "1.0.0",
-  "description": "Build an engine for generating 3D interactive Fiction games based on JSON inputs. ",
+  "description": "Open Source Framework for generating 3D interactive Fiction games based on JSON inputs with A-Frame ",
   "main": "main.js",
   "scripts": {
     "postinstall": "install-app-deps",

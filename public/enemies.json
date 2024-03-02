@@ -3,19 +3,29 @@
     {
       "name": "grunt",
       "id": "grunt",
-      "model": "models/reds/red_03.glb",
-      "health": 50,
-      "scale": 5,
-      "strength" : 4,
-      "constitution" : 12,
-      "animations": ["Animation 1","Animation 2","Animation 3","Animation 4","Animation 5"]
+      "model": "models/grunt.glb",
+      "health": 10,
+      "scale":"0.008 0.008 0.008",
+      "strength" : 2,
+      "constitution" : 5,
+      "animations": ["Walking, Running(1),DeathAni,Attack"]
     },
     {
-      "name": "grunt",
-      "id": "grunt",
+      "name": "grunt2",
+      "id": "grunt2",
+      "model": "models/grunt.glb",
+      "health": 20,
+      "scale":"1 1 1",
+      "strength" : 4,
+      "constitution" : 12,
+      "animations": ["Walking, Running(1),DeathAni,Attack"]
+    },
+    {
+      "name": "red",
+      "id": "red",
       "model": "models/reds/red_03.glb",
       "health": 50  ,
-      "scale": 5,
+      "scale":5,
       "strength" : 4,
       "constitution" : 12,
       "animations": ["Animation 1","Animation 2","Animation 3","Animation 4","Animation 5"]

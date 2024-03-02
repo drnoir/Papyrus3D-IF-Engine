@@ -1,8 +1,8 @@
 {
   "name": "Maintenence Mike",
   "health": 100,
-  "strength" : 5,
-  "constitution" : 15,
+  "strength" : 80,
+  "constitution" : 8,
   "status" : "alive",
   "playerFace" : "./models/playerHead/head.glb",
   "playerFaceState25" : "./models/playerHead/head25.glb",

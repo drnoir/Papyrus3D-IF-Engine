@@ -1,6 +1,6 @@
 ## Papyrus 3D - Interactive Fiction Engine by Chris Godber
 #### GNU GENERAL PUBLIC LICENSE
-##### Current Version: 0.1.3
+##### Current Version: 0.1.4
 ![alt text](https://raw.githubusercontent.com/drnoir/Papyrus3D-IF-Engine/main/Papyrus3D.jpg)
 
 ### SIMPLE OPEN SOURCE WebGL GAME ENGINE / FRAMEWORK FOR VR / AR / Web (Pre-Alpha 0.1.2)
@@ -24,12 +24,14 @@ If you appriciate the work I have put into this project for free and want to don
 * Random map generation - Proceudral maps with randomPapyrus.js
 * Define 3D Scenes with character components and assets
 * Create unique repayable games that the engine can generate based on easily editable JSON templates
+* Load assets into template (index.html in public)
 * Customise scenes with different colours textures, background elements etc
 * Gaze based movement system ensuring maximum multi platform support
 * Dialogue system for multiple chars
 * Color keys and unlockable doors
 * interactive objects
 * torch  lighting
+* Build web version as an EXE with electron for desktop distrubution 
 
 ### Future planned FEATURES
 * Trigger events on choices / interactions (choices to come soon)
