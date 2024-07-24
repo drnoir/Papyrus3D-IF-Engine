@@ -14,7 +14,6 @@ AFRAME.registerComponent('dialogue', {
       const optionsContainer = document.createElement('a-entity');
   
       messageElement.setAttribute('value', messageData.message);
-  
       optionsElement.setAttribute('visible', false);
   
       if (messageData.options) {

@@ -107,8 +107,7 @@ AFRAME.registerComponent('playercam', {
     },
     init: function () {
         const data = this.data;
-        const el = this.el;
-        let scale = data.scale; let pos = data.position; let rot = data.rotation;
+        let pos = data.position;
         let camnum = data.camNum;
         const elScale = this.el.scale;
         const facePathID = data.facePathID;
@@ -129,7 +128,7 @@ AFRAME.registerComponent('playercam', {
         scene.appendChild(newCam);
         // create cursor
         newCursor.setAttribute('position', '0 0 -1');
-        newCursor.setAttribute('cursor', 'fuse: true; fiseTimeout:500');
+        newCursor.setAttribute('cursor', 'fuse: true; fuseTimeout:500');
         newCursor.setAttribute('geometry', 'primitive: ring; radiusInner: 0.02; radiusOuter: 0.03');
         newCursor.setAttribute('material', 'color: black; shader: flat');
 
@@ -176,15 +175,7 @@ AFRAME.registerComponent('character', {
 
     init: function () {
         const data = this.data;
-        const el = this.el;
-        const modelPath = data.modelPath;
-        let scale = data.scale;
-        let pos = data.position;
-        let rot = data.rotation;
         let animated = data.animated;
-        let patrol = data.patrol;
-        let glowOn = data.glowOn;
-        const elScale = this.el.scale;
         let numDiag = data.numDiag;
         const charID = data.charID;
 
@@ -210,88 +201,83 @@ AFRAME.registerComponent('character', {
         //     this.patrol();
         // }
     },
-    patrol: function () {
-        const el = this.el;
-        let speed = 0.006;
-        el.setAttribute('animation-mixer', 'clip: *; loop: repeat; '); //  NEEDS A TEST WITH MODEL WITH ANIMATION
-        let randomDirection = Math.floor(Math.random() * 3);
-        let randRot = Math.floor(Math.random() * 10);
-        let randomRotChance = Math.floor(Math.random() * 2000);
-        let randomUpDown = randomUporDown();
+    // patrol: function () {
+    //     const el = this.el;
+    //     let speed = 0.006;
+    //     el.setAttribute('animation-mixer', 'clip: *; loop: repeat; '); //  NEEDS A TEST WITH MODEL WITH ANIMATION
+    //     let randomDirection = Math.floor(Math.random() * 3);
+    //     let randRot = Math.floor(Math.random() * 10);
+    //     let randomRotChance = Math.floor(Math.random() * 2000);
+    //     let randomUpDown = randomUporDown();
 
-        // random direction and movement check if ant is on the floor
-        if (randomRotChance >= 1500) {
-            if (randomUpDown === 'plus' && randomRotChance >= 1500) {
-                el.object3D.rotation.y += randRot;
-            }
-            if (randomUpDown === 'minus' && randomRotChance >= 1500) {
-                el.object3D.rotation.y -= randRot;
-            }
-        }
-        if (randomDirection < 1) {
-            if (randomUpDown === 'plus') {
-                el.object3D.position.x += speed;
-                el.object3D.position.z += speed;
-            }
-            if (randomUpDown === 'minus') {
-                el.object3D.position.x -= speed;
-                el.object3D.position.z -= speed;
-            }
-        }
-        if (randomDirection < 2) {
-            if (randomUpDown === 'plus') {
-                el.object3D.position.x += speed;
-                el.object3D.position.z += speed;
-            }
-            if (randomUpDown === 'minus') {
-                el.object3D.position.x -= speed;
-                el.object3D.position.z -= speed;
-            }
-            // if (randomRotChance >750) {
-            //     el.object3D.rotation.y -= randRot;
-            // }
-        }
-        if (randomDirection > 2 && randomDirection < 3) {
-            if (randomUpDown === 'plus') {
-                el.object3D.position.x += speed;
-                el.object3D.position.z += speed;
-            }
-            if (randomUpDown === 'minus') {
-                el.object3D.position.x -= speed;
-                el.object3D.position.z -= speed;
-            }
-        }
-        if (randomDirection > 3 && randomDirection < 4) {
-            if (randomUpDown === 'plus') {
-                el.object3D.position.x += speed;
-                el.object3D.position.z += speed;
-            }
-            if (randomUpDown === 'minus') {
-                el.object3D.position.x -= speed;
-                el.object3D.position.z -= speed;
-            }
-        }
-    },
+    //     // random direction and movement check if ant is on the floor
+    //     if (randomRotChance >= 1500) {
+    //         if (randomUpDown === 'plus' && randomRotChance >= 1500) {
+    //             el.object3D.rotation.y += randRot;
+    //         }
+    //         if (randomUpDown === 'minus' && randomRotChance >= 1500) {
+    //             el.object3D.rotation.y -= randRot;
+    //         }
+    //     }
+    //     if (randomDirection < 1) {
+    //         if (randomUpDown === 'plus') {
+    //             el.object3D.position.x += speed;
+    //             el.object3D.position.z += speed;
+    //         }
+    //         if (randomUpDown === 'minus') {
+    //             el.object3D.position.x -= speed;
+    //             el.object3D.position.z -= speed;
+    //         }
+    //     }
+    //     if (randomDirection < 2) {
+    //         if (randomUpDown === 'plus') {
+    //             el.object3D.position.x += speed;
+    //             el.object3D.position.z += speed;
+    //         }
+    //         if (randomUpDown === 'minus') {
+    //             el.object3D.position.x -= speed;
+    //             el.object3D.position.z -= speed;
+    //         }
+    //     }
+    //     if (randomDirection > 2 && randomDirection < 3) {
+    //         if (randomUpDown === 'plus') {
+    //             el.object3D.position.x += speed;
+    //             el.object3D.position.z += speed;
+    //         }
+    //         if (randomUpDown === 'minus') {
+    //             el.object3D.position.x -= speed;
+    //             el.object3D.position.z -= speed;
+    //         }
+    //     }
+    //     if (randomDirection > 3 && randomDirection < 4) {
+    //         if (randomUpDown === 'plus') {
+    //             el.object3D.position.x += speed;
+    //             el.object3D.position.z += speed;
+    //         }
+    //         if (randomUpDown === 'minus') {
+    //             el.object3D.position.x -= speed;
+    //             el.object3D.position.z -= speed;
+    //         }
+    //     }
+    // },
 
-    distanceCheck: function (dt) {
-        const el = this.el;
-        const wall = document.getElementsByClassName('wall')[0];
-        let speed = 0.006;
-        // console.log(wall);
-        let wallPos = wall.getAttribute("position");
-        let distanceToWall = el.object3D.position.distanceTo(wallPos);
-        // move away if a wall    
-        if (distanceToWall < 6) {
-            // let floorPos = floor.getAttribute(position);
-            el.object3D.position.x = wallPos.x -= speed;
-            el.object3D.position.z = wallPos.z -= speed;
-        }
+    // distanceCheck: function (dt) {
+    //     const el = this.el;
+    //     const wall = document.getElementsByClassName('wall')[0];
+    //     let speed = 0.006;
+    //     let wallPos = wall.getAttribute("position");
+    //     let distanceToWall = el.object3D.position.distanceTo(wallPos);
+    //     // move away if a wall    
+    //     if (distanceToWall < 6) {
+    //         el.object3D.position.x = wallPos.x -= speed;
+    //         el.object3D.position.z = wallPos.z -= speed;
+    //     }
 
-        let goAwayFromWall = distanceToWall < 1 ? true : false;
-        console.log('move away from wall' + goAwayFromWall);
-        return goAwayFromWall;
+    //     let goAwayFromWall = distanceToWall < 1 ? true : false;
+    //     console.log('move away from wall' + goAwayFromWall);
+    //     return goAwayFromWall;
 
-    },
+    // },
     remove: function () {
         this.el.destroy();
     },
@@ -300,15 +286,12 @@ AFRAME.registerComponent('character', {
 
 function randomUporDown() {
     let randomChance = Math.random() * 350;
-    // console.log('RANDOMNUM FOR DIR'+randomChance);
-
     if (randomChance < 50) {
         return 'minus'
     }
     else {
         return 'plus'
     }
-
 }
 
 AFRAME.registerComponent('enemy',
@@ -385,7 +368,6 @@ AFRAME.registerComponent('enemy',
             healthBarTracker.setAttribute('HealthBarid', 'healthbar' + id);
             healthBar.appendChild(healthBarTracker);
             newEnemy.appendChild(healthBar);
-
             // check if model GLB or Obj - this can probably be made into a util function and put into papyrus core
             if (format === "glb") {
                 newEnemy.setAttribute('gltf-model', '#' + modelID);
@@ -417,7 +399,6 @@ AFRAME.registerComponent('enemy',
                     const enemyHealthBar = 'healthbar' + id
                     const healthbarComp = document.querySelector(enemyHealthBar).components.healthbar;
                     healthbarComp.reduceHealthBar(newMeleeAttack);
-
                     if (health <= 0) {
                         lifeStatus = 'dead';
                         console.log('enemy dead triggered' + '+health' + health + 'lifeStatus' + lifeStatus)
@@ -448,7 +429,7 @@ AFRAME.registerComponent('enemy',
         moveTo: function (position) {
             this.el.setAttribute('animation', {
                 property: 'position',
-                dur: 12000,
+                dur: 2000,
                 to: position,
                 easing: 'linear'
             });
@@ -471,10 +452,8 @@ AFRAME.registerComponent('enemy',
             const playerPosition = document.querySelector('#playercam').getAttribute('position');
             const currentPosition = this.el.getAttribute('position');
             const distanceToPlayer = this.calculateDistance(playerPosition, currentPosition);
-
             let data = this.data;
             let lifeStatus = data.status;
-            let health = data.health;
 
             if (distanceToPlayer <= this.attackDistance && lifeStatus === "alive") {
                 this.attack();
@@ -570,12 +549,12 @@ AFRAME.registerComponent('playermovement', {
             const playercam = document.getElementById('playercam')
             const playercamPos = document.getElementById('playercam').object3D.position;
             // distance checking
-            // console.log(newPos.x, newPos.z);
+            console.log(newPos.x, newPos.z);
             let distanceCheck = playercamPos.distanceTo(newPos);
             console.log(distanceCheck);
-            if (distanceCheck <= 3.5) {
+            // if (distanceCheck <= 6) {
                 playercam.object3D.position.set(newPos.x, 1.5, newPos.z);
-            }
+            // }
         })
     }
 });
@@ -645,7 +624,6 @@ AFRAME.registerComponent('door', {
         }
 
         const doorPos = el.getAttribute('position');
-
         this.el.addEventListener('click', function (evt) {
             if (!locked) {
                 let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
@@ -696,18 +674,17 @@ AFRAME.registerComponent("key", {
     },
     init: function () {
         const data = this.data;
-        const el = this.el;
-        const keyNumber = data.keyNumber;
         const color = data.color;
         this.el.addEventListener('click', function (evt) {
             gotKey(color);
             let keyPickAudio = document.querySelector("#keypickup");
             keyPickAudio.play();
             this.remove();
+            let keyGraphic =  document.getElementById(color+'Key');
+            console.log(keyGraphic);
+            keyGraphic.setAttribute('visible','true')
             populateMessage('Blue Key', 'You have collected the ' + color + ' key')
         })
-
-
     },
     remove: function () {
         const el = this.el;
@@ -730,7 +707,6 @@ AFRAME.registerComponent("load-texture", {
             function (tex) {
                 let mesh = el.getObject3D('mesh')
                 mesh.material.map = tex;
-
             },
             // onProgress
             undefined,
@@ -740,7 +716,6 @@ AFRAME.registerComponent("load-texture", {
             });
     }
 })
-
 
 AFRAME.registerComponent("triggerdmg", {
     schema: {
@@ -775,8 +750,7 @@ AFRAME.registerComponent('exit', {
     },
 
     init: function () {
-        const data = this.data; let src = data.src;
-        const textureLoader = new THREE.TextureLoader();
+        const data = this.data; 
         const exit = document.createElement('a-entity');
         let position = data.position;
         let color = data.color;
@@ -805,7 +779,6 @@ AFRAME.registerComponent('healthbar', {
     schema: {
         health: { type: 'number', default: 100 },
     },
-
     init: function () {
         const data = this.data;
         let health = data.health;
@@ -814,7 +787,6 @@ AFRAME.registerComponent('healthbar', {
         const healthBarContainer = document.getElementById('healthbarUI');
         const healthBar = document.createElement('a-box');
         const healthBarTracker = document.createElement('a-box');
-
         healthBar.setAttribute('height', 0.1);
         healthBar.setAttribute('id', 'healthBar');
         healthBar.setAttribute('position', '-1.8 -0.38 0');
@@ -831,8 +803,6 @@ AFRAME.registerComponent('healthbar', {
         healthBarContainer.appendChild(healthBar);
     },
     reduceHealthBar: function (amount, health) {
-        const el = this.el;
-        const data = this.data;
         let healthUpdate = getPlayerHealth();
         const healthBarTracker = document.getElementById('healthBarTracker');
         // play player pain audio
@@ -880,12 +850,9 @@ AFRAME.registerComponent('Enemyhealthbar', {
         el.appendChild(healthBar);
     },
     reduceHealthBar: function (amount, health) {
-        const el = this.el;
-        const data = this.data;
-
         const healthBarTracker = document.getElementById(' enemyHealthBarTracker');
         // play player pain audio
-        let enemyPainAudio = document.querySelector("#playerpain");
+        let painAudio = document.querySelector("#playerpain");
         painAudio.play();
         // set new player health and update UI
         setPlayerHealth(amount);
@@ -896,5 +863,64 @@ AFRAME.registerComponent('Enemyhealthbar', {
     remove: function () {
         const el = this.el;
         el.destroy();
+    },
+});
+
+// chat GPT generated dialogue system 
+AFRAME.registerComponent("dialogue-trigger", {
+    schema: {
+        dialogueTarget: { type: "selector" },
+    },
+    init: function () {
+        const npc = this.el;
+        npc.addEventListener("mouseenter", () => {
+            this.data.dialogueTarget.setAttribute("visible", true);
+            this.startDialogue();
+        });
+    },
+    startDialogue: function () {
+        const dialogue = JSON.parse(document.getElementById("dialogue").textContent);
+        this.displayMessage(dialogue.dialogues[0]);
+    },
+    displayMessage: function (messageData) {
+        const dialogueBox = document.getElementById('dialogueBox');
+        dialogueBox.setAttribute("text", "value", messageData.message);
+        if (messageData.choices.length > 0) {
+            const choicesContainer = document.getElementById("choices");
+            choicesContainer.setAttribute("visible", true);
+            choicesContainer.innerHTML = "";
+            messageData.choices.forEach((choice, index) => {
+                const choiceEl = document.createElement("a-entity");
+                choiceEl.setAttribute("text", {
+                    value: `${index + 1}. ${choice.text}`,
+                    align: "center",
+                    width: 4,
+                    wrapCount: 25,
+                    color: "black",
+                });
+                choiceEl.setAttribute("position", `0 ${-index / 2} 0`);
+                choiceEl.setAttribute("clickable", "");
+                choiceEl.setAttribute("choice-id", choice.next);
+                choicesContainer.appendChild(choiceEl);
+            });
+        } else {
+            const continueText = document.getElementById("continue");
+            continueText.setAttribute("visible", true);
+            continueText.addEventListener("click", () => {
+                this.data.dialogueTarget.setAttribute("visible", false);
+            });
+        }
+    },
+});
+
+AFRAME.registerComponent("clickable", {
+    init: function () {
+        const el = this.el;
+        el.addEventListener("click", () => {
+            const nextDialogueId = el.getAttribute("choice-id");
+            const dialogue = JSON.parse(document.getElementById("dialogue").textContent);
+            const nextDialogue = dialogue.dialogues.find((d) => d.id === nextDialogueId);
+            this.displayMessage(nextDialogue);
+        });
     },
 });

@@ -3,19 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Papyrus 3D - Template</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/1.4.2/aframe.min.js"
-        integrity="sha512-rVwZ9RF3FKH6TH80cvAnWssdlHPvHfOFDXW0empc5E9gkzD1B7CiySJb4SCC8SgBILhTg7AFM8m3TR1wesZ6FQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script
-        src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.2.2/dist/aframe-physics-system.min.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-physics-system@6.1.0/dist/aframe-physics-system.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
-    <script src="https://cdn.rawgit.com/schteppe/cannon.js/v0.6.2/build/cannon.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
 </head>
-
 <body>
-    <a-scene physics="debug: false">
+    <a-scene physics="debug: true">
         <a-entity light="type: ambient; color: #CCC;intensity: 0.1;"></a-entity>
         <a-assets>
             <!-- ADD your asset references here -->
@@ -81,29 +75,41 @@
         <!-- player cam / fuse etc -->
         <a-entity id="playercam" position="1 1.5 2">
             <a-entity id="camera" camera look-controls>
-                <a-text position="-1 -0.4 -0.8" value="Health:" width="1"></a-text>
-                <a-entity id="healthbarUI" healthbar position="1 -0.1 -0.8"></a-entity>
-                <a-entity id="#gun" gltf-model="#gun" position="0.28 -0.15 -0.3" rotation='0 180 0' visible='true'>
+                <a-text position="-1.3 -0.4 -0.8" value="Health:" width="1" depth="0.1"></a-text>
+                <a-entity id="healthbarUI" healthbar position="0.7 -0.1 -0.8"></a-entity>
+                <a-text position="-1.3 -0.6 -0.8" value="Keys:" width="1" depth="0.1"></a-text>
+                <a-plane id = "blueKey" position="-1.1 -0.6 -0.8" width="0.1" height="0.1" depth="0.1"  material="color:blue;" visible="false"></a-plane>
+                <a-plane id = "yellowKey" position="-1 -0.6 -0.8" width="0.1" height="0.1" depth="0.1"  material="color:yellow;" visible="false"></a-plane>
+                <a-plane id = "redKey" position="-0.9 -0.6 -0.8" width="0.1" height="0.1" depth="0.1"  material="color:red;" visible="false"></a-plane>
+                <!-- <a-entity id="#gun" gltf-model="#gun" position="0.28 -0.15 -0.3" rotation='0 180 0' visible='false'>
                     <a-entity id='muzzleFX' visible="false">
                         <a-image src="#muzzle" position="0.05 0.1 0.19">
                             <a-light type="point" color="#dd5003" intensity='0.4' distance="8"
                                 position="-2 1 -0.2"></a-light>
                         </a-image>
                     </a-entity>
-                </a-entity>
+                </a-entity> -->
                 <a-entity
                     animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
-                    animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 500; from: 1 1 1; to: 0.1 0.1 0.1"
+                    animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 150; from: 1 1 1; to: 0.1 0.1 0.1"
                     animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
                     cursor="fuse: true;" material="color: white; shader: flat" position="0 0 -1"
-                    geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" scale="0.1 0.1 0.1">
+                    geometry="primitive: ring; radiusInner: 0.03; radiusOuter: 0.04" scale="0.2 0.2 0.2">
                 </a-entity>
-                <a-entity dialogueUI id="dialogueID" position="0 0.9 -1.5" rotation="0 0 0" depth="0.001"
-                geometry="primitive: plane; width:3.5; height: 0.35"
-                material=" opacity: 1; color:#fff" visible="false">
-                <a-text id="dialogueText" value="" width="4"></a-text>
+                <a-entity id="dialogueBox" visible="false" position="0 0.1 -1" scale="2 1 1"
+                    text="align: center; width: 4; wrapCount: 25; color: black" material="color: white; opacity: 0.95"
+                    geometry="primitive: plane">
+                    <a-box position="0 0.4 0" width="0.9" height="0.1" depth="0.01" color="#000000" opacity="1"
+                        wireframe="false" material="color:black;">
+                        <a-text id="dialogueTitle" position="0 0 0.01" value="Title" color="white" align="center"
+                            width="2" height="1" wrapCount="25"></a-text>
+                    </a-box>
+                    <a-entity id="choices" position="0 0.4 0" visible="true"
+                        text="align: center; width: 4; wrapCount: 25; color: black"></a-entity>
+                    <!-- <a-entity id="continue" position="0 -1 0"
+                    text="value: Click to continue; align: center; width: 4; wrapCount: 25; color: black"></a-entity> -->
+                </a-entity>
             </a-entity>
-        </a-entity>
         </a-entity>
         <!-- Rooms-->
         <a-entity id="room"></a-entity>
@@ -111,7 +117,7 @@
         <!-- Sky -->
     </a-scene>
 </body>
-<script src="./engine/dialogue.js" type="module"></script>
+<!-- <script src="./engine/dialogue.js" type="module"></script> -->
 <script src="./engine/components.js" type="module"></script>
 <script src="./engine/papyrus.js" type="module"></script>
 </html>

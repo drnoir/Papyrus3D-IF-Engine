@@ -102,6 +102,7 @@ Not fully tested for all build types yet. Build is of the public folder with ent
 * 3 - 1/3 height wall
 * 4 - door
 * 5 - exit door
+* X - Exit door (End game)
 * 6 - Water
 * 7 + Options - Custom prefabs Example : 71T6 7:type prefav 1 number prefab T trigger flag 6 number dialog to trigger
 * 9 - Enemies 

@@ -1,0 +1,66 @@
+{
+    "dialogues": [
+      {
+        "id": "1",
+        "text": "Welcome to the dialogue! What would you like to do?",
+        "choices": [
+          {
+            "text": "Ask about the quest",
+            "next": "2"
+          },
+          {
+            "text": "Talk about something else",
+            "next": "3"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "text": "The quest is to find the magic sword. Are you interested?",
+        "choices": [
+          {
+            "text": "Yes",
+            "next": "4"
+          },
+          {
+            "text": "No",
+            "next": "5"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "text": "What would you like to talk about?",
+        "choices": [
+          {
+            "text": "Ask about the weather",
+            "next": "6"
+          },
+          {
+            "text": "Ask about the village",
+            "next": "7"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "text": "Great! Let's begin the quest.",
+        "choices": []
+      },
+      {
+        "id": "5",
+        "text": "Okay, no problem. Maybe next time.",
+        "choices": []
+      },
+      {
+        "id": "6",
+        "text": "It's a beautiful day today.",
+        "choices": []
+      },
+      {
+        "id": "7",
+        "text": "The village is peaceful and prosperous.",
+        "choices": []
+      }
+    ]
+  }
