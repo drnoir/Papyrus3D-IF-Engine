@@ -97,16 +97,17 @@ Not fully tested for all build types yet. Build is of the public folder with ent
 * char + number - char ref to display numbered NPC Example "char1"
 * 0 - floor
 * 0 + any number - custom height wall
+* 0 + any number+T - Wall trigger (Triggers interaction)
 * 1 - Full height wall
 * 2 - 1/2 height wall
 * 3 - 1/3 height wall
 * 4 - door
 * 5 - exit door
-* X - Exit door (End game)
+* X - Exit door (Ends game / triggers end of game scene)
 * 6 - Water
 * 7 + Options - Custom prefabs Example : 71T6 7:type prefav 1 number prefab T trigger flag 6 number dialog to trigger
 * 9 - Enemies 
 * P - Playerstart
-* t - light
+* t - light (t is for 'torch' and its referenced in papyrus as torch)
 * KB - Key and then Blue for blue, y for tellow , R for red, G for Green
 * 4LB - Locked door and key color

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The End</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+</head>
+
+<body>
+    <a-scene>
+        <a-assets>
+            <!-- models -->
+            <a-asset-item id="Tech1" src='./models/geek.glb'></a-asset-item>
+
+        </a-assets>
+        <!-- Fixed camera -->
+        <a-entity camera look-controls="enabled: false" position="0 1.6 0.4"></a-entity>
+        <!-- 3D model with looping animation -->
+        <a-entity gltf-model="#Tech1" position="1.8 -0.5 -3" scale="2.5 2.5 2.5"
+            animation-mixer="loop: repeat;"></a-entity>
+        <!-- Text with lorem ipsum -->
+        <a-text position="-2 3 -3" width="8" height="10" value="The End" wrap-count="50" color="black" align="center"
+            scale="2 2 1"></a-text>
+        <a-text position="-2 1.8 -3" width="4"
+            value="Let's get something straight. This - the chemistry - is my realm. I am in charge of the cooking. Out there on the street, you deal with that. As far as our customers go, I don't want to know anything about them. I don't need to see them. I don't want to hear from them. I want no interaction with them whatsoever. This operation is you and me, and I'm the silent partner. You got any issues with that?"
+            wrap-count="50" color="black" align="center"></a-text>
+        <!-- reset button-->
+        <a-plane id="redirectText" position="-2 0.2 -3" width="2" height="0.5" color="#4CC3D9" material="shader: flat"
+            class="clickable">
+            <a-text position="0 0 0" width="4" height="6" value="Play Again" wrap-count="50" color="black"
+                align="center" scale="2 2 1"></a-text>
+        </a-plane>
+        <a-plane id="closeText" position="-2 -0.5 -3" width="2" height="0.5" color="#4CC3D9" material="shader: flat"
+            class="clickable">
+        <a-text id="closeText" position="0 0 0" width="4" height="6" value="Exit" wrap-count="50" color="black"
+            align="center" scale="2 2 1"></a-text>
+        </a-plane>
+        <!-- Optional: Adding lights -->
+        <a-light type="ambient" color="#ffffff" intensity="0.5"></a-light>
+        <a-light type="directional" position="-1 2 1" intensity="1"></a-light>
+    </a-scene>
+    <script>
+        // Ensure the scene is fully loaded before attaching event listeners
+        AFRAME.registerComponent('redirect-handler', {
+            init: function () {
+                var el = this.el;
+                el.addEventListener('click', function () {
+                    // Redirect to index.html
+                    window.location.href = 'index.html';
+                    console.log('clicked');
+                });
+            }
+        });
+
+        // Attach the redirect-handler component to the a-text element
+        document.getElementById('redirectText').setAttribute('redirect-handler', '');
+
+        AFRAME.registerComponent('close-handler', {
+            init: function () {
+                var el = this.el;
+                el.addEventListener('click', function () {
+                    // Redirect to index.html
+                    window.close();
+                });
+            }
+        });
+
+        // Attach the redirect-handler component to the a-text element
+        document.getElementById('closeText').setAttribute('close-handler', '');
+    </script>
+</body>
+
+</html>

@@ -772,7 +772,8 @@ AFRAME.registerComponent('playermovement', {
                 rotation: { type: 'string', default: '0 0 0' },
                 scale: { type: 'string', default: '0.1 0.1 0.1' },
                 status: { type: 'string', default: 'false' },
-                toLoad: { type: 'number', default: 1 }
+                toLoad: { type: 'number', default: 1 },
+                endGame: { type: 'boolean', default: false },
             },
 
             init: function () {
@@ -782,6 +783,7 @@ AFRAME.registerComponent('playermovement', {
                 let color = data.color;
                 let toLoad = data.toLoad;
                 let scale = data.scale;
+                let endGame = data.endGame;
 
                 exit.setAttribute('geometry', 'primitive: box;');
                 exit.setAttribute('position', position);
@@ -790,8 +792,12 @@ AFRAME.registerComponent('playermovement', {
                 exit.setAttribute('scale', scale);
 
                 this.el.addEventListener('mouseenter', function (evt) {
+                    if (endGame){
+                        window.location.href = 'end.html';
+                    }
+                    else{
                     loadNewLevel(toLoad);
-                    // createOutdoorFloor
+                    }
                 })
             },
             remove: function () {

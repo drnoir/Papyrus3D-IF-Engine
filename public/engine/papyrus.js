@@ -725,11 +725,10 @@ function createRooms() {
                 wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
                 const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE);
                 wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
-                wall.setAttribute('exit', 'toLoad:' + nextSceneToLoad++ + ';');
+                wall.setAttribute('exit', 'endGame:'+true);
                 el.appendChild(wall);
                 el.appendChild(floor);
                 // trigger end of game
-                endGame();
             }
         }
     }
