@@ -18,6 +18,11 @@
       {
         "Object": "Server Machine",
         "position": "-1.5, 0, -4",
+        "text": "This is one of the servers in the facility. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean leo lorem, commodo vitae nulla non, efficitur lobortis ipsum. Nulla sagittis consectetur massa, vel egestas felis. Duis ac enim nec est sagittis ornare eu a sapien. Donec sollicitudin blandit velit, porttitor rhoncus justo malesuada eget. Integer non auctor risus. Duis vehicula non neque a elementum. Aliquam erat volutpat. Morbi molestie ante at purus aliquet viverra. In volutpat, nibh eget consequat mollis, nulla dolor pulvinar ex, a tristique nisi lacus in nibh. Nam porttitor, justo vitae blandit fermentum, erat sem pretium justo, in imperdiet erat eros at lorem. Praesent tincidunt metus vitae neque tempor fringilla. Phasellus id turpis ut nibh pharetra convallis eu id urna."
+      },
+      {
+        "Object": "Cooling Pool",
+        "position": "-1.5, 0, -4",
         "text": "This is one of the servers in the facility"
       }
     ]

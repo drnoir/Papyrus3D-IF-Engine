@@ -11,7 +11,7 @@ import {
 // CURSOR 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
-        this.el.addEventListener('click', function (evt) {
+        this.el.addEventListener('mouseenter', function (evt) {
             nextScene();
         });
     }
@@ -179,10 +179,11 @@ AFRAME.registerComponent('character', {
         let numDiag = data.numDiag;
         const charID = data.charID;
 
-        this.el.addEventListener('click', function (evt) {
+        this.el.addEventListener('mouseenter', function (evt) {
             console.log(evt.detail.intersection.point);
             console.log('dialog triggered');
             populateDiag(charID, numDiag);
+            // populateInteractions(charID, numDiag);
             numDiag++;
         });
 
@@ -584,11 +585,14 @@ AFRAME.registerComponent('playermovement', {
         AFRAME.registerComponent('triggerdiagfloor', {
             schema: {
                 default: '',
-                selfdestruct: { type: 'boolean', default: false }
+                selfdestruct: { type: 'boolean', default: false },
+                numDiag: { type: 'number', default: 1 },
             },
             init: function () {
-                this.el.addEventListener('click', function (evt) {
-                    populateDiag(5, 0);
+                const data = this.data;
+                const numDiag= data.numDiag
+                this.el.addEventListener('mouseenter', function (evt) {
+                    populateInteractions(numDiag);
                     if (this.data.selfdestruct) {
                         this.remove();
                     }
@@ -612,7 +616,7 @@ AFRAME.registerComponent('playermovement', {
                 const triggerDialogue = this.data.triggerDialogue;
                 const interactionNum = this.data.interactionNum;
                 if (triggerDialogue) {
-                    this.el.addEventListener('click', function (evt) {
+                    this.el.addEventListener('mouseenter', function (evt) {
                         populateInteractions(interactionNum);
                     })
                 }
@@ -646,7 +650,7 @@ AFRAME.registerComponent('playermovement', {
                 }
 
                 const doorPos = el.getAttribute('position');
-                this.el.addEventListener('click', function (evt) {
+                this.el.addEventListener('mouseenter', function (evt) {
                     if (!locked) {
                         let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
                         el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
@@ -697,7 +701,7 @@ AFRAME.registerComponent('playermovement', {
             init: function () {
                 const data = this.data;
                 const color = data.color;
-                this.el.addEventListener('click', function (evt) {
+                this.el.addEventListener('mouseenter', function (evt) {
                     gotKey(color);
                     let keyPickAudio = document.querySelector("#keypickup");
                     keyPickAudio.play();
@@ -749,7 +753,7 @@ AFRAME.registerComponent('playermovement', {
                 let dmgAmount = data.dmgAmount;
                 const healthbarComp = document.querySelector('[healthbar]').components.healthbar;
 
-                this.el.addEventListener('click', function (evt) {
+                this.el.addEventListener('mouseenter', function (evt) {
                     healthbarComp.reduceHealthBar(dmgAmount)
                 })
             },
@@ -785,7 +789,7 @@ AFRAME.registerComponent('playermovement', {
                 exit.setAttribute('glowFX', 'visible:' + true);
                 exit.setAttribute('scale', scale);
 
-                this.el.addEventListener('click', function (evt) {
+                this.el.addEventListener('mouseenter', function (evt) {
                     loadNewLevel(toLoad);
                     // createOutdoorFloor
                 })
@@ -928,7 +932,7 @@ AFRAME.registerComponent('playermovement', {
                 } else {
                     const continueText = document.getElementById("continue");
                     continueText.setAttribute("visible", true);
-                    continueText.addEventListener("click", () => {
+                    continueText.addEventListener("mouseenter", () => {
                         this.data.dialogueTarget.setAttribute("visible", false);
                     });
                 }
@@ -938,7 +942,7 @@ AFRAME.registerComponent('playermovement', {
         AFRAME.registerComponent("clickable", {
             init: function () {
                 const el = this.el;
-                el.addEventListener("click", () => {
+                el.addEventListener("mouseenter", () => {
                     const nextDialogueId = el.getAttribute("choice-id");
                     const dialogue = JSON.parse(document.getElementById("dialogue").textContent);
                     const nextDialogue = dialogue.dialogues.find((d) => d.id === nextDialogueId);

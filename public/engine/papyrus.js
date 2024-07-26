@@ -9,7 +9,7 @@ let lockedDoors = [];
 // STORE TEXTURE INFO
 let textures; let prefabs;
 // diaglog UI Globals / shit 
-let currentDiagID = 0; let currentScene = 1; let nextSceneToLoad = currentScene + 1;
+let currentDiagID = 0; let numInteraction = 0;let currentScene = 1; let nextSceneToLoad = currentScene + 1;
 let randomMode = false;
 
 let currentChar = 0; let mapSource = 0;
@@ -335,17 +335,20 @@ function populateDiag(currentChar, numDiag) {
     setTimeout(hideDialogueUI, 8000);
 }
 
-function populateInteractions(interactionID, currentInteraction) {
-    // add button test function for choice dialogiue
+function populateInteractions(numInteraction) {
+    // add button test function
     showDialogueUI();
-    // if (!passageBtn) {
-    //     createChoiceButtons(currentInteraction);
+    // reset check back to start
+    // if (numInteraction === interactions.interactions[numInteraction].length) {
+    //     numInteraction = 0;
     // }
-    let newPassage = interactions.interactions[interactionID].text;
-    let newCharName = interactions.interactions[interactionID].Object;
-    currentDiagID = currentInteraction;
-    populateMessage(newCharName, newPassage);
-    addButton(currentDiagID, 'char');
+    // console.log('current char' + currentChar, diag.passage[currentChar - 1][numDiag].text)
+    // populate dialog with text / name
+    let newDiagPassage = interactions.interactions[numInteraction].text;
+    let newObjectName = interactions.interactions[numInteraction].Object;
+
+    populateMessage(newObjectName, newDiagPassage );
+    // addButton(currentDiagID, 'char');
     setTimeout(hideDialogueUI, 8000);
 }
 
@@ -570,17 +573,16 @@ function createRooms() {
                 el.appendChild(torch);
                 el.appendChild(floor);
             }
-            // add Locked doors
+            // add Locked doors (Non Key)
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "4" && mapData[i].charAt(1) === "L") {
                 const door = document.createElement('a-box');
                 door.setAttribute('id', 'door');
                 // create component for door / lock
                 door.setAttribute('height', WALL_HEIGHT);
                 door.setAttribute('door', 'locked: true;key:true;');
-                door.setAttribute('scale', '1 1 0.4');
-                door.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
+                door.setAttribute('scale', '1 1 0.6');
+                door.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1;');
                 door.setAttribute('position', position);
-                door.setAttribute('static-body', 'mass: 0');
                 const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE);
                 el.appendChild(door);
                 el.appendChild(floor);
@@ -620,8 +622,9 @@ function createRooms() {
                 wall = createWall(WALL_SIZE, floorHeight, floorPos, wallTexture);
                 console.log(triggerCheck);
                 if (triggerCheck) {
-                    console.log(floorTrigger, triggerCheck)
-                    wall.setAttribute('triggerdiagfloor', '');
+                    const triggerTextRef = mapData[i].charAt(3)
+                    console.log(floorTrigger, triggerCheck,triggerTextRef)
+                    wall.setAttribute('triggerdiagfloor', 'numDiag:'+triggerTextRef);
                     wall.setAttribute('glowfx', 'color:#ffde85;');
                 }
                 el.appendChild(wall);
@@ -676,7 +679,7 @@ function createRooms() {
                     const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE);
                     el.appendChild(floor);
                 }
-                // door locked
+                // door locked KEY DOOR
                 if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "4" && mapData[i].charAt(1) === "L") {
                     let doorNum2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
                     let doorNum = doorNum2;
@@ -688,7 +691,7 @@ function createRooms() {
                     wall.setAttribute('door', 'doorLockNum:' + doorNum + 'key:true;keyColour:' + doorLockColor);
                     doorNum++;
                     wall.setAttribute('locked', 'true');
-                    wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
+                    wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1;'+'color:'+doorLockColor);
                     const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE);
                     el.appendChild(floor);
                 }

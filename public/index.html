@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Papyrus 3D - Template</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
-    <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
+    <script
+        src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
 </head>
+
 <body>
     <a-scene>
         <a-entity light="type: ambient; color: #CCC;intensity: 0.1;"></a-entity>
@@ -56,7 +59,7 @@
             <img id="key" src="./textures/structures/metaldoor.jpg">
             <img id="sky" src="textures/night.jpg">
         </a-assets>
-        <!-- // sound fx -->
+        <!-- // sound fx asset loading -->
         <a-entity sound="src: #music" autoplay="true" volume="6" loop="true" positional="false"
             refDistance="30000"></a-entity>
         <a-entity sound="src: #hit" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
@@ -77,17 +80,14 @@
                 <a-text position="-1.3 -0.4 -0.8" value="Health:" width="1" depth="0.1"></a-text>
                 <a-entity id="healthbarUI" healthbar position="0.7 -0.1 -0.8"></a-entity>
                 <a-text position="-1.3 -0.6 -0.8" value="Keys:" width="1" depth="0.1"></a-text>
-                <a-plane id = "blueKey" position="-1.1 -0.6 -0.8" width="0.1" height="0.1" depth="0.1"  material="color:blue;" visible="false"></a-plane>
-                <a-plane id = "yellowKey" position="-1 -0.6 -0.8" width="0.1" height="0.1" depth="0.1"  material="color:yellow;" visible="false"></a-plane>
-                <a-plane id = "redKey" position="-0.9 -0.6 -0.8" width="0.1" height="0.1" depth="0.1"  material="color:red;" visible="false"></a-plane>
-                <!-- <a-entity id="#gun" gltf-model="#gun" position="0.28 -0.15 -0.3" rotation='0 180 0' visible='false'>
-                    <a-entity id='muzzleFX' visible="false">
-                        <a-image src="#muzzle" position="0.05 0.1 0.19">
-                            <a-light type="point" color="#dd5003" intensity='0.4' distance="8"
-                                position="-2 1 -0.2"></a-light>
-                        </a-image>
-                    </a-entity>
-                </a-entity> -->
+                <!-- key cards UI -->
+                <a-plane id="blueKey" position="-1.1 -0.6 -0.8" width="0.1" height="0.1" depth="0.1"
+                    material="color:blue;" visible="false"></a-plane>
+                <a-plane id="yellowKey" position="-1 -0.6 -0.8" width="0.1" height="0.1" depth="0.1"
+                    material="color:yellow;" visible="false"></a-plane>
+                <a-plane id="redKey" position="-0.9 -0.6 -0.8" width="0.1" height="0.1" depth="0.1"
+                    material="color:red;" visible="false"></a-plane>
+                <!-- fuse cursor -->
                 <a-entity
                     animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
                     animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 150; from: 1 1 1; to: 0.1 0.1 0.1"
@@ -95,18 +95,16 @@
                     cursor="fuse: true;" material="color: white; shader: flat" position="0 0 -1"
                     geometry="primitive: ring; radiusInner: 0.03; radiusOuter: 0.04" scale="0.2 0.2 0.2">
                 </a-entity>
-                <a-entity id="dialogueBox" visible="false" position="0 0.1 -1" scale="2 1 1"
-                    text="align: center; width: 4; wrapCount: 25; color: black" material="color: white; opacity: 0.95"
-                    geometry="primitive: plane">
-                    <a-box position="0 0.4 0" width="0.9" height="0.1" depth="0.01" color="#000000" opacity="1"
-                        wireframe="false" material="color:black;">
-                        <a-text id="dialogueTitle" position="0 0 0.01" value="Title" color="white" align="center"
-                            width="2" height="1" wrapCount="25"></a-text>
+                <a-entity id="dialogueBox" visible="false" position="0 -0.6 -1" scale="2 0.9 1"
+                    text="scale: 1 4 1; align: center; baseline:top;  position:0 1 0.26; width: 2; height:2; wrapCount: 10; color: black; anchor:center"
+                    material="color: white; opacity: 0.95" geometry="primitive: plane">
+                    <a-box position="0 0.5 0" width="1" height="0.1" depth="0.01" opacity="1" wireframe="false"
+                        material="color:black;">
+                        <a-text id="dialogueTitle" position="0 0 0.01" scale='1 2 1' value="Title" color="white"
+                            align="center" width="0.5" height="3" wrapCount="25"></a-text>
                     </a-box>
                     <a-entity id="choices" position="0 0.4 0" visible="true"
-                        text="align: center; width: 4; wrapCount: 25; color: black"></a-entity>
-                    <!-- <a-entity id="continue" position="0 -1 0"
-                    text="value: Click to continue; align: center; width: 4; wrapCount: 25; color: black"></a-entity> -->
+                        text="align: center; width: 4; wrapCount: 10; color: black"></a-entity>
                 </a-entity>
             </a-entity>
         </a-entity>
