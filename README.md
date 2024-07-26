@@ -21,7 +21,7 @@ If you appriciate the work I have put into this project for free and want to don
 ### Features
 * Component system for character loading and enemy loading
 * Map Editor - basic map editor for easy creation of scenes - /Tools/MapEditor/
-* Random map generation - Proceudral maps with randomPapyrus.js
+* Random map generation - Proceudral maps with randomPapyrus.js  - /Tools/randomMapGenerator/
 * Define 3D Scenes with character components and assets
 * Create unique repayable games that the engine can generate based on easily editable JSON templates
 * Load assets into template (index.html in public)
@@ -52,7 +52,7 @@ Clone the repo and install via node.
 The following are instructions for setting up Papyrus3D for local development. Make sure you have node installed and npm for package management
 check node version with 
 
->node -v 
+> node -v 
 
 ## Install Packages 
 > npm install 

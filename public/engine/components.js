@@ -909,7 +909,7 @@ AFRAME.registerComponent('playermovement', {
                 this.displayMessage(dialogue.dialogues[0]);
             },
             displayMessage: function (messageData) {
-                const dialogueBox = document.getElementById('dialogueBox');
+                const dialogueBox = document.getElementById('dialogueContent');
                 dialogueBox.setAttribute("text", "value", messageData.message);
                 if (messageData.choices.length > 0) {
                     const choicesContainer = document.getElementById("choices");

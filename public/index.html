@@ -95,14 +95,16 @@
                     cursor="fuse: true;" material="color: white; shader: flat" position="0 0 -1"
                     geometry="primitive: ring; radiusInner: 0.03; radiusOuter: 0.04" scale="0.2 0.2 0.2">
                 </a-entity>
-                <a-entity id="dialogueBox" visible="false" position="0 -0.6 -1" scale="2 0.9 1"
-                    text="scale: 1 4 1; align: center; baseline:top;  position:0 1 0.26; width: 2; height:2; wrapCount: 10; color: black; anchor:center"
-                    material="color: white; opacity: 0.95" geometry="primitive: plane">
-                    <a-box position="0 0.5 0" width="1" height="0.1" depth="0.01" opacity="1" wireframe="false"
-                        material="color:black;">
-                        <a-text id="dialogueTitle" position="0 0 0.01" scale='1 2 1' value="Title" color="white"
-                            align="center" width="0.5" height="3" wrapCount="25"></a-text>
+                <a-entity id="dialogueBox" visible="false" position="0.8 -0.6 -1" scale="1 0.9 1"
+                    material="color: white; opacity: 1" geometry="primitive: plane">
+                    <a-box position="0 0.6 0" width="1" height="0.2" depth="0.01" opacity="1" material="color:black;">
+                        <a-text id="dialogueTitle" position="0 0 0.01" value="Title" color="white" align="center"
+                            width="1.5" height="0.1" wrap-count="25"></a-text>
                     </a-box>
+                    <a-text id="dialogueContent" position="0 0.3 0.01" width="1" height="0.6" align="center"
+                        wrap-count="20" color="black"
+                        value="This is an example dialogue content that wraps within the dialogue box. The text is aligned to the top and will adjust its wrapping based on the size of the text.">
+                    </a-text>
                     <a-entity id="choices" position="0 0.4 0" visible="true"
                         text="align: center; width: 4; wrapCount: 10; color: black"></a-entity>
                 </a-entity>
@@ -117,4 +119,5 @@
 <!-- <script src="./engine/dialogue.js" type="module"></script> -->
 <script src="./engine/components.js" type="module"></script>
 <script src="./engine/papyrus.js" type="module"></script>
+
 </html>

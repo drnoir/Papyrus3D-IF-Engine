@@ -355,7 +355,7 @@ function populateInteractions(numInteraction) {
 // show a message from enviroment
 function populateMessage(char, message) {
     console.log('populate dialogue box with' + char, message)
-    const dialogueUI = document.getElementById('dialogueBox');
+    const dialogueUI = document.getElementById('dialogueContent');
     const dialogueTitle = document.getElementById('dialogueTitle');
     // add button test function
     showDialogueUI();
