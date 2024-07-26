@@ -2,7 +2,7 @@
 // Reassignable global game stare vars
 let player;
 // CONFIG CHARECTERS AND ENEMIES STORE
-let config; let chars; let enemies; let gun = false;
+let config; let chars; let enemies; 
 // Diagoloue and scene metadata etc
 let diag; let sceneMetadata; let interactions; let charDiagIDs = [];
 let lockedDoors = [];
@@ -45,12 +45,6 @@ async function loadConfig() {
     const res = await fetch('config.json');
     config = await res.json();
     CombatDiceNumber = config.CombatDiceNumber; CombatDMGDiceNumber = config.CombatDMGDiceNumber;
-    gun = config.Gun;
-    if (gun) {
-        const gunModel = document.getElementById('gun');
-        gunModel.setAttribute('visible:', true);
-    }
-    console.log('combat dice num' + CombatDiceNumber, CombatDMGDiceNumber)
 }
 // Load engine setup file (JSON)
 async function loadSetup() {
@@ -134,20 +128,14 @@ function setupPlayerInfo() {
 //Add chareceter to scene function 
 function addChar(charNumber) {
     let indexCharNumber = charNumber - 1;
-    let diagCount = countDialogue(charNumber);
     let modelID = '#' + chars.characters[indexCharNumber].name;
     let char = document.createElement('a-entity');
     char.setAttribute('id', chars.characters[indexCharNumber].id);
     char.setAttribute('name', chars.characters[indexCharNumber].name);
     char.setAttribute('gltf-model', modelID);
     char.setAttribute('scale', chars.characters[indexCharNumber].scale);
-    char.setAttribute('character', 'modelPath:' + modelID + 'charID:' + charNumber + ';' + 'numDiag:', diagCount + ';');
-    char.setAttribute('cursor-listener', '');// cusrsor listener
-    // char.setAttribute('dialogue-trigger', '');
-    // char.setAttribute('dialogue-target', '#dialogueBox');
     char.setAttribute('animation-mixer', "clip: *; loop: repeat;");
     charDiagIDs.push(charNumber);
-    // returnDiag(charNumber);
     console.log('char ids' + charDiagIDs);
     return char;
 }
@@ -272,17 +260,22 @@ function addButton(diagID, Type) {
         nextPassageBtnTxt.setAttribute('width', '4');
         nextPassageBtnTxt.setAttribute('position', '0 0 0.1')
         nextPassageBtnTxt.setAttribute('material', 'color: black');
-        // if (Type === 'char') {
-        //     let char = document.getElementById('char' + diagID) // FOR TESTING PURPOSES - needs to be passed associated char
-        //     char.appendChild(nextPassageBtn);
-        // } else {
-        //     let prefab = document.getElementById('prefab' + diagID) // FOR TESTING PURPOSES - needs to be passed associated char
-        //     prefab.appendChild(nextPassageBtn);
-        // }
         nextPassageBtn.appendChild(nextPassageBtnTxt);
     } else {
         console.log('Opps something went wrong - There is already a passage btn on the scene')
     }
+}
+
+function addCharBtn(charNumber){
+    let indexCharNumber = charNumber - 1;
+    let diagCount = countDialogue(charNumber);
+    let modelID = '#' + chars.characters[indexCharNumber].name;
+
+    let charBtn = document.createElement('a-box');
+    charBtn.setAttribute('scale', '0.8 0.8 0.01');
+    charBtn.setAttribute('material', 'src:#talk; opacity:0.5;transparent:true;');
+    charBtn.setAttribute('character', 'modelPath:' + modelID + 'charID:' + charNumber + ';' + 'numDiag:', diagCount + ';');
+    return charBtn;
 }
 
 function createChoiceButtons(amount, charID) {
@@ -318,31 +311,22 @@ function createChoiceButtons(amount, charID) {
     }
 }
 
+
+
 function populateDiag(currentChar, numDiag) {
-    // add button test function
     showDialogueUI();
-    // reset check back to start
-    if (numDiag === diag.passage[currentChar - 1].length) {
-        numDiag = 0;
-    }
-    console.log('current char' + currentChar, diag.passage[currentChar - 1][numDiag].text)
-    // populate dialog with text / name
-    let newDiagPassage = diag.passage[currentChar - 1][numDiag].text;
-    let newCharName = diag.passage[currentChar - 1][numDiag].char;
+    console.log(diag.passage[currentChar - 1]);
+    let newDiagPassage = diag.passage[currentChar - 1].text;
+    let newCharName = diag.passage[currentChar - 1].char;
     currentDiagID = currentChar - 1;
+
     populateMessage(newCharName, newDiagPassage);
     addButton(currentDiagID, 'char');
-    setTimeout(hideDialogueUI, 8000);
 }
 
 function populateInteractions(numInteraction) {
     // add button test function
     showDialogueUI();
-    // reset check back to start
-    // if (numInteraction === interactions.interactions[numInteraction].length) {
-    //     numInteraction = 0;
-    // }
-    // console.log('current char' + currentChar, diag.passage[currentChar - 1][numDiag].text)
     // populate dialog with text / name
     let newDiagPassage = interactions.interactions[numInteraction].text;
     let newObjectName = interactions.interactions[numInteraction].Object;
@@ -500,12 +484,15 @@ function createRooms() {
                 let charNumber = mapData[i].charAt(4) ? String(mapData[i].charAt(4) + mapData[i].charAt(5)) : mapData[i].charAt(4);
                 console.log(mapData[i].charAt(4));
                 let char = addChar(charNumber);
+                let charBtn = addCharBtn(charNumber);
                 char.setAttribute('position', charPos);
+                charBtn.setAttribute('position', '0.18 2 0');
                 char.setAttribute('glowfx', 'visible:true;');
-
+               
                 const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE);
                 el.appendChild(floor);
                 el.appendChild(char);
+                char.appendChild(charBtn);
             }
             // playercam
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "P") {

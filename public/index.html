@@ -23,7 +23,6 @@
             <a-asset-item id="lady" src='./models/lady.glb'></a-asset-item>
             <a-asset-item id="cop" src='./models/copwalk.glb'></a-asset-item>
             <a-asset-item id="glow" src="./glow.png"></a-asset-item>
-            <a-asset-item id="gun" src="./models/fps_gun.glb"></a-asset-item>
             <a-asset-item id="chest" src="./models/prefabs/chest.glb"></a-asset-item>
             <a-asset-item id="computer" src="./models/prefabs/computer.glb"></a-asset-item>
             <a-asset-item id="switchboard" src="./models/prefabs/switchboard.gltf"></a-asset-item>
@@ -42,17 +41,16 @@
             <audio id="playerdeath" src="./sound/playerdeath.wav" preload="auto"></audio>
             <audio id="playerpain" src="./sound/playerpain.wav" preload="auto"></audio>
             <audio id="playerattack" src="./sound/playerpunch.wav" preload="auto"></audio>
-            <audio id="pistolshot" src="./sound/pistolshot.mp3" preload="auto"></audio>
             <audio id="dooropen" src="./sound/dooropen.mp3" preload="auto"></audio>
             <audio id="keypickup" src="./sound/keypickup.mp3" preload="auto"></audio>
             <!--textures-->
             <img id="brick" src="./textures/walls/sewerwall.jpg">
+            <img id="talk" src="./talk.png">
             <img id="door" src="./textures/structures/metaldoor.jpg">
             <img id="floor" src="./textures/structures/whitegrav.JPG">
             <img id="wooddoor" src="./textures/wood/wooddoor.jpg">
             <img id="grunge" src="textures/structures/whiterock.jpg">
             <img id="orangebrick" src="./textures/walls/orangebrick.jpg">
-            <img id="muzzle" src="./textures/gun/muzzle.png">
             <img id="water" src="./textures/nature/water.jpeg">
             <img id="poster" src="./textures/posters/soviet.jpg">
             <img id="exit" src="./textures/structures/pattern.JPG">
@@ -88,12 +86,21 @@
                 <a-plane id="redKey" position="-0.9 -0.6 -0.8" width="0.1" height="0.1" depth="0.1"
                     material="color:red;" visible="false"></a-plane>
                 <!-- fuse cursor -->
-                <a-entity
+                <!-- <a-entity
                     animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
                     animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 150; from: 1 1 1; to: 0.1 0.1 0.1"
                     animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
                     cursor="fuse: true;" material="color: white; shader: flat" position="0 0 -1"
                     geometry="primitive: ring; radiusInner: 0.03; radiusOuter: 0.04" scale="0.2 0.2 0.2">
+                </a-entity> -->
+                <!-- Fuse Cursor -->
+                <a-entity cursor="fuse: true; fuseTimeout: 2000;" position="0 0 -1"
+                    geometry="primitive: ring; radiusInner: 0.05; radiusOuter: 0.06"
+                    material="color: white; shader: flat"  scale="0.2 0.2 0.2"
+                    animation__mouseenter="property: scale; to: 0.3 0.3 0.3; dur: 150"
+                    animation__mouseleave="property: scale; to: 0.2 0.2 0.2; dur: 150"
+                    animation__fusing="property: scale; to: 0.4 0.4 0.4; dur: 150"
+                    animation__mouseleave="property: scale; to: 0.2 0.2 0.2; dur: 150">
                 </a-entity>
                 <a-entity id="dialogueBox" visible="false" position="0.8 -0.6 -1" scale="1 0.9 1"
                     material="color: white; opacity: 1" geometry="primitive: plane">

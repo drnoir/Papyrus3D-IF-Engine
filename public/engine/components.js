@@ -155,8 +155,6 @@ AFRAME.registerComponent('playercam', {
     },
 });
 
-
-
 // CHAR 
 AFRAME.registerComponent('character', {
     multiple: true,
@@ -178,107 +176,23 @@ AFRAME.registerComponent('character', {
         let animated = data.animated;
         let numDiag = data.numDiag;
         const charID = data.charID;
-
         this.el.addEventListener('mouseenter', function (evt) {
             console.log(evt.detail.intersection.point);
             console.log('dialog triggered');
             populateDiag(charID, numDiag);
-            // populateInteractions(charID, numDiag);
             numDiag++;
-        });
-
-
+            if (this.data.selfdestruct) {
+                this.remove();
+            }
+        })
         if (animated) {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
         }
-
-
     },
     tick: function (time, timeDelta) {
         const data = this.data;
         let patrol = data.patrol;
-        // let wallDistance = this.distanceCheck();
-        // if ( !wallDistance && patrol){
-        //     this.patrol();
-        // }
     },
-    // patrol: function () {
-    //     const el = this.el;
-    //     let speed = 0.006;
-    //     el.setAttribute('animation-mixer', 'clip: *; loop: repeat; '); //  NEEDS A TEST WITH MODEL WITH ANIMATION
-    //     let randomDirection = Math.floor(Math.random() * 3);
-    //     let randRot = Math.floor(Math.random() * 10);
-    //     let randomRotChance = Math.floor(Math.random() * 2000);
-    //     let randomUpDown = randomUporDown();
-
-    //     // random direction and movement check if ant is on the floor
-    //     if (randomRotChance >= 1500) {
-    //         if (randomUpDown === 'plus' && randomRotChance >= 1500) {
-    //             el.object3D.rotation.y += randRot;
-    //         }
-    //         if (randomUpDown === 'minus' && randomRotChance >= 1500) {
-    //             el.object3D.rotation.y -= randRot;
-    //         }
-    //     }
-    //     if (randomDirection < 1) {
-    //         if (randomUpDown === 'plus') {
-    //             el.object3D.position.x += speed;
-    //             el.object3D.position.z += speed;
-    //         }
-    //         if (randomUpDown === 'minus') {
-    //             el.object3D.position.x -= speed;
-    //             el.object3D.position.z -= speed;
-    //         }
-    //     }
-    //     if (randomDirection < 2) {
-    //         if (randomUpDown === 'plus') {
-    //             el.object3D.position.x += speed;
-    //             el.object3D.position.z += speed;
-    //         }
-    //         if (randomUpDown === 'minus') {
-    //             el.object3D.position.x -= speed;
-    //             el.object3D.position.z -= speed;
-    //         }
-    //     }
-    //     if (randomDirection > 2 && randomDirection < 3) {
-    //         if (randomUpDown === 'plus') {
-    //             el.object3D.position.x += speed;
-    //             el.object3D.position.z += speed;
-    //         }
-    //         if (randomUpDown === 'minus') {
-    //             el.object3D.position.x -= speed;
-    //             el.object3D.position.z -= speed;
-    //         }
-    //     }
-    //     if (randomDirection > 3 && randomDirection < 4) {
-    //         if (randomUpDown === 'plus') {
-    //             el.object3D.position.x += speed;
-    //             el.object3D.position.z += speed;
-    //         }
-    //         if (randomUpDown === 'minus') {
-    //             el.object3D.position.x -= speed;
-    //             el.object3D.position.z -= speed;
-    //         }
-    //     }
-    // },
-
-    // distanceCheck: function (dt) {
-    //     const el = this.el;
-    //     const wall = document.getElementsByClassName('wall')[0];
-    //     let speed = 0.006;
-    //     let wallPos = wall.getAttribute("position");
-    //     let distanceToWall = el.object3D.position.distanceTo(wallPos);
-    //     // move away if a wall    
-    //     if (distanceToWall < 6) {
-    //         el.object3D.position.x = wallPos.x -= speed;
-    //         el.object3D.position.z = wallPos.z -= speed;
-    //     }
-
-    //     let goAwayFromWall = distanceToWall < 1 ? true : false;
-    //     console.log('move away from wall' + goAwayFromWall);
-    //     return goAwayFromWall;
-
-    // },
     remove: function () {
         this.el.destroy();
     },
@@ -551,408 +465,422 @@ AFRAME.registerComponent('playermovement', {
             const playercamPos = document.getElementById('playercam').getAttribute('position');
             const floors = document.querySelectorAll('.floor');
             const thresholdDistance = 1.5; // Distance within which color change happens
-            const resetTime = 1500;
+            const resetTime = 1000;
             // distance checking
             console.log(newPos.x, newPos.z);
             let distanceCheck = playercamPos.distanceTo(newPos);
             console.log(distanceCheck);
-            if (distanceCheck <= 2) {
+            if (distanceCheck <= 3) {
                 // playercam.object3D.position.set(newPos.x, 1.5, newPos.z);
-                playercam.setAttribute('position', {
-                    x: newPos.x,
-                    y: 1.5,
-                    z: newPos.z
-                });
-                // Iterate over each 'floor' element and check distance
-                floors.forEach(floor => {
-                    const floorPosition = floor.object3D.position;
-                    const distance = newPos.distanceTo(floorPosition);
+                setTimeout(() => {
+                    playercam.setAttribute('position', {
+                        x: newPos.x,
+                        y: 1.5,
+                        z: newPos.z
+                    });
+                    // 500ms delay before the click action
+                    // Iterate over each 'floor' element and check distance
+                    floors.forEach(floor => {
+                        const floorPosition = floor.object3D.position;
+                        const distance = newPos.distanceTo(floorPosition);
 
-                    if (distance <= thresholdDistance) {
-                        // Change color if within the threshold distance
-                        floor.setAttribute('material', 'color', 'lightblue');
-                        // Reset color after a specified time
-                        setTimeout(() => {
-                            floor.setAttribute('material', 'color', '#fff'); // Original color
-                        }, resetTime);
-                    }
-                });
+                        if (distance <= thresholdDistance) {
+                            // Change color if within the threshold distance
+                            floor.setAttribute('material', 'color', 'lightblue');
+                            // Reset color after a specified time
+                            setTimeout(() => {
+                                floor.setAttribute('material', 'color', '#fff'); // Original color
+                            }, resetTime);
+                        }
+                    });
+                }, 2000); // to prevent the player from moving too fast
             }
         });
     }
-    });
+});
 
-        AFRAME.registerComponent('triggerdiagfloor', {
-            schema: {
-                default: '',
-                selfdestruct: { type: 'boolean', default: false },
-                numDiag: { type: 'number', default: 1 },
-            },
-            init: function () {
-                const data = this.data;
-                const numDiag= data.numDiag
-                this.el.addEventListener('mouseenter', function (evt) {
-                    populateInteractions(numDiag);
-                    if (this.data.selfdestruct) {
-                        this.remove();
-                    }
-                })
-            },
-            remove: function () {
-                const el = this.el;
-                el.destroy();
-            },
-        });
+AFRAME.registerComponent('triggerdiagfloor', {
+    schema: {
+        default: '',
+        selfdestruct: { type: 'boolean', default: false },
+        numDiag: { type: 'number', default: 1 },
+    },
+    init: function () {
+        const data = this.data;
+        const numDiag = data.numDiag
+        this.el.addEventListener('mouseenter', function (evt) {
+            populateInteractions(numDiag);
+            if (this.data.selfdestruct) {
+                this.remove();
+            }
+        })
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+});
 
-        //prefab Loading - Works
-        AFRAME.registerComponent('prefab', {
-            schema: {
-                triggerDialogue: { type: 'boolean', default: false },
-                interactionNum: { type: 'number', default: 0 },
-            },
-            init: function () {
-                const data = this.data;
-                const el = this.el;
-                const triggerDialogue = this.data.triggerDialogue;
-                const interactionNum = this.data.interactionNum;
-                if (triggerDialogue) {
-                    this.el.addEventListener('mouseenter', function (evt) {
-                        populateInteractions(interactionNum);
-                    })
+//prefab Loading - Works
+AFRAME.registerComponent('prefab', {
+    schema: {
+        triggerDialogue: { type: 'boolean', default: false },
+        interactionNum: { type: 'number', default: 0 },
+    },
+    init: function () {
+        const data = this.data;
+        const el = this.el;
+        const triggerDialogue = this.data.triggerDialogue;
+        const interactionNum = this.data.interactionNum;
+        if (triggerDialogue) {
+            this.el.addEventListener('mouseenter', function (evt) {
+                populateInteractions(interactionNum);
+            })
+        }
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+});
+
+
+// door open and shut (Works)
+AFRAME.registerComponent('door', {
+    schema: {
+        locked: { type: 'boolean', default: false },
+        doorLockNum: { type: 'number', default: 0 },
+        key: { type: 'boolean', default: false },
+        keyColor: { type: 'string', default: 'blue' },
+    },
+    init: function () {
+        const el = this.el;
+        const data = this.data;
+        let locked = data.locked;
+        let key = data.key;
+        let keyColor = data.keyColor;
+        this.closeDoor = AFRAME.utils.bind(this.closeDoor, this);
+        let playercamPos = document.getElementById('playercam').getAttribute('position');
+        const thresholdDistance = 1.5;
+        let distance = playercamPos.distanceTo(el.getAttribute('position'));
+
+        if (key) {
+            el.setAttribute('color', keyColor);
+            locked = true;
+        }
+
+        const doorPos = el.getAttribute('position');
+        this.el.addEventListener('mouseenter', function (evt) {
+                if (!locked) {
+                    let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
+                    el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
+                    let doorAudio = document.querySelector("#dooropen");
+                    doorAudio.play();
                 }
-            },
-            remove: function () {
-                const el = this.el;
-                el.destroy();
-            },
-        });
-
-
-        // door open and shut (Works)
-        AFRAME.registerComponent('door', {
-            schema: {
-                locked: { type: 'boolean', default: false },
-                doorLockNum: { type: 'number', default: 0 },
-                key: { type: 'boolean', default: false },
-                keyColor: { type: 'string', default: 'blue' },
-            },
-            init: function () {
-                const el = this.el;
-                const data = this.data;
-                let locked = data.locked;
-                let key = data.key;
-                let keyColor = data.keyColor;
-                this.closeDoor = AFRAME.utils.bind(this.closeDoor, this);
-
-                if (key) {
-                    el.setAttribute('color', keyColor);
-                    locked = true;
-                }
-
-                const doorPos = el.getAttribute('position');
-                this.el.addEventListener('mouseenter', function (evt) {
-                    if (!locked) {
+                else if (key) {
+                    const playerKeys = getPlayerKeysInfo();
+                    if (playerKeys.find((element) => element === 'blue' || 'yellow' || 'red')) {
                         let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
                         el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
                         let doorAudio = document.querySelector("#dooropen");
                         doorAudio.play();
+                        populateMessage(keyColor + ' door', keyColor + ' door opened')
+                        locked = false;
                     }
-                    else if (key) {
-                        const playerKeys = getPlayerKeysInfo();
-                        if (playerKeys.find((element) => element === 'blue' || 'yellow' || 'red')) {
-                            let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
-                            el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
-                            let doorAudio = document.querySelector("#dooropen");
-                            doorAudio.play();
-                            populateMessage(keyColor + ' door', keyColor + ' door opened')
-                            locked = false;
-                        }
-                        else {
-                            populateMessage('Locked ' + keyColor + ' Key Door', 'This door is locked, you need to find a ' + keyColor + ' key to open it');
-                        }
-                    }
-                    // locked door checks
                     else {
-                        populateMessage('Locked Door', 'This door is locked, you may need to find a matching key for it');
+                        populateMessage('Locked ' + keyColor + ' Key Door', 'This door is locked, you need to find a ' + keyColor + ' key to open it');
                     }
-                })
-            },
-            closeDoor: function () {
-                const el = this.el;
-                setTimeout(resetAnim(el), 8000);
-                function resetAnim(el) {
-                    let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
-                    let newY = y + 3;
-                    el.setAttribute('animation', "property: position; to:" + x + newY + z + "; loop:  false; dur: 5000")
                 }
-            },
-            remove: function () {
-                const el = this.el;
-                el.destroy();
-            },
-        });
-
-        // key pickup componenet
-        AFRAME.registerComponent("key", {
-            schema: {
-                color: { type: 'string', default: 'blue' },
-                keyNumber: { type: 'number', default: 1 },
-            },
-            init: function () {
-                const data = this.data;
-                const color = data.color;
-                this.el.addEventListener('mouseenter', function (evt) {
-                    gotKey(color);
-                    let keyPickAudio = document.querySelector("#keypickup");
-                    keyPickAudio.play();
-                    this.remove();
-                    let keyGraphic = document.getElementById(color + 'Key');
-                    console.log(keyGraphic);
-                    keyGraphic.setAttribute('visible', 'true')
-                    populateMessage('Blue Key', 'You have collected the ' + color + ' key')
-                })
-            },
-            remove: function () {
-                const el = this.el;
-                el.destroy();
-            },
+                // locked door checks
+                else {
+                    populateMessage('Locked Door', 'This door is locked, you may need to find a matching key for it');
+                }
+        })
+    },
+    closeDoor: function () {
+        const el = this.el;
+        setTimeout(resetAnim(el), 8000);
+        function resetAnim(el) {
+            let x = doorPos.x; let y = doorPos.y; let z = doorPos.z;
+            let newY = y + 3;
+            el.setAttribute('animation', "property: position; to:" + x + newY + z + "; loop:  false; dur: 5000")
         }
-        )
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+});
 
-        AFRAME.registerComponent("load-texture", {
-            schema: {
-                src: { type: 'string', default: 'textures/structures/rocky.JPG' },
-            },
-            init: function () {
-                const data = this.data;
-                const el = this.el;
-                let src = data.src;
-                const textureLoader = new THREE.TextureLoader();
-                textureLoader.load(src,
-                    // onLoad
-                    function (tex) {
-                        let mesh = el.getObject3D('mesh')
-                        mesh.material.map = tex;
-                    },
-                    // onProgress
-                    undefined,
-                    //onError
-                    function (err) {
-                        console.error('An error happened.');
-                    });
-            }
+// key pickup componenet
+AFRAME.registerComponent("key", {
+    schema: {
+        color: { type: 'string', default: 'blue' },
+        keyNumber: { type: 'number', default: 1 },
+    },
+    init: function () {
+        const data = this.data;
+        const color = data.color;
+        this.el.addEventListener('mouseenter', function (evt) {
+            gotKey(color);
+            let keyPickAudio = document.querySelector("#keypickup");
+            keyPickAudio.play();
+            this.remove();
+            let keyGraphic = document.getElementById(color + 'Key');
+            console.log(keyGraphic);
+            keyGraphic.setAttribute('visible', 'true')
+            populateMessage('Blue Key', 'You have collected the ' + color + ' key')
         })
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+}
+)
 
-        AFRAME.registerComponent("triggerdmg", {
-            schema: {
-                dmgAmount: { type: 'number', default: 20 }
+AFRAME.registerComponent("load-texture", {
+    schema: {
+        src: { type: 'string', default: 'textures/structures/rocky.JPG' },
+    },
+    init: function () {
+        const data = this.data;
+        const el = this.el;
+        let src = data.src;
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(src,
+            // onLoad
+            function (tex) {
+                let mesh = el.getObject3D('mesh')
+                mesh.material.map = tex;
             },
-            init: function () {
-                const data = this.data;
-                const el = this.el;
-                let dmgAmount = data.dmgAmount;
-                const healthbarComp = document.querySelector('[healthbar]').components.healthbar;
+            // onProgress
+            undefined,
+            //onError
+            function (err) {
+                console.error('An error happened.');
+            });
+    }
+})
 
-                this.el.addEventListener('mouseenter', function (evt) {
-                    healthbarComp.reduceHealthBar(dmgAmount)
-                })
-            },
-            remove: function () {
-                const el = this.el;
-                el.destroy();
-            },
+AFRAME.registerComponent("triggerdmg", {
+    schema: {
+        dmgAmount: { type: 'number', default: 20 }
+    },
+    init: function () {
+        const data = this.data;
+        const el = this.el;
+        let dmgAmount = data.dmgAmount;
+        const healthbarComp = document.querySelector('[healthbar]').components.healthbar;
+
+        this.el.addEventListener('mouseenter', function (evt) {
+            healthbarComp.reduceHealthBar(dmgAmount)
         })
-        // component for triggering an exit event
-        AFRAME.registerComponent('exit', {
-            schema: {
-                color: { type: 'string', default: 'green' },
-                modelID: { type: 'string', default: 'exit' },
-                modelMat: { type: 'string', default: 'exit' },
-                position: { type: 'string', default: '0 0.1 0' },
-                rotation: { type: 'string', default: '0 0 0' },
-                scale: { type: 'string', default: '0.1 0.1 0.1' },
-                status: { type: 'string', default: 'false' },
-                toLoad: { type: 'number', default: 1 },
-                endGame: { type: 'boolean', default: false },
-            },
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+})
+// component for triggering an exit event
+AFRAME.registerComponent('exit', {
+    schema: {
+        color: { type: 'string', default: 'green' },
+        modelID: { type: 'string', default: 'exit' },
+        modelMat: { type: 'string', default: 'exit' },
+        position: { type: 'string', default: '0 0.1 0' },
+        rotation: { type: 'string', default: '0 0 0' },
+        scale: { type: 'string', default: '0.1 0.1 0.1' },
+        status: { type: 'string', default: 'false' },
+        toLoad: { type: 'number', default: 1 },
+        endGame: { type: 'boolean', default: false },
+    },
 
-            init: function () {
-                const data = this.data;
-                const exit = document.createElement('a-entity');
-                let position = data.position;
-                let color = data.color;
-                let toLoad = data.toLoad;
-                let scale = data.scale;
-                let endGame = data.endGame;
+    init: function () {
+        const data = this.data;
+        const exit = document.createElement('a-entity');
+        let position = data.position;
+        let color = data.color;
+        let toLoad = data.toLoad;
+        let scale = data.scale;
+        let endGame = data.endGame;
 
-                exit.setAttribute('geometry', 'primitive: box;');
-                exit.setAttribute('position', position);
-                exit.setAttribute('color', color);
-                exit.setAttribute('glowFX', 'visible:' + true);
-                exit.setAttribute('scale', scale);
+        exit.setAttribute('geometry', 'primitive: box;');
+        exit.setAttribute('position', position);
+        exit.setAttribute('color', color);
+        exit.setAttribute('glowFX', 'visible:' + true);
+        exit.setAttribute('scale', scale)
 
-                this.el.addEventListener('mouseenter', function (evt) {
-                    if (endGame){
-                        window.location.href = 'end.html';
-                    }
-                    else{
+        this.el.addEventListener('mouseenter', function (evt) {
+            let playercamPos = document.getElementById('playercam').getAttribute('position');
+            const thresholdDistance = 4;
+            let distance = playercamPos.distanceTo(playercamPos);
+            if (distance<thresholdDistance){
+            switch (endGame) {
+                case true:
+                    window.location.href = 'end.html';
+                    console.log('You won the game!');
+                    break;
+                default:
                     loadNewLevel(toLoad);
-                    }
-                })
-            },
-            remove: function () {
-                const el = this.el;
-                el.destroy();
-            },
+                    break;
+            }     
+        }
+        })
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+});
+
+// component for  healthbar 
+AFRAME.registerComponent('healthbar', {
+    schema: {
+        health: { type: 'number', default: 100 },
+    },
+    init: function () {
+        const data = this.data;
+        let health = data.health;
+
+        // health bar UI
+        const healthBarContainer = document.getElementById('healthbarUI');
+        const healthBar = document.createElement('a-box');
+        const healthBarTracker = document.createElement('a-box');
+        healthBar.setAttribute('height', 0.1);
+        healthBar.setAttribute('id', 'healthBar');
+        healthBar.setAttribute('position', '-1.8 -0.38 0');
+        healthBar.setAttribute('width', health / 250);
+        healthBar.setAttribute('depth', 0.01);
+        healthBar.setAttribute('material', 'color:white');
+        healthBarTracker.setAttribute('id', 'healthBarTracker');
+        healthBarTracker.setAttribute('height', 0.1);
+        healthBarTracker.setAttribute('width', health / 250);
+        healthBarTracker.setAttribute('depth', 0.015);
+        healthBarTracker.setAttribute('position', '0 0 0');
+        healthBarTracker.setAttribute('material', 'color:green');
+        healthBar.appendChild(healthBarTracker);
+        healthBarContainer.appendChild(healthBar);
+    },
+    reduceHealthBar: function (amount, health) {
+        let healthUpdate = getPlayerHealth();
+        const healthBarTracker = document.getElementById('healthBarTracker');
+        // play player pain audio
+        let painAudio = document.querySelector("#playerpain");
+        painAudio.play();
+        // set new player health and update UI
+        setPlayerHealth(amount);
+        const healthBarVal100 = (healthUpdate - amount) / 250;
+        healthBarTracker.setAttribute('width', healthBarVal100);
+
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+});
+
+// component for  healthbar 
+AFRAME.registerComponent('Enemyhealthbar', {
+    schema: {
+        health: { type: 'number', default: 20 },
+    },
+
+    init: function () {
+        const data = this.data;
+        let health = data.health;
+        const el = this.el;
+        // health bar UI
+        const enemyhealthBar = document.createElement('a-box');
+        const enemyHealthBarTracker = document.createElement('a-box');
+        const pos = el.getAttribute('position');
+        enemyhealthBar.setAttribute('height', 0.1);
+        enemyhealthBar.setAttribute('id', 'healthBar');
+        enemyhealthBar.setAttribute('position', { x: 1, y: 2, z: 3 });
+        enemyhealthBar.setAttribute('width', health / 250);
+        enemyhealthBar.setAttribute('depth', 0.01);
+        enemyhealthBar.setAttribute('material', 'color:white');
+        enemyHealthBarTracker.setAttribute('id', 'healthBarTracker');
+        enemyHealthBarTracker.setAttribute('height', 0.1);
+        enemyHealthBarTracker.setAttribute('width', health / 250);
+        enemyHealthBarTracker.setAttribute('depth', 0.015);
+        enemyHealthBarTracker.setAttribute('position', '0 0 0');
+        enemyHealthBarTracker.setAttribute('material', 'color:green');
+        enemyhealthBar.appendChild(healthBarTracker);
+        el.appendChild(healthBar);
+    },
+    reduceHealthBar: function (amount, health) {
+        const healthBarTracker = document.getElementById(' enemyHealthBarTracker');
+        // play player pain audio
+        let painAudio = document.querySelector("#playerpain");
+        painAudio.play();
+        // set new player health and update UI
+        setPlayerHealth(amount);
+        const healthBarVal100 = (healthUpdate - amount) / 250;
+        healthBarTracker.setAttribute('width', healthBarVal100);
+
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+});
+
+// chat GPT generated dialogue system 
+AFRAME.registerComponent("dialogue-trigger", {
+    schema: {
+        dialogueTarget: { type: "selector" },
+    },
+    init: function () {
+        const npc = this.el;
+        npc.addEventListener("mouseenter", () => {
+            this.data.dialogueTarget.setAttribute("visible", true);
+            this.startDialogue();
         });
-
-        // component for  healthbar 
-        AFRAME.registerComponent('healthbar', {
-            schema: {
-                health: { type: 'number', default: 100 },
-            },
-            init: function () {
-                const data = this.data;
-                let health = data.health;
-
-                // health bar UI
-                const healthBarContainer = document.getElementById('healthbarUI');
-                const healthBar = document.createElement('a-box');
-                const healthBarTracker = document.createElement('a-box');
-                healthBar.setAttribute('height', 0.1);
-                healthBar.setAttribute('id', 'healthBar');
-                healthBar.setAttribute('position', '-1.8 -0.38 0');
-                healthBar.setAttribute('width', health / 250);
-                healthBar.setAttribute('depth', 0.01);
-                healthBar.setAttribute('material', 'color:white');
-                healthBarTracker.setAttribute('id', 'healthBarTracker');
-                healthBarTracker.setAttribute('height', 0.1);
-                healthBarTracker.setAttribute('width', health / 250);
-                healthBarTracker.setAttribute('depth', 0.015);
-                healthBarTracker.setAttribute('position', '0 0 0');
-                healthBarTracker.setAttribute('material', 'color:green');
-                healthBar.appendChild(healthBarTracker);
-                healthBarContainer.appendChild(healthBar);
-            },
-            reduceHealthBar: function (amount, health) {
-                let healthUpdate = getPlayerHealth();
-                const healthBarTracker = document.getElementById('healthBarTracker');
-                // play player pain audio
-                let painAudio = document.querySelector("#playerpain");
-                painAudio.play();
-                // set new player health and update UI
-                setPlayerHealth(amount);
-                const healthBarVal100 = (healthUpdate - amount) / 250;
-                healthBarTracker.setAttribute('width', healthBarVal100);
-
-            },
-            remove: function () {
-                const el = this.el;
-                el.destroy();
-            },
-        });
-
-        // component for  healthbar 
-        AFRAME.registerComponent('Enemyhealthbar', {
-            schema: {
-                health: { type: 'number', default: 20 },
-            },
-
-            init: function () {
-                const data = this.data;
-                let health = data.health;
-                const el = this.el;
-                // health bar UI
-                const enemyhealthBar = document.createElement('a-box');
-                const enemyHealthBarTracker = document.createElement('a-box');
-                const pos = el.getAttribute('position');
-                enemyhealthBar.setAttribute('height', 0.1);
-                enemyhealthBar.setAttribute('id', 'healthBar');
-                enemyhealthBar.setAttribute('position', { x: 1, y: 2, z: 3 });
-                enemyhealthBar.setAttribute('width', health / 250);
-                enemyhealthBar.setAttribute('depth', 0.01);
-                enemyhealthBar.setAttribute('material', 'color:white');
-                enemyHealthBarTracker.setAttribute('id', 'healthBarTracker');
-                enemyHealthBarTracker.setAttribute('height', 0.1);
-                enemyHealthBarTracker.setAttribute('width', health / 250);
-                enemyHealthBarTracker.setAttribute('depth', 0.015);
-                enemyHealthBarTracker.setAttribute('position', '0 0 0');
-                enemyHealthBarTracker.setAttribute('material', 'color:green');
-                enemyhealthBar.appendChild(healthBarTracker);
-                el.appendChild(healthBar);
-            },
-            reduceHealthBar: function (amount, health) {
-                const healthBarTracker = document.getElementById(' enemyHealthBarTracker');
-                // play player pain audio
-                let painAudio = document.querySelector("#playerpain");
-                painAudio.play();
-                // set new player health and update UI
-                setPlayerHealth(amount);
-                const healthBarVal100 = (healthUpdate - amount) / 250;
-                healthBarTracker.setAttribute('width', healthBarVal100);
-
-            },
-            remove: function () {
-                const el = this.el;
-                el.destroy();
-            },
-        });
-
-        // chat GPT generated dialogue system 
-        AFRAME.registerComponent("dialogue-trigger", {
-            schema: {
-                dialogueTarget: { type: "selector" },
-            },
-            init: function () {
-                const npc = this.el;
-                npc.addEventListener("mouseenter", () => {
-                    this.data.dialogueTarget.setAttribute("visible", true);
-                    this.startDialogue();
+    },
+    startDialogue: function () {
+        const dialogue = JSON.parse(document.getElementById("dialogue").textContent);
+        this.displayMessage(dialogue.dialogues[0]);
+    },
+    displayMessage: function (messageData) {
+        const dialogueBox = document.getElementById('dialogueContent');
+        dialogueBox.setAttribute("text", "value", messageData.message);
+        if (messageData.choices.length > 0) {
+            const choicesContainer = document.getElementById("choices");
+            choicesContainer.setAttribute("visible", true);
+            choicesContainer.innerHTML = "";
+            messageData.choices.forEach((choice, index) => {
+                const choiceEl = document.createElement("a-entity");
+                choiceEl.setAttribute("text", {
+                    value: `${index + 1}. ${choice.text}`,
+                    align: "center",
+                    width: 4,
+                    wrapCount: 25,
+                    color: "black",
                 });
-            },
-            startDialogue: function () {
-                const dialogue = JSON.parse(document.getElementById("dialogue").textContent);
-                this.displayMessage(dialogue.dialogues[0]);
-            },
-            displayMessage: function (messageData) {
-                const dialogueBox = document.getElementById('dialogueContent');
-                dialogueBox.setAttribute("text", "value", messageData.message);
-                if (messageData.choices.length > 0) {
-                    const choicesContainer = document.getElementById("choices");
-                    choicesContainer.setAttribute("visible", true);
-                    choicesContainer.innerHTML = "";
-                    messageData.choices.forEach((choice, index) => {
-                        const choiceEl = document.createElement("a-entity");
-                        choiceEl.setAttribute("text", {
-                            value: `${index + 1}. ${choice.text}`,
-                            align: "center",
-                            width: 4,
-                            wrapCount: 25,
-                            color: "black",
-                        });
-                        choiceEl.setAttribute("position", `0 ${-index / 2} 0`);
-                        choiceEl.setAttribute("clickable", "");
-                        choiceEl.setAttribute("choice-id", choice.next);
-                        choicesContainer.appendChild(choiceEl);
-                    });
-                } else {
-                    const continueText = document.getElementById("continue");
-                    continueText.setAttribute("visible", true);
-                    continueText.addEventListener("mouseenter", () => {
-                        this.data.dialogueTarget.setAttribute("visible", false);
-                    });
-                }
-            },
-        });
+                choiceEl.setAttribute("position", `0 ${-index / 2} 0`);
+                choiceEl.setAttribute("clickable", "");
+                choiceEl.setAttribute("choice-id", choice.next);
+                choicesContainer.appendChild(choiceEl);
+            });
+        } else {
+            const continueText = document.getElementById("continue");
+            continueText.setAttribute("visible", true);
+            continueText.addEventListener("mouseenter", () => {
+                this.data.dialogueTarget.setAttribute("visible", false);
+            });
+        }
+    },
+});
 
-        AFRAME.registerComponent("clickable", {
-            init: function () {
-                const el = this.el;
-                el.addEventListener("mouseenter", () => {
-                    const nextDialogueId = el.getAttribute("choice-id");
-                    const dialogue = JSON.parse(document.getElementById("dialogue").textContent);
-                    const nextDialogue = dialogue.dialogues.find((d) => d.id === nextDialogueId);
-                    this.displayMessage(nextDialogue);
-                });
-            },
+AFRAME.registerComponent("clickable", {
+    init: function () {
+        const el = this.el;
+        el.addEventListener("mouseenter", () => {
+            const nextDialogueId = el.getAttribute("choice-id");
+            const dialogue = JSON.parse(document.getElementById("dialogue").textContent);
+            const nextDialogue = dialogue.dialogues.find((d) => d.id === nextDialogueId);
+            this.displayMessage(nextDialogue);
         });
+    },
+});
