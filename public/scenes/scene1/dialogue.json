@@ -24,6 +24,12 @@
       "id" : 4,
       "position": "-1.5, 0, -4",
       "text": "Get blasting!"
+    },
+    {
+      "char": "Floor",
+      "id" : 6,
+      "position": "-1.5, 0, -4",
+      "text": "Floor test"
     }
   ]
 }

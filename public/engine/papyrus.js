@@ -12,7 +12,7 @@ let textures; let prefabs;
 let currentDiagID = 0; let currentScene = 1; let nextSceneToLoad = currentScene + 1;
 let randomMode = false;
 
-let currentChar = 0; let mapSource = 0; 
+let currentChar = 0; let mapSource = 0;
 // combat var defaults SIMULATED DICE - Combat system is based on D and D - INIT vals / max 
 let CombatDiceNumber = 15; let CombatDMGDiceNumber = 15;
 // dialogueUI Elements Based on a-frame defaults 
@@ -353,7 +353,7 @@ function populateInteractions(interactionID, currentInteraction) {
 function populateMessage(char, message) {
     console.log('populate dialogue box with' + char, message)
     const dialogueUI = document.getElementById('dialogueBox');
-    const dialogueTitle = document.getElementById('dialogueTitle'); 
+    const dialogueTitle = document.getElementById('dialogueTitle');
     // add button test function
     showDialogueUI();
     dialogueUI.setAttribute('text', 'wrapCount:' + 100);
@@ -361,7 +361,7 @@ function populateMessage(char, message) {
     dialogueUI.setAttribute('text', 'height:' + 2);
     dialogueUI.setAttribute('text', 'color:black');
     dialogueTitle.setAttribute('text', 'value:' + char);
-    dialogueUI.setAttribute('text', 'value:'+ message);
+    dialogueUI.setAttribute('text', 'value:' + message);
     setTimeout(hideDialogueUI, 8000);
 }
 
@@ -404,7 +404,7 @@ function createFloor(floorPos, WALL_HEIGHT, WALL_SIZE, PREFAB) {
     floor.setAttribute('static-body', 'mass: 0');
     floor.setAttribute('position', floorPos);
     floor.setAttribute('editor-listener', '');
-    if (!PREFAB){floor.setAttribute('playermovement', '')};
+    if (!PREFAB) { floor.setAttribute('playermovement', '') };
     floor.setAttribute('material', 'src:#floor');
     return floor;
 }
@@ -609,8 +609,26 @@ function createRooms() {
                 el.appendChild(cylinderElm);
                 el.appendChild(floor);
             }
-            // if the number is 1 - 4,  create a wall
-            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0" || mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4 || mapData[i] === 5) {
+            // custum wall
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0") {
+                // custom floor height
+                let floorHeight1 = mapData[i].charAt(1) ? mapData[i].charAt(1) : 0;
+                let floorHeight2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
+                let floorHeight = mapData[i].charAt(1) && mapData[i].charAt(2) ? floorHeight1 + floorHeight2 : floorHeight1;
+                let floorTrigger = floorHeight > 9 ? mapData[i].charAt(3) : mapData[i].charAt(2);
+                let triggerCheck = floorTrigger === 'T' ? true : false;
+                wall = createWall(WALL_SIZE, floorHeight, floorPos, wallTexture);
+                console.log(triggerCheck);
+                if (triggerCheck) {
+                    console.log(floorTrigger, triggerCheck)
+                    wall.setAttribute('triggerdiagfloor', '');
+                    wall.setAttribute('glowfx', 'color:#ffde85;');
+                }
+                el.appendChild(wall);
+                console.log('custumheight check' + floorHeight);
+            }
+            // if the number is 1 - 4,  create a wall 1-5 STANDARD WALLS
+            if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4 || mapData[i] === 5) {
                 wall = createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture);
                 el.appendChild(wall);
                 // floor standard
@@ -622,27 +640,11 @@ function createRooms() {
                     wall.setAttribute('playermovement', '');
                     wall.setAttribute('material', 'src:#' + 'floor');
                 }
-                // custom floor height
-                if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0") {
-                    let floorHeight1 = mapData[i].charAt(1) ? mapData[i].charAt(1) : 0;
-                    let floorHeight2 = mapData[i].charAt(2) ? mapData[i].charAt(2) : 0;
-                    let floorHeight = mapData[i].charAt(1) && mapData[i].charAt(2) ? floorHeight1 + floorHeight2 : floorHeight1;
-                    let floorTrigger = floorHeight > 9 ? mapData[i].charAt(3) : mapData[i].charAt(2);
-                    let triggerCheck = floorTrigger === 'T' ? true : false;
-                    console.log(triggerCheck);
-                    if (triggerCheck) {
-                        console.log(floorTrigger, triggerCheck)
-                        wall.setAttribute('triggerdiagfloor', '');
-                        wall.setAttribute('glowfx', 'color:#ffde85;');
-                    }
-                    wall = createWall(WALL_SIZE, floorHeight, floorPos, wallTexture);
-                    wall.setAttribute('material', 'src:#' + 'floor');
-                }
                 // cause pain trigger floor
                 if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0" && mapData[i].charAt(1) === "H" && mapData[i].charAt(2) === "U") {
                     let dmg1 = mapData[i].charAt(3) ? mapData[i].charAt(3) : 0;
                     let dmg2 = mapData[i].charAt(4) ? mapData[i].charAt(4) : 0;
-                    const wall = createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture);
+                    wall = createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture);
                     wall.setAttribute('editor-listener', '');
                     wall.setAttribute('playermovement', '');
                 }
@@ -691,6 +693,7 @@ function createRooms() {
                     el.appendChild(floor);
                 }
             }
+
             // add exit MAP TYPE 5
             if (mapData[i] === 5) {
                 wall.setAttribute('id', 'door');
@@ -729,7 +732,7 @@ function createRooms() {
     }
     // top down map update pos - FUTURE FEATURE
     // MapMaker(mapData);
-}
+} //END ROOM LOOP
 
 // Map on 2D Map?
 // function MapMaker(mapData) {
