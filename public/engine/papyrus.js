@@ -2,14 +2,14 @@
 // Reassignable global game stare vars
 let player;
 // CONFIG CHARECTERS AND ENEMIES STORE
-let config; let chars; let enemies; 
+let config; let chars; let enemies;
 // Diagoloue and scene metadata etc
 let diag; let sceneMetadata; let interactions; let charDiagIDs = [];
 let lockedDoors = [];
 // STORE TEXTURE INFO
 let textures; let prefabs;
 // diaglog UI Globals / shit 
-let currentDiagID = 0; let numInteraction = 0;let currentScene = 1; let nextSceneToLoad = currentScene + 1;
+let currentDiagID = 0; let numInteraction = 0; let currentScene = 1; let nextSceneToLoad = currentScene + 1;
 let randomMode = false;
 
 let currentChar = 0; let mapSource = 0;
@@ -26,7 +26,6 @@ async function loadData() {
     await loadTextures(currentScene);
     await loadConfig();
     await loadChars();
-    await loadEnemies();
     await loadPrefabs();
     await loadDiag(currentScene);
     await loadInteractions(currentScene);
@@ -76,12 +75,6 @@ async function loadInteractions(sceneToLoad) {
     const res = await fetch(fetchURL)
     interactions = await res.json();
     console.log(interactions);
-}
-
-async function loadEnemies() {
-    const res = await fetch('enemies.json')
-    enemies = await res.json();
-    console.log(enemies);
 }
 
 async function loadPrefabs() {
@@ -138,32 +131,6 @@ function addChar(charNumber) {
     charDiagIDs.push(charNumber);
     console.log('char ids' + charDiagIDs);
     return char;
-}
-
-//Add enemy to scene function 
-function addEnemy(enemyID, enemyNumber) {
-    console.log(enemies.enemies[enemyID].id, enemies.enemies[enemyID].name);
-    let modelRef = enemies.enemies[enemyID].id;
-    let modelID = '#' + modelRef;
-    console.log(modelRef);
-    let enemy = document.createElement('a-entity');
-    enemy.setAttribute('id', modelID + enemyNumber);
-    enemy.setAttribute('name', enemies.enemies[enemyID].name);
-    enemy.setAttribute('gltf-model', modelID);
-    enemy.setAttribute('scale', enemies.enemies[enemyID].scale);
-    enemy.setAttribute('enemy', 'animated:true;' + 'health:' + enemies.enemies[enemyID].health + ';' + 'strength:' + enemies.enemies[enemyID].strength + ';' + 'constitution:' + enemies.enemies[enemyID].constitution + ';');
-    enemy.setAttribute('static-body', 'mass: 0');
-    enemy.setAttribute('rotation', "0 0 0");
-    const enemyBoundingBox = document.createElement('a-entity');
-    enemyBoundingBox.setAttribute('scale', { x: 1, y: 1, z: 1 });
-    enemyBoundingBox.setAttribute('id', 'enBoundingBox' + enemyNumber);
-    enemyBoundingBox.setAttribute('geometry', "primitive: box; width: 1; height: 1; depth:1");
-    enemyBoundingBox.setAttribute('material', "transparent: true; opacity: 0");
-    enemyBoundingBox.setAttribute('position', "0 2 -5");
-    enemyBoundingBox.setAttribute('static-body', 'mass:0.5');
-    enemyBoundingBox.setAttribute('aabb-collider', "objects:" + modelID + enemyNumber);
-    enemy.appendChild(enemyBoundingBox);
-    return enemy;
 }
 
 // Add a torch / light to geometry 
@@ -242,31 +209,35 @@ function hideDialogueUI() {
 }
 
 // show passagebtn relative to character model
-function addButton(diagID, Type) {
+function addButton(diagID, charID) {
     // check if there is an existing button element first before adding a new one
     if (!document.getElementById('nextPassageBtn')) {
         let nextPassageBtn = document.createElement('a-box')
         nextPassageBtn.setAttribute('id', 'nextPassageBtn');
-        nextPassageBtn.setAttribute('cursor-listener', '');
+        nextPassageBtn.setAttribute('btnNext', '');
         nextPassageBtn.setAttribute('depth', '0.01');
-        nextPassageBtn.setAttribute('height', '0.15');
-        nextPassageBtn.setAttribute('width', '0.15');
+        nextPassageBtn.setAttribute('height', '0.5');
+        nextPassageBtn.setAttribute('width', '0.5');
         nextPassageBtn.setAttribute('material', 'color: white');
-        nextPassageBtn.setAttribute('position', '0.2 1.6 0.1');
+        nextPassageBtn.setAttribute('position', '0.6 -0.1 0.1');
         // addtext
         let nextPassageBtnTxt = document.createElement('a-text');
         nextPassageBtnTxt.setAttribute('value', '>');
-        nextPassageBtnTxt.setAttribute('height', '2');
+        nextPassageBtnTxt.setAttribute('height', '4');
         nextPassageBtnTxt.setAttribute('width', '4');
         nextPassageBtnTxt.setAttribute('position', '0 0 0.1')
         nextPassageBtnTxt.setAttribute('material', 'color: black');
         nextPassageBtn.appendChild(nextPassageBtnTxt);
+
+        return nextPassageBtn;
+
     } else {
         console.log('Opps something went wrong - There is already a passage btn on the scene')
     }
 }
 
-function addCharBtn(charNumber){
+// ICON for triggering dialogues - Chars
+function addCharBtn(charNumber) {
     let indexCharNumber = charNumber - 1;
     let diagCount = countDialogue(charNumber);
     let modelID = '#' + chars.characters[indexCharNumber].name;
@@ -278,50 +249,13 @@ function addCharBtn(charNumber){
     return charBtn;
 }
 
-function createChoiceButtons(amount, charID) {
-    // check if there is an existing button element first before adding a new one
-    if (!document.getElementById('choiceButtons')) {
-        let char = document.getElementById(charID);// FOR TESTING PURPOSES - needs to be passed associated char
-        const choiceButtons = document.createElement('a-entity')
-        choiceButtons.setAttribute('id', 'choiceButtons');
-        char.appendChild(choiceButtons);
-        let initX = -0.06
-        for (let x = 0; x < amount; x++) {
-            let nextChoiceBtn = document.createElement('a-box')
-            nextChoiceBtn.setAttribute('id', 'choiceButton' + x);
-            nextChoiceBtn.setAttribute('cursor-listener', '');
-            nextChoiceBtn.setAttribute('depth', '0.01');
-            nextChoiceBtn.setAttribute('height', '0.15');
-            nextChoiceBtn.setAttribute('width', '0.15');
-            nextChoiceBtn.setAttribute('material', 'color: white');
-            nextChoiceBtn.setAttribute('position', initX + 0.02 + '1.6 0.1');
-            // addtext
-            let nextChoiceBtnTxt = document.createElement('a-text');
-            nextChoiceBtnTxt.setAttribute('value' + x);
-            nextChoiceBtnTxt.setAttribute('height', '1');
-            nextChoiceBtnTxt.setAttribute('width', '3');
-            nextChoiceBtnTxt.setAttribute('position', '0 0.015 0.1')
-            nextChoiceBtnTxt.setAttribute('material', 'color: black');
-            char.appendChild(nextChoiceBtn);
-            nextChoiceBtn.appendChild(nextChoiceBtnTxt);
-            choiceButtons.appendChild(nextChoiceBtn);
-        }
-    } else {
-        console.log('Opps something went wrong - There must already be some choice buttons on screen or the engine could not find the choices')
-    }
-}
-
-
-
 function populateDiag(currentChar, numDiag) {
     showDialogueUI();
     console.log(diag.passage[currentChar - 1]);
     let newDiagPassage = diag.passage[currentChar - 1].text;
     let newCharName = diag.passage[currentChar - 1].char;
     currentDiagID = currentChar - 1;
-
     populateMessage(newCharName, newDiagPassage);
-    addButton(currentDiagID, 'char');
 }
 
 function populateInteractions(numInteraction) {
@@ -330,10 +264,8 @@ function populateInteractions(numInteraction) {
     // populate dialog with text / name
     let newDiagPassage = interactions.interactions[numInteraction].text;
     let newObjectName = interactions.interactions[numInteraction].Object;
-
-    populateMessage(newObjectName, newDiagPassage );
-    // addButton(currentDiagID, 'char');
-    setTimeout(hideDialogueUI, 8000);
+    populateMessage(newObjectName, newDiagPassage);
+    setTimeout(hideDialogueUI, 10000);
 }
 
 // show a message from enviroment
@@ -349,7 +281,7 @@ function populateMessage(char, message) {
     dialogueUI.setAttribute('text', 'color:black');
     dialogueTitle.setAttribute('text', 'value:' + char);
     dialogueUI.setAttribute('text', 'value:' + message);
-    setTimeout(hideDialogueUI, 8000);
+    setTimeout(hideDialogueUI, 10000);
 }
 
 // make glow component show on specified char indicating char speaking
@@ -367,13 +299,6 @@ function makeCharInactive(charID) {
     charRef.setAttribute('glowfx', 'visible:false;');
     let charName = charRef.getAttribute('id')
     console.log('check current' + charName);
-}
-
-function removeButton() {
-    const passageBtn = document.getElementById('nextPassageBtn');
-    if (passageBtn != null) {
-        bobGuy.removeChild(passageBtn);
-    }
 }
 
 function gotKey(keyColor) {
@@ -488,7 +413,7 @@ function createRooms() {
                 char.setAttribute('position', charPos);
                 charBtn.setAttribute('position', '0.18 2 0');
                 char.setAttribute('glowfx', 'visible:true;');
-               
+
                 const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE);
                 el.appendChild(floor);
                 el.appendChild(char);
@@ -610,8 +535,8 @@ function createRooms() {
                 console.log(triggerCheck);
                 if (triggerCheck) {
                     const triggerTextRef = mapData[i].charAt(3)
-                    console.log(floorTrigger, triggerCheck,triggerTextRef)
-                    wall.setAttribute('triggerdiagfloor', 'numDiag:'+triggerTextRef);
+                    console.log(floorTrigger, triggerCheck, triggerTextRef)
+                    wall.setAttribute('triggerdiagfloor', 'numDiag:' + triggerTextRef);
                     wall.setAttribute('glowfx', 'color:#ffde85;');
                 }
                 el.appendChild(wall);
@@ -678,12 +603,11 @@ function createRooms() {
                     wall.setAttribute('door', 'doorLockNum:' + doorNum + 'key:true;keyColour:' + doorLockColor);
                     doorNum++;
                     wall.setAttribute('locked', 'true');
-                    wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1;'+'color:'+doorLockColor);
+                    wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1;' + 'color:' + doorLockColor);
                     const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE);
                     el.appendChild(floor);
                 }
             }
-
             // add exit MAP TYPE 5
             if (mapData[i] === 5) {
                 wall.setAttribute('id', 'door');
@@ -712,7 +636,7 @@ function createRooms() {
                 wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
                 const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE);
                 wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
-                wall.setAttribute('exit', 'endGame:'+true);
+                wall.setAttribute('exit', 'endGame:' + true);
                 el.appendChild(wall);
                 el.appendChild(floor);
                 // trigger end of game
@@ -730,48 +654,6 @@ function createRooms() {
 //     document.querySelector('#mapUI').appendChild(playerMap)
 // }
 
-// COMBAT SYSTEM -->
-// SHOOT
-function shootAt(enemyID) {
-    const currentEnemy = enemies.enemies[enemyID]; let enemyConst = parseInt(currentEnemy.constitution);
-    let playerDicerollDmg = 0; let playerDicerollHit = RandomDiceRoll(1, CombatDiceNumber);
-    console.log('player hitroll ' + playerDicerollHit)
-    let attackAudio = document.querySelector("#playerattack");
-    attackAudio.play();
-    triggerMuzzleFX();
-    if (playerDicerollHit >= enemyConst) {
-        let hitAudio = document.querySelector("#hit");
-        hitAudio.play();
-        playerDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber);
-        console.log('You hit! ' + playerDicerollHit / CombatDiceNumber + 'The enemy takes' + playerDicerollDmg);
-        return playerDicerollDmg;
-    } else {
-        console.log(playerDicerollHit / CombatDiceNumber + 'You Missed! and caused ' + playerDicerollDmg + 'damage');
-        return playerDicerollDmg;
-    }
-}
-// MELEE ENEMY ATTACK
-function enemyCombatAttack(enemyID) {
-    const currentEnemy = enemies.enemies[enemyID];
-    let playerConst = parseInt(player.constitution);
-    let enemyDicerollDmg = 0;
-    let enemyDicerollHit = RandomDiceRoll(1, CombatDiceNumber);
-    console.log('player hitroll and player const check ' + enemyDicerollHit, playerConst)
-    let attackAudio = document.querySelector("#attack");
-    attackAudio.play();
-    if (enemyDicerollHit >= playerConst) {
-        let hitAudio = document.querySelector("#playerhit");
-        hitAudio.play();
-        enemyDicerollDmg = RandomDiceRoll(1, CombatDMGDiceNumber);
-        console.log('The Enemy hit you ' + enemyDicerollHit / CombatDiceNumber + ' you take' + enemyDicerollDmg);
-        setPlayerHealth(enemyDicerollDmg);
-        console.log('player health' + player.health);
-        return enemyDicerollDmg;
-    } else {
-        console.log(enemyDicerollHit / CombatDiceNumber + 'You Missed! and caused ' + enemyDicerollDmg + 'damage');
-        return enemyDicerollDmg;
-    }
-}
 
 // RETURN player health
 function getPlayerHealth() {
@@ -817,20 +699,6 @@ function finalDiagID(charID) {
     return diag.passage[finalDiagID - 1].diagID;
 };
 
-// FX AND 3D UI 0--0
-function triggerMuzzleFX() {
-    console.log('triggerMUZZLE FX');
-    const muzzle = document.getElementById('muzzleFX');
-    console.log(muzzle);
-    muzzle.setAttribute('visible', true);
-    let shotAudio = document.querySelector("#pistolshot");
-    shotAudio.play();
-    setTimeout(stopMuzzle, 300);
-    function stopMuzzle() {
-        muzzle.setAttribute('visible', false);
-    }
-}
-
 // RANDOM AND UTILS ?
 // simulate random dice roll
 function RandomDiceRoll(min, max) {
@@ -863,6 +731,6 @@ function playerDeath() {
 
 // EXPORTS 
 export {
-    nextScene, loadNewLevel, populateDiag,
-    populateInteractions, populateMessage, clearScene, loadData, shootAt, gotKey, getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth, setPlayerHealth, playerDeath
+    nextScene, loadNewLevel, populateDiag, addButton,
+    populateInteractions, populateMessage, clearScene, loadData,  gotKey, getPlayerKeysInfo, getPlayerHealth, setPlayerHealth, playerDeath
 };

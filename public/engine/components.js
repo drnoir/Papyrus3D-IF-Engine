@@ -3,9 +3,9 @@
 // Dependency tree - A-Frame / A-Frame Extras / Papyrus
 // ENGINE CORE IMPORTS
 import {
-    nextScene, loadData, populateDiag,
+    nextScene, loadData, populateDiag, addButton,
     // nextPassageForChar, 
-    populateInteractions, populateMessage, shootAt, gotKey, getPlayerKeysInfo, enemyCombatAttack, getPlayerHealth, setPlayerHealth, clearScene, loadNewLevel
+    populateInteractions, populateMessage, gotKey, getPlayerKeysInfo, getPlayerHealth, setPlayerHealth, clearScene, loadNewLevel
 } from "./papyrus.js";
 
 // CURSOR 
@@ -40,6 +40,7 @@ AFRAME.registerComponent('playerhealth', {
         this.el.destroy();
     },
 });
+
 // START GAME BUTTON FOR INIT OF NEW GAME 
 AFRAME.registerComponent('startgamebtn', {
     schema: {
@@ -64,6 +65,7 @@ AFRAME.registerComponent('startgamebtn', {
         this.el.destroy();
     },
 });
+
 // ADD GLOW FX 
 AFRAME.registerComponent('glowfx', {
     schema: {
@@ -93,6 +95,7 @@ AFRAME.registerComponent('glowfx', {
         this.el.destroy();
     },
 });
+
 // PLAYER CAM componenet
 AFRAME.registerComponent('playercam', {
     schema: {
@@ -155,6 +158,20 @@ AFRAME.registerComponent('playercam', {
     },
 });
 
+AFRAME.registerComponent('btnNext', {
+    schema: {
+        numDiag: { type: 'number', default: 2 },
+    },
+    init: function () {
+        const data = this.data;
+        let numDiag = data.numDiag;
+        this.el.addEventListener('mouseenter', function (evt) {  
+            numDiag++;
+            populateDiag(charID, numDiag);
+         })
+    }
+});
+
 // CHAR 
 AFRAME.registerComponent('character', {
     multiple: true,
@@ -176,14 +193,19 @@ AFRAME.registerComponent('character', {
         let animated = data.animated;
         let numDiag = data.numDiag;
         const charID = data.charID;
+        const el = this.el;
         this.el.addEventListener('mouseenter', function (evt) {
-            console.log(evt.detail.intersection.point);
             console.log('dialog triggered');
+            // populate dialog UI
             populateDiag(charID, numDiag);
-            numDiag++;
-            if (this.data.selfdestruct) {
-                this.remove();
+            // add choice options for diags
+            let choiceBtn = addButton(numDiag,charID);
+            if (choiceBtn!==null){
+                 el.appendChild(choiceBtn);
             }
+                 // increment 
+            numDiag++;
+
         })
         if (animated) {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
@@ -208,223 +230,6 @@ function randomUporDown() {
         return 'plus'
     }
 }
-
-AFRAME.registerComponent('enemy',
-    {
-        multiple: true,
-        schema: {
-            color: { type: 'color', default: 'white' },
-            modelPath: { type: 'string', default: './models/grunt.glb' },
-            modelID: { type: 'string', default: 'enemy1' },
-            modelMat: { type: 'string', default: 'demonMat' },
-            format: { type: 'string', default: 'glb' },
-            position: { type: 'string', default: '0 0.1 0' },
-            rotation: { type: 'string', default: '0 0 0' },
-            scale: { type: 'string', default: '1.0 1.0 1.0' },
-            animated: { type: 'boolean', default: false },
-            glowOn: { type: 'boolean', default: false },
-            id: { type: 'number', default: 0 },
-            constitution: { type: 'number', default: 10 },
-            strength: { type: 'number', default: 5 },
-            health: { type: 'number', default: 15 },
-            status: { type: 'string', default: 'alive' },
-            speed: { type: 'number', default: 0.010 },
-            patrol: { type: 'boolean', default: true }
-        },
-        init: function () {
-            this.patrolPoints = [
-                { x: 3, y: 1, z: -3 },
-                { x: 5, y: 1, z: -5 },
-                { x: 8, y: 1, z: -8 },
-                { x: 10, y: 1, z: -10 },
-
-            ];
-            let data = this.data;
-            this.attackDistance = 2;
-            this.deathThreshold = 0; // Placeholder for health points
-            let lifeStatus = data.status;
-            // Start random movement behavior
-            lifeStatus === 'alive' ? this.randomMovementInterval = setInterval(this.randomMovement.bind(this), 3000) : null;
-            this.lastRotationTime = 0;
-
-            const el = this.el;
-            // this is super important for combat - don't delete it
-            const id = data.id;
-            const modelID = data.modelID;
-            const modelMat = data.modelID;
-            let scale = data.scale;
-            let pos = data.position;
-            let rot = data.rotation;
-            let format = data.format;
-            let animated = data.animated;
-            let glowOn = data.glowOn;
-            let health = data.health;
-
-            // create a char based on attributes
-            const newEnemy = document.createElement('a-entity');
-            // newEnemy.setAttribute('position', pos);
-            newEnemy.object3D.position.set(pos);
-            newEnemy.setAttribute('glowFX', 'visible:' + glowOn);
-
-            // health bar UI
-            const healthBar = document.createElement('a-box');
-            const healthBarTracker = document.createElement('a-box');
-            let healthBarVal = health / 10 * 3;
-            healthBar.setAttribute('height', 0.8);
-            healthBar.setAttribute('position', '0 3 0');
-            healthBar.setAttribute('width', 1);
-            healthBar.setAttribute('depth', 0.1);
-            healthBar.setAttribute('material', 'color:white');
-            healthBarTracker.setAttribute('height', 0.8);
-            healthBarTracker.setAttribute('width', 1);
-            healthBarTracker.setAttribute('depth', 0.15);
-            healthBarTracker.setAttribute('position', '0 0 0');
-            healthBarTracker.setAttribute('material', 'color:red');
-            healthBarTracker.setAttribute('HealthBarid', 'healthbar' + id);
-            healthBar.appendChild(healthBarTracker);
-            newEnemy.appendChild(healthBar);
-            // check if model GLB or Obj - this can probably be made into a util function and put into papyrus core
-            if (format === "glb") {
-                newEnemy.setAttribute('gltf-model', '#' + modelID);
-            } else {
-                newEnemy.setAttribute('obj-model', 'obj:#' + modelID + ';' + 'mtl:#' + modelMat + ';');
-            }
-            //check for scale and animation
-            newEnemy.setAttribute('scale', scale);
-            if (animated) {
-                newEnemy.setAttribute('animation-mixer', 'clip:Walking; loop: repeat;'); // change this
-            }
-            newEnemy.setAttribute('rotation', rot);
-            el.appendChild(newEnemy);
-            el.appendChild(healthBar);
-            // on gaze cursor interaction
-            el.addEventListener('click', function (evt) {
-                // console.log('click detect', newEnemy);
-                let newMeleeAttack = shootAt(0);
-                console.log('melle attack' + newMeleeAttack)
-                if (newMeleeAttack > 0 && lifeStatus === 'alive') {
-                    // new health is for UI , health is the enemies health
-                    console.log('work out health called')
-                    let data = this.data;
-                    health = health = -newMeleeAttack;
-                    console.log('newhealth' + health)
-                    // healthBarVal = health / 10 * 3;
-                    // console.log('enemy health reassigned to ' + health)
-                    healthBarTracker.setAttribute('width', healthBarVal);
-                    const enemyHealthBar = 'healthbar' + id
-                    const healthbarComp = document.querySelector(enemyHealthBar).components.healthbar;
-                    healthbarComp.reduceHealthBar(newMeleeAttack);
-                    if (health <= 0) {
-                        lifeStatus = 'dead';
-                        console.log('enemy dead triggered' + '+health' + health + 'lifeStatus' + lifeStatus)
-                        let deathAudio = document.querySelector("#death");
-                        deathAudio.play();
-                        console.log('Enemy is dead');
-                        el.emit(`enemydead`, null, false);
-                        this.die();
-                    } else {
-                        // after being shot at move to player and attack
-                        const playerPosition = document.querySelector('#playercam').getAttribute('position');
-                        let moveToPos = { x: playerPosition.x, y: 0.1, x: playerPosition.z }
-                        moveTo(moveToPos);
-                        console.log('move towards player')
-                    }
-                }
-            });
-        },
-
-        randomMovement: function () {
-            if (!this.el.isPlaying) return;
-            const randomPoint = this.getRandomPatrolPoint();
-            this.el.setAttribute('animation-mixer', 'clip:Walking; loop: repeat;');
-            this.moveTo(randomPoint);
-            this.rotate();
-        },
-
-        moveTo: function (position) {
-            this.el.setAttribute('animation', {
-                property: 'position',
-                dur: 2000,
-                to: position,
-                easing: 'linear'
-            });
-        },
-
-        rotate: function () {
-            const rotation = { x: 0, y: Math.random() * 360, z: 0 };
-            this.el.setAttribute('animation__rotation', {
-                property: 'rotation',
-                dur: 6000,
-                to: rotation
-            });
-        },
-
-        getRandomPatrolPoint: function () {
-            return this.patrolPoints[Math.floor(Math.random() * this.patrolPoints.length)];
-        },
-
-        tick: function (time, delta) {
-            const playerPosition = document.querySelector('#playercam').getAttribute('position');
-            const currentPosition = this.el.getAttribute('position');
-            const distanceToPlayer = this.calculateDistance(playerPosition, currentPosition);
-            let data = this.data;
-            let lifeStatus = data.status;
-
-            if (distanceToPlayer <= this.attackDistance && lifeStatus === "alive") {
-                this.attack();
-                this.moveTo(playerPosition);
-            } else if (this.detectWall() && lifeStatus === "alive") {
-                this.avoidWall();
-            } else if (time - this.lastRotationTime > this.rotationInterval && lifeStatus === "alive") {
-                this.rotate();
-                this.lastRotationTime = time;
-            }
-
-        },
-
-        calculateDistance: function (pos1, pos2) {
-            const dx = pos1.x - pos2.x;
-            const dy = pos1.y - pos2.y;
-            const dz = pos1.z - pos2.z;
-            return Math.sqrt(dx * dx + dy * dy + dz * dz);
-        },
-
-        detectWall: function () {
-            const wallPosition = document.querySelector('.wall').getAttribute('position');
-            const enemyPosition = this.el.getAttribute('position');
-            const distanceToWall = this.calculateDistance(wallPosition, enemyPosition);
-            return distanceToWall < 2; // Assume wall detection within 2 units
-        },
-
-        avoidWall: function () {
-            const currentPosition = this.el.getAttribute('position');
-            const newTarget = { x: currentPosition.x + 2, y: currentPosition.y, z: currentPosition.z }; // Move away from the wall
-            this.moveTo(newTarget);
-        },
-
-        die: function () {
-            clearInterval(this.randomMovementInterval);
-            // Other death logic here, e.g., remove entity, play death animation, etc.
-            console.log("Enemy died!");
-            this.el.setAttribute('animation-mixer', 'clip:DeathAni;  loop: once; clampWhenFinished: true;');
-        },
-
-        attack: function (targetPosition) {
-            // Implement your attack logic here
-            console.log('Attacking the target!');
-            this.el.setAttribute('animation-mixer', 'clip:Attack;  loop: once; clampWhenFinished: true;');
-            // this.el.setAttribute('animation-mixer', { clip: 'Attack' }, {loop:once},{clampWhenFinished: true});
-            this.el.setAttribute('animation-mixer', { timeScale: 1 });
-            let dmgAmount = enemyCombatAttack();
-            const healthbarComp = document.querySelector('[healthbar]').components.healthbar;
-            healthbarComp.reduceHealthBar(dmgAmount);
-        },
-
-        remove: function () {
-            const el = this.el;
-            el.destroy();
-        },
-    });
 
 AFRAME.registerComponent('intersection-spawn', {
     schema: {
