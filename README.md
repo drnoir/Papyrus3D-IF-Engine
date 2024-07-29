@@ -5,12 +5,14 @@
 
 ### SIMPLE OPEN SOURCE WebGL GAME ENGINE / FRAMEWORK FOR VR / AR / Web (Pre-Alpha 0.1.2)
 Open source game engine for generating 3D FIrst Person Interactive Fiction games based on JSON configs powered by A-Frame.
+
 Edit the json files in the public folder and then use the preview and export buttons to export your game.
-Allow for customisation and export of games as a separate html / javascript bundle or an exe.
+
+Allows for customisation and export of games as a separate html / javascript bundle or an exe. Incudes a demo game for guidance (Vault Tech).
 
 Multi-Platform support - Desktop, Mobile, VR / AR.
 
-Game build in the public folder. Currently, a test game but will be replaced with a generic template you can build on. Soon there will be a demos folder for example games once Alpha is ready for release.
+Game build in the public folder. Currently, a test game but will be replaced with a generic template you can build on (Vault Tech). Soon there will be a demos folder for example games once Alpha is ready for release.
 
 ### A note on GNU licensing / Licensing for any games built with  Papyrus3D
 All the code for this project is released under a GNU3 licence, and you can read the full licence for the software in the licence file. You are free to charge for or distrubute any games you make with the Papyrus3D framework however you want but the source code of anything you release will also be GNU3. It does not allow for you to download the engine code, claim is as your own and start charging for it. Any code that is based upon the source code MUST be released under GNU3 with the same conditions. This project is already built upon A-Frame which is itself an open source project.

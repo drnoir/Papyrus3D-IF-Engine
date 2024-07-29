@@ -1,29 +1,23 @@
 {
   "passage": [
     {
-      "char": "Tech1",
+      "char": "Engineer Bob",
       "id" : 1,
       "position": "-1.5, 0, -4",
-      "text": "Hey new guy! Come and open that door, it's Bob! I'm through the next room"
+      "text": "Hey new guy! I'm Bob!"
     },
     {
-      "char": "Tech1",
+      "char": "Engineer Bob",
       "id" : 2,
       "position": "-1.5, 0, -6",
-      "text": "So new guy guy, whatever you name is.... We got a bit of an infestation problem that needs sorting out"
+      "text": "The Main Hall is through that Server Coolant room round the corner,  \\n it's secured with a blue key though"
     },
     {
-      "char": "Tech1",
+      "char": "Engineer Bob",
       "id" : 3,
       "position": "-1.5, 0, -4",
-      "text": "Go and use your pistol to take out these goddamn huge mutant ants. Union doesn't pay me enough for this shit, and its your first day so.... ",
+      "text": "You'll have to find the blue key, open that door then go through to the main room. \\n Once in there I just need you to press the red button and our safety check will be complete. ",
       "choices" : ["Yes Ok", "No Way"]
-    },
-    {
-      "char": "Tech1", 
-      "id" : 4,
-      "position": "-1.5, 0, -4",
-      "text": "Get blasting!"
     }
   ]
 }

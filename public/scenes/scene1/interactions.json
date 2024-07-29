@@ -3,7 +3,7 @@
       {
         "Object": "Old Computer",
         "position": "-1.5, 0, -4",
-        "text": "Oh wow this computer is almost old enough to be in a museum!"
+        "text": "A model 486 computer, it looks like it's been here for years. \\n I wonder if it still works?"
       },
       {
         "Object": "chest",
@@ -13,22 +13,22 @@
       {
         "Object": "Pipes",
         "position": "-1.5, 0, -4",
-        "text": "These Pipes are helping to vent the excess heat from the server farms."
+        "text": "These Pipes are helping to vent the excess heat from the server farms.  \\n They prevent overheating of our Vault's core systems.  \\n The infrastructure that keeps us safe here, requires a lot of power."
       },
       {
         "Object": "Server Machine",
         "position": "-1.5, 0, -4",
-        "text": "This is one of the servers in the facility. \\n Lorem ipsum dolor sit amet, consectetur adipiscing elit. \\n Aenean leo lorem, commodo vitae nulla non, efficitur lobortis ipsum. \\n Nulla sagittis consectetur massa, vel egestas felis. \\n Duis ac enim nec est sagittis ornare eu a sapien. \\n Donec sollicitudin blandit velit,\\n porttitor rhoncus justo malesuada eget.\\n  Integer non auctor risus.  Duis vehicula non neque a elementum. Aliquam erat volutpat. \\n Morbi molestie ante at purus aliquet viverra. \\n In volutpat, \\n nibh eget consequat mollis, nulla dolor pulvinar ex, a tristique nisi lacus in nibh. \\n Nam porttitor, justo vitae blandit fermentum, \\n erat sem pretium justo, in imperdiet erat eros at lorem. \\n Praesent tincidunt metus vitae neque tempor fringilla. \\n Phasellus id turpis ut nibh pharetra convallis eu id urna."
+        "text": "This is one of the servers in the Vault Engineering deck. \\n Without these machine keeping the day to day running of the Vault in check.  \\n life would be a lot more difficult for all of us."
       },
       {
         "Object": "Cooling Pool",
         "position": "-1.5, 0, -4",
-        "text": "This is one of the servers in the facility"
+        "text": "This is one of the Coolent Pools, full of coolent liquid. \\n It's used to keep the servers from overheating.  \\n The liquid is pumped around the server farm to keep the temperature down."
       },
       {
         "Object": "Poster",
         "position": "-1.5, 0, -4",
-        "text": "This is one of the servers in the facility"
+        "text": "Art to keep us happy I guess."
       }
     ]
   }
