@@ -4,14 +4,13 @@ let player;
 // CONFIG CHARECTERS AND ENEMIES STORE
 let config; let chars; let enemies;
 // Diagoloue and scene metadata etc
-let diag; let sceneMetadata; let interactions; let charDiagIDs = [];
+let diag; let mono; let sceneMetadata; let interactions; let charDiagIDs = [];
 let lockedDoors = [];
 // STORE TEXTURE INFO
 let textures; let prefabs;
 // diaglog UI Globals / shit 
 let currentDiagID = 0; let numInteraction = 0; let currentScene = 1; let nextSceneToLoad = currentScene + 1;
-let randomMode = false;
-
+let randomMode = false; let introID = 1; // for optional intro dialogue loading
 let currentChar = 0; let mapSource = 0;
 // combat var defaults SIMULATED DICE - Combat system is based on D and D - INIT vals / max 
 let CombatDiceNumber = 15; let CombatDMGDiceNumber = 15;
@@ -34,6 +33,8 @@ async function loadData() {
     await loadMap(currentScene);
     // run create scene routine
     await createRooms();
+
+    
     // testing dialogue.json UI population
     const sound = document.querySelector('[sound]');
     sound.components.sound.playSound();
@@ -64,10 +65,15 @@ async function loadChars() {
 }
 
 async function loadDiag(sceneToLoad) {
+    // fetch dialogues NPC
     let fetchURL = './scenes/scene' + sceneToLoad + '/dialogue.json';
     const res = await fetch(fetchURL)
     diag = await res.json();
-    console.log(diag);
+    // fetch monologues PC Solo
+    let fetchURL2 = './scenes/scene' + sceneToLoad + '/monologues.json';
+    const res2 = await fetch(fetchURL2)
+    mono = await res2.json();
+    console.log(mono);
 }
 
 async function loadInteractions(sceneToLoad) {
@@ -99,6 +105,8 @@ async function loadSceneMetaData(metaDataToLoad) {
     let fetchURL = './scenes/scene' + metaDataToLoad + '/scene.json';
     const res = await fetch(fetchURL)
     sceneMetadata = await res.json();
+    introID = sceneMetadata.IntroID;
+    if (sceneMetadata.Intro){populateMono('Player',introID)};
 }
 
 // PLAYER SETUP
@@ -258,6 +266,16 @@ function populateDiag(currentChar, numDiag) {
     populateMessage(newCharName, newDiagPassage);
 }
 
+
+function populateMono(playerName, numMono) {
+    showDialogueUI();
+    console.log(mono.passage[numMono-1].text);
+    let newDiagPassage = mono.passage[numMono-1].text;
+    let newCharName =playerName;
+    populateMessage(newCharName, newDiagPassage);
+}
+
+
 function populateInteractions(numInteraction) {
     // add button test function
     showDialogueUI();
@@ -282,7 +300,7 @@ function populateMessage(char, message) {
     dialogueUI.setAttribute('text', 'color:black');
     dialogueTitle.setAttribute('text', 'value:' + char);
     dialogueUI.setAttribute('text', 'value:' + message);
-    setTimeout(hideDialogueUI, 10000);
+    // setTimeout(hideDialogueUI, 10000);
 }
 
 // make glow component show on specified char indicating char speaking
@@ -332,18 +350,18 @@ function createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture, poster, poste
     wall.setAttribute('material', 'src:#' + wallTexture);
     wall.setAttribute('static-body', 'mass: 0');
     if (poster) {
-      // Create the poster element
-      let posterTexture = textures.textures[7].id;
-      const poster = document.createElement('a-box');
-      poster.setAttribute('class', 'poster');
-      poster.setAttribute('width', WALL_SIZE ); // Smaller than the wall
-      poster.setAttribute('height', WALL_HEIGHT /2); // Smaller than the wall
-      poster.setAttribute('depth', WALL_SIZE / 100); // Very thin, like a poster
-      poster.setAttribute('position', '0 0 0.5'); // Slightly in front of the wall
-      poster.setAttribute('material', 'src:#' +'poster'+posterNum); // Example material, can be changed
-    
-      // Append the poster to the wall
-      wall.appendChild(poster);
+        // Create the poster element
+        let posterTexture = textures.textures[7].id;
+        const poster = document.createElement('a-box');
+        poster.setAttribute('class', 'poster');
+        poster.setAttribute('width', WALL_SIZE); // Smaller than the wall
+        poster.setAttribute('height', WALL_HEIGHT / 2); // Smaller than the wall
+        poster.setAttribute('depth', WALL_SIZE / 100); // Very thin, like a poster
+        poster.setAttribute('position', '0 0 0.5'); // Slightly in front of the wall
+        poster.setAttribute('material', 'src:#' + 'poster' + posterNum); // Example material, can be changed
+
+        // Append the poster to the wall
+        wall.appendChild(poster);
     }
     return wall;
 }
@@ -359,7 +377,7 @@ function createRooms() {
     let wallTexture = textures.textures[0].id; let floorTexture = textures.textures[1].id;
     let doorTexture = textures.textures[2].id; let wallTexture2 = textures.textures[3].id;
     let exitTexture = textures.textures[4].id; let waterTexture = textures.textures[5].id;
-    let keyTexture = textures.textures[6].id; 
+    let keyTexture = textures.textures[6].id;
 
     const WALL_SIZE = 1;
     const WALL_HEIGHT = 3.5;
@@ -527,11 +545,11 @@ function createRooms() {
                 el.appendChild(floor);
             }
             // poster on wall
-            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "P"  && mapData[i].charAt(1) === "O") {
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "P" && mapData[i].charAt(1) === "O") {
                 let posterNum = mapData[i].charAt(2) ? mapData[i].charAt(2) : 1;
                 let posterTrigger = mapData[i].charAt(3) === 'T' ? true : false;
-                wall = createWall(WALL_SIZE, WALL_HEIGHT,position, wallTexture, true, posterNum);
-    
+                wall = createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture, true, posterNum);
+
                 if (posterTrigger) {
                     const triggerTextRef = mapData[i].charAt(3)
                     wall.setAttribute('triggerdiagfloor', 'numDiag:' + triggerTextRef);
@@ -744,5 +762,5 @@ function playerDeath() {
 // EXPORTS 
 export {
     nextScene, loadNewLevel, populateDiag, addButton,
-    populateInteractions, populateMessage, clearScene, loadData,  gotKey, getPlayerKeysInfo, getPlayerHealth, setPlayerHealth, playerDeath
+    populateInteractions, populateMessage, clearScene, loadData, gotKey, getPlayerKeysInfo, getPlayerHealth, setPlayerHealth, playerDeath
 };

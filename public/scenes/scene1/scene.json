@@ -8,5 +8,7 @@
   "RoomDepth" : 20,
   "skyColor":"blue",
   "foilage": "bush",
-  "foilageAmount": 8
+  "foilageAmount": 8,
+  "Intro" :true,
+  "IntroID" :1
 }

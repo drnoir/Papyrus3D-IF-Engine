@@ -165,10 +165,10 @@ AFRAME.registerComponent('btnNext', {
     init: function () {
         const data = this.data;
         let numDiag = data.numDiag;
-        this.el.addEventListener('mouseenter', function (evt) {  
+        this.el.addEventListener('mouseenter', function (evt) {
             numDiag++;
             populateDiag(charID, numDiag);
-         })
+        })
     }
 });
 
@@ -198,12 +198,13 @@ AFRAME.registerComponent('character', {
             console.log('dialog triggered');
             // populate dialog UI
             populateDiag(charID, numDiag);
-            // add choice options for diags
-            let choiceBtn = addButton(numDiag,charID);
-            if (choiceBtn!==null){
-                 el.appendChild(choiceBtn);
+            // add next / continue button for passage nav
+            let choiceBtn = document.getElementById('nextPassageBtn');
+            if (choiceBtn == null) {
+                let newChoiceBtn = addButton(numDiag,  charID);
+                el.appendChild(newChoiceBtn);
             }
-                 // increment 
+            // increment 
             numDiag++;
 
         })
@@ -376,30 +377,30 @@ AFRAME.registerComponent('door', {
 
         const doorPos = el.getAttribute('position');
         this.el.addEventListener('mouseenter', function (evt) {
-                if (!locked) {
+            if (!locked) {
+                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
+                el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
+                let doorAudio = document.querySelector("#dooropen");
+                doorAudio.play();
+            }
+            else if (key) {
+                const playerKeys = getPlayerKeysInfo();
+                if (playerKeys.find((element) => element === 'blue' || 'yellow' || 'red')) {
                     let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
                     el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
                     let doorAudio = document.querySelector("#dooropen");
                     doorAudio.play();
+                    populateMessage(keyColor + ' door', keyColor + ' door opened')
+                    locked = false;
                 }
-                else if (key) {
-                    const playerKeys = getPlayerKeysInfo();
-                    if (playerKeys.find((element) => element === 'blue' || 'yellow' || 'red')) {
-                        let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
-                        el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
-                        let doorAudio = document.querySelector("#dooropen");
-                        doorAudio.play();
-                        populateMessage(keyColor + ' door', keyColor + ' door opened')
-                        locked = false;
-                    }
-                    else {
-                        populateMessage('Locked ' + keyColor + ' Key Door', 'This door is locked, you need to find a ' + keyColor + ' key to open it');
-                    }
-                }
-                // locked door checks
                 else {
-                    populateMessage('Locked Door', 'This door is locked, you may need to find a matching key for it');
+                    populateMessage('Locked ' + keyColor + ' Key Door', 'This door is locked, you need to find a ' + keyColor + ' key to open it');
                 }
+            }
+            // locked door checks
+            else {
+                populateMessage('Locked Door', 'This door is locked, you may need to find a matching key for it');
+            }
         })
     },
     closeDoor: function () {
@@ -523,21 +524,21 @@ AFRAME.registerComponent('exit', {
             let playercamPos = document.getElementById('playercam').getAttribute('position');
             const thresholdDistance = 3;
             let distance = playercamPos.distanceTo(playercamPos);
-            if (distance<thresholdDistance){
+            if (distance < thresholdDistance) {
                 let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
                 el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
                 let doorAudio = document.querySelector("#dooropen");
                 doorAudio.play();
-            switch (endGame) {
-                case true:
-                    window.location.href = 'end.html';
-                    console.log('You won the game!');
-                    break;
-                default:
-                    loadNewLevel(toLoad);
-                    break;
-            }     
-        }
+                switch (endGame) {
+                    case true:
+                        window.location.href = 'end.html';
+                        console.log('You won the game!');
+                        break;
+                    default:
+                        loadNewLevel(toLoad);
+                        break;
+                }
+            }
         })
     },
     remove: function () {
