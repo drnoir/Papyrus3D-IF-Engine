@@ -223,8 +223,8 @@ function addButton(diagID, charID) {
         // addtext
         let nextPassageBtnTxt = document.createElement('a-text');
         nextPassageBtnTxt.setAttribute('value', '>');
-        nextPassageBtnTxt.setAttribute('height', '4');
-        nextPassageBtnTxt.setAttribute('width', '4');
+        nextPassageBtnTxt.setAttribute('height', '6');
+        nextPassageBtnTxt.setAttribute('width', '6');
         nextPassageBtnTxt.setAttribute('position', '0 0 0.1')
         nextPassageBtnTxt.setAttribute('material', 'color: black');
         nextPassageBtn.appendChild(nextPassageBtnTxt);
@@ -261,6 +261,7 @@ function populateDiag(currentChar, numDiag) {
 function populateInteractions(numInteraction) {
     // add button test function
     showDialogueUI();
+    console.log(numInteraction);
     // populate dialog with text / name
     let newDiagPassage = interactions.interactions[numInteraction].text;
     let newObjectName = interactions.interactions[numInteraction].Object;
@@ -321,7 +322,7 @@ function createFloor(floorPos, WALL_HEIGHT, WALL_SIZE, PREFAB) {
     return floor;
 }
 
-function createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture) {
+function createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture, poster, posterNum) {
     const wall = document.createElement('a-box');
     wall.setAttribute('class', 'wall');
     wall.setAttribute('width', WALL_SIZE);
@@ -330,8 +331,23 @@ function createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture) {
     wall.setAttribute('position', position);
     wall.setAttribute('material', 'src:#' + wallTexture);
     wall.setAttribute('static-body', 'mass: 0');
+    if (poster) {
+      // Create the poster element
+      let posterTexture = textures.textures[7].id;
+      const poster = document.createElement('a-box');
+      poster.setAttribute('class', 'poster');
+      poster.setAttribute('width', WALL_SIZE ); // Smaller than the wall
+      poster.setAttribute('height', WALL_HEIGHT /2); // Smaller than the wall
+      poster.setAttribute('depth', WALL_SIZE / 100); // Very thin, like a poster
+      poster.setAttribute('position', '0 0 0.5'); // Slightly in front of the wall
+      poster.setAttribute('material', 'src:#' +'poster'+posterNum); // Example material, can be changed
+    
+      // Append the poster to the wall
+      wall.appendChild(poster);
+    }
     return wall;
 }
+
 
 // ROOM CREATION
 // Create rooms loop - called at init - Adds Entities to scene
@@ -343,7 +359,7 @@ function createRooms() {
     let wallTexture = textures.textures[0].id; let floorTexture = textures.textures[1].id;
     let doorTexture = textures.textures[2].id; let wallTexture2 = textures.textures[3].id;
     let exitTexture = textures.textures[4].id; let waterTexture = textures.textures[5].id;
-    let keyTexture = textures.textures[6].id;
+    let keyTexture = textures.textures[6].id; 
 
     const WALL_SIZE = 1;
     const WALL_HEIGHT = 3.5;
@@ -448,19 +464,6 @@ function createRooms() {
                 el.appendChild(floor);
                 floor.appendChild(prefabElm);
             }
-            // enemies
-            if (mapData[i] === 9) {
-                let enemy1 = addEnemy(0, i);
-                enemy1.setAttribute('id', i);
-                enemy1.setAttribute('status', 'alive');
-                enemy1.setAttribute('position', charPos);
-                enemy1.setAttribute('enemy', 'modelID:' + enemy1.model + ';' +
-                    'format:glb; animated:true;' + 'health:' + enemy1.health + 'scale:' + enemy1.scale +
-                    'id:' + i + 'constitution:' + enemy1.constitution);
-                const floor = createFloor(floorPos);
-                el.appendChild(floor);
-                el.appendChild(enemy1);
-            }
             //  water
             if (mapData[i] === 6) {
                 const water = document.createElement('a-plane');
@@ -523,6 +526,19 @@ function createRooms() {
                 el.appendChild(cylinderElm);
                 el.appendChild(floor);
             }
+            // poster on wall
+            if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "P"  && mapData[i].charAt(1) === "O") {
+                let posterNum = mapData[i].charAt(2) ? mapData[i].charAt(2) : 1;
+                let posterTrigger = mapData[i].charAt(3) === 'T' ? true : false;
+                wall = createWall(WALL_SIZE, WALL_HEIGHT,position, wallTexture, true, posterNum);
+    
+                if (posterTrigger) {
+                    const triggerTextRef = mapData[i].charAt(3)
+                    wall.setAttribute('triggerdiagfloor', 'numDiag:' + triggerTextRef);
+                    wall.setAttribute('glowfx', 'color:#ffde85;');
+                }
+                el.appendChild(wall);
+            }
             // custum wall
             if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0") {
                 // custom floor height
@@ -531,11 +547,10 @@ function createRooms() {
                 let floorHeight = mapData[i].charAt(1) && mapData[i].charAt(2) ? floorHeight1 + floorHeight2 : floorHeight1;
                 let floorTrigger = floorHeight > 9 ? mapData[i].charAt(3) : mapData[i].charAt(2);
                 let triggerCheck = floorTrigger === 'T' ? true : false;
-                wall = createWall(WALL_SIZE, floorHeight, floorPos, wallTexture);
+                wall = createWall(WALL_SIZE, floorHeight, floorPos, wallTexture, false);
                 console.log(triggerCheck);
                 if (triggerCheck) {
-                    const triggerTextRef = mapData[i].charAt(3)
-                    console.log(floorTrigger, triggerCheck, triggerTextRef)
+                    const triggerTextRef = mapData[i].charAt(3);
                     wall.setAttribute('triggerdiagfloor', 'numDiag:' + triggerTextRef);
                     wall.setAttribute('glowfx', 'color:#ffde85;');
                 }
@@ -544,7 +559,7 @@ function createRooms() {
             }
             // if the number is 1 - 4,  create a wall 1-5 STANDARD WALLS
             if (mapData[i] === 0 || mapData[i] === 1 || mapData[i] == 2 || mapData[i] === 3 || mapData[i] === 4 || mapData[i] === 5) {
-                wall = createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture);
+                wall = createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture, false);
                 el.appendChild(wall);
                 // floor standard
                 if (mapData[i] === 0) {
@@ -559,24 +574,24 @@ function createRooms() {
                 if (typeof mapData[i] === 'string' && mapData[i].charAt(0) === "0" && mapData[i].charAt(1) === "H" && mapData[i].charAt(2) === "U") {
                     let dmg1 = mapData[i].charAt(3) ? mapData[i].charAt(3) : 0;
                     let dmg2 = mapData[i].charAt(4) ? mapData[i].charAt(4) : 0;
-                    wall = createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture);
+                    wall = createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture, false);
                     wall.setAttribute('editor-listener', '');
                     wall.setAttribute('playermovement', '');
                 }
                 // full height wall
                 if (mapData[i] === 1) {
-                    wall = createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture);
+                    wall = createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture, false);
                     wall.setAttribute('material', 'repeat:0.5 1');
                 }
                 // 1/2 height wall
                 if (mapData[i] === 2) {
-                    wall = createWall(WALL_SIZE, WALL_HEIGHT, halfYposition, wallTexture2);
+                    wall = createWall(WALL_SIZE, WALL_HEIGHT, halfYposition, wallTexture2, false);
                     const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE);
                     el.appendChild(floor);
                 }
                 //  1/4 height wall
                 if (mapData[i] === 3) {
-                    wall = createWall(WALL_SIZE, WALL_HEIGHT, quarterYposition, wallTexture2);
+                    wall = createWall(WALL_SIZE, WALL_HEIGHT, quarterYposition, wallTexture2, false);
                 }
                 // door
                 if (mapData[i] === 4) {
@@ -613,9 +628,6 @@ function createRooms() {
                 wall.setAttribute('id', 'door');
                 // create component for door / lock
                 wall.setAttribute('height', WALL_HEIGHT);
-                wall.setAttribute('door', 'false');
-                wall.setAttribute('locked', 'false');
-                wall.setAttribute('door', '');
                 wall.setAttribute('scale', '1 1 1');
                 wall.setAttribute('material', 'src:#' + doorTexture + ';repeat: 1 1');
                 const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE);

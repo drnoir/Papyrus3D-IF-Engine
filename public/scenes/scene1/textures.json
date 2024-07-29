@@ -2,11 +2,11 @@
   "textures": [
     {
       "id": "brick",
-      "path": "textures/structures/conrete.JPG"
+      "path": "textures/walls/cyberWall.JPG"
     },
     {
       "id": "floor",
-      "path": "textures/structures/whitegrav.JPG"
+      "path": "textures/structures/cyberFloor.JPG"
     },
     {
       "id": "door",
@@ -27,6 +27,10 @@
     {
       "id": "key",
       "path": "textures/structures/metaldoor.jpg"
+    },
+    {
+      "id": "poster",
+      "path": "textures/posters/soviet.jpg"
     }
   ]
 }

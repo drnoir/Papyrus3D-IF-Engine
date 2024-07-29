@@ -44,15 +44,18 @@
             <audio id="dooropen" src="./sound/dooropen.mp3" preload="auto"></audio>
             <audio id="keypickup" src="./sound/keypickup.mp3" preload="auto"></audio>
             <!--textures-->
-            <img id="brick" src="./textures/walls/sewerwall.jpg">
+            <img id="brick" src="./textures/walls/steelFuture.jpg">
             <img id="talk" src="./talk.png">
             <img id="door" src="./textures/structures/metaldoor.jpg">
             <img id="floor" src="./textures/structures/whitegrav.JPG">
             <img id="wooddoor" src="./textures/wood/wooddoor.jpg">
-            <img id="grunge" src="textures/structures/whiterock.jpg">
+            <img id="grunge" src="./textures/structures/whitegrav.JPG">
             <img id="orangebrick" src="./textures/walls/orangebrick.jpg">
-            <img id="water" src="./textures/nature/water.jpeg">
-            <img id="poster" src="./textures/posters/soviet.jpg">
+            <img id="water" src="./textures/nature/water.jpg">
+            <img id="poster1" src="./textures/posters/1.jpg">
+            <img id="poster2" src="./textures/posters/2.jpg">
+            <img id="poster3" src="./textures/posters/3.jpg">
+            <img id="poster4" src="./textures/posters/4.jpg">
             <img id="exit" src="./textures/structures/pattern.JPG">
             <img id="key" src="./textures/structures/metaldoor.jpg">
             <img id="sky" src="textures/night.jpg">
@@ -67,7 +70,6 @@
         <a-entity sound="src: #playerdeath" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
         <a-entity sound="src: #playerpain" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
         <a-entity sound="src: #playerattack" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
-        <a-entity sound="src: #pistolshot" autoplay="false" volume="0.4" loop="false" positional="false"></a-entity>
         <a-entity light="type: ambient; color: #CCC;intensity: 0.2;"></a-entity>
         <!-- start game UI -->
         <a-circle id="startGame" startgamebtn radius="0.5" depth="0.1" position="1 2 -0.1 " rotation="0 0 0"
@@ -85,18 +87,10 @@
                     material="color:yellow;" visible="false"></a-plane>
                 <a-plane id="redKey" position="-0.9 -0.6 -0.8" width="0.1" height="0.1" depth="0.1"
                     material="color:red;" visible="false"></a-plane>
-                <!-- fuse cursor -->
-                <!-- <a-entity
-                    animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
-                    animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 150; from: 1 1 1; to: 0.1 0.1 0.1"
-                    animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
-                    cursor="fuse: true;" material="color: white; shader: flat" position="0 0 -1"
-                    geometry="primitive: ring; radiusInner: 0.03; radiusOuter: 0.04" scale="0.2 0.2 0.2">
-                </a-entity> -->
                 <!-- Fuse Cursor -->
                 <a-entity cursor="fuse: true; fuseTimeout: 2000;" position="0 0 -1"
                     geometry="primitive: ring; radiusInner: 0.05; radiusOuter: 0.06"
-                    material="color: white; shader: flat"  scale="0.2 0.2 0.2"
+                    material="color: white; shader: flat" scale="0.2 0.2 0.2"
                     animation__mouseenter="property: scale; to: 0.3 0.3 0.3; dur: 150"
                     animation__mouseleave="property: scale; to: 0.2 0.2 0.2; dur: 150"
                     animation__fusing="property: scale; to: 0.4 0.4 0.4; dur: 150"
@@ -123,7 +117,6 @@
         <!-- Sky -->
     </a-scene>
 </body>
-<!-- <script src="./engine/dialogue.js" type="module"></script> -->
 <script src="./engine/components.js" type="module"></script>
 <script src="./engine/papyrus.js" type="module"></script>
 

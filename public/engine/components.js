@@ -270,7 +270,7 @@ AFRAME.registerComponent('playermovement', {
             const playercamPos = document.getElementById('playercam').getAttribute('position');
             const floors = document.querySelectorAll('.floor');
             const thresholdDistance = 1.5; // Distance within which color change happens
-            const resetTime = 1000;
+            const resetTime = 1200;
             // distance checking
             console.log(newPos.x, newPos.z);
             let distanceCheck = playercamPos.distanceTo(newPos);
@@ -298,7 +298,7 @@ AFRAME.registerComponent('playermovement', {
                             }, resetTime);
                         }
                     });
-                }, 2000); // to prevent the player from moving too fast
+                }, 1200); // to prevent the player from moving too fast
             }
         });
     }
@@ -312,9 +312,9 @@ AFRAME.registerComponent('triggerdiagfloor', {
     },
     init: function () {
         const data = this.data;
-        const numDiag = data.numDiag
+        // const numDiag = data.numDiag
         this.el.addEventListener('mouseenter', function (evt) {
-            populateInteractions(numDiag);
+            populateInteractions(data.numDiag);
             if (this.data.selfdestruct) {
                 this.remove();
             }
@@ -509,6 +509,7 @@ AFRAME.registerComponent('exit', {
         let toLoad = data.toLoad;
         let scale = data.scale;
         let endGame = data.endGame;
+        const el = this.el;
 
         exit.setAttribute('geometry', 'primitive: box;');
         exit.setAttribute('position', position);
@@ -516,11 +517,17 @@ AFRAME.registerComponent('exit', {
         exit.setAttribute('glowFX', 'visible:' + true);
         exit.setAttribute('scale', scale)
 
+        const doorPos = el.getAttribute('position');
+
         this.el.addEventListener('mouseenter', function (evt) {
             let playercamPos = document.getElementById('playercam').getAttribute('position');
-            const thresholdDistance = 4;
+            const thresholdDistance = 3;
             let distance = playercamPos.distanceTo(playercamPos);
             if (distance<thresholdDistance){
+                let x = doorPos.x; let y = doorPos.y; let z = doorPos.z; let newX = x - 1; let newY = y - 1;
+                el.setAttribute('animation', "property: position; to:" + newX + y + z + "; loop:  false; dur: 5000");
+                let doorAudio = document.querySelector("#dooropen");
+                doorAudio.play();
             switch (endGame) {
                 case true:
                     window.location.href = 'end.html';

@@ -24,6 +24,11 @@
         "Object": "Cooling Pool",
         "position": "-1.5, 0, -4",
         "text": "This is one of the servers in the facility"
+      },
+      {
+        "Object": "Poster",
+        "position": "-1.5, 0, -4",
+        "text": "This is one of the servers in the facility"
       }
     ]
   }

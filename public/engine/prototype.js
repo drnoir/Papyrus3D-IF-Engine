@@ -220,6 +220,20 @@ AFRAME.registerComponent('enemy',
             el.destroy();
         },
     });
+
+            // enemies
+            // if (mapData[i] === 9) {
+            //     let enemy1 = addEnemy(0, i);
+            //     enemy1.setAttribute('id', i);
+            //     enemy1.setAttribute('status', 'alive');
+            //     enemy1.setAttribute('position', charPos);
+            //     enemy1.setAttribute('enemy', 'modelID:' + enemy1.model + ';' +
+            //         'format:glb; animated:true;' + 'health:' + enemy1.health + 'scale:' + enemy1.scale +
+            //         'id:' + i + 'constitution:' + enemy1.constitution);
+            //     const floor = createFloor(floorPos);
+            //     el.appendChild(floor);
+            //     el.appendChild(enemy1);
+            // }
 // COMBAT SYSTEM -->
 // SHOOT
 function shootAt(enemyID) {
