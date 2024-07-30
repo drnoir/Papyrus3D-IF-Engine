@@ -357,13 +357,14 @@ AFRAME.registerComponent('prefab', {
         triggerDialogue: { type: 'boolean', default: false },
         interactionNum: { type: 'number', default: 0 },
         interactionName: { type: 'string', default: 'default' },
-        choices: { type: 'array', default: [] },
+        choices: { type: 'array', default: ['Branch 1','Branch2']},
     },
     init: function () {
         const data = this.data;
         const el = this.el;
         const triggerDialogue = this.data.triggerDialogue;
         const interactionNum = this.data.interactionNum;
+        const interactionName = this.data.interactionName;
         const choices = this.data.choices;
         console.log('choices on init' + choices);
         if (triggerDialogue) {
@@ -372,13 +373,17 @@ AFRAME.registerComponent('prefab', {
                 if (choices) {
                     console.log('choices triggered' + choices);
                     let choicesContainer = document.createElement('a-entity');
+                    choicesContainer.setAttribute('position', '1 2.5 0');
                     choicesContainer.setAttribute('id', 'choice-con');
-                    el.appendChild(choicesContainer);
+                    let initY = 0.5;
                     choices.forEach(choice => {
-                        let choiceButton = addChoiceButton(choice, interactionName, choices.indexOf(choice));
-                        choicesContainer.appendChild(choiceButton);
+                        console.log(initY);
+                        let choiceButton = addChoiceButton(choice, interactionName);
+                        initY-= 0.60;
+                        choiceButton.setAttribute('position', `0 ${initY} 0`);
+                        choicesContainer.appendChild(choiceButton); 
                     });
-
+                    el.appendChild(choicesContainer);
                 }
             })
         }

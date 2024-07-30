@@ -244,7 +244,7 @@ function addButton(diagID, charID) {
     }
 }
 
-function addChoiceButton(choice, charID, loopNum) {
+function addChoiceButton(choice, charID) {
         let choiceBtn = document.createElement('a-box')
         choiceBtn.setAttribute('class', 'choiceBtn'+charID);
         // nextPassageBtn.setAttribute('choice-btn', 'diagID:'+diagID,'charID:'+charID);
@@ -252,13 +252,14 @@ function addChoiceButton(choice, charID, loopNum) {
         choiceBtn.setAttribute('height', '0.5');
         choiceBtn.setAttribute('width', '1');
         choiceBtn.setAttribute('material', 'color: black');
-        choiceBtn.setAttribute('position', '0',loopNum+0.5,'0');
+        // choiceBtn.setAttribute('position', '0',initY,'0');
         // addtext
         let choiceBtnTxt = document.createElement('a-text');
         choiceBtnTxt.setAttribute('value',choice);
         choiceBtnTxt.setAttribute('height', '2');
         choiceBtnTxt.setAttribute('width', '2');
-        choiceBtnTxt.setAttribute('position', '0 0 0.1')
+        choiceBtnTxt.setAttribute('position', '0 0 0.1');
+        choiceBtnTxt.setAttribute('align', 'center');
         choiceBtnTxt.setAttribute('material', 'color: white');
         choiceBtn.appendChild(choiceBtnTxt);
         return choiceBtn;
