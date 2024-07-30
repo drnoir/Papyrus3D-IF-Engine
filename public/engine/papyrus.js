@@ -222,11 +222,11 @@ function addButton(diagID, charID) {
     if (!document.getElementById('nextPassageBtn')) {
         let nextPassageBtn = document.createElement('a-box')
         nextPassageBtn.setAttribute('id', 'nextPassageBtn');
-        nextPassageBtn.setAttribute('btnNext', '');
+        nextPassageBtn.setAttribute('choice-btn', 'diagID:'+diagID,'charID:'+charID);
         nextPassageBtn.setAttribute('depth', '0.01');
         nextPassageBtn.setAttribute('height', '0.5');
         nextPassageBtn.setAttribute('width', '0.5');
-        nextPassageBtn.setAttribute('material', 'color: white');
+        nextPassageBtn.setAttribute('material', 'color: black');
         nextPassageBtn.setAttribute('position', '0.6 -0.1 0.1');
         // addtext
         let nextPassageBtnTxt = document.createElement('a-text');
@@ -234,7 +234,7 @@ function addButton(diagID, charID) {
         nextPassageBtnTxt.setAttribute('height', '6');
         nextPassageBtnTxt.setAttribute('width', '6');
         nextPassageBtnTxt.setAttribute('position', '0 0 0.1')
-        nextPassageBtnTxt.setAttribute('material', 'color: black');
+        nextPassageBtnTxt.setAttribute('material', 'color: white');
         nextPassageBtn.appendChild(nextPassageBtnTxt);
 
         return nextPassageBtn;
@@ -242,6 +242,26 @@ function addButton(diagID, charID) {
     } else {
         console.log('Opps something went wrong - There is already a passage btn on the scene')
     }
+}
+
+function addChoiceButton(choice, charID, loopNum) {
+        let choiceBtn = document.createElement('a-box')
+        choiceBtn.setAttribute('class', 'choiceBtn'+charID);
+        // nextPassageBtn.setAttribute('choice-btn', 'diagID:'+diagID,'charID:'+charID);
+        choiceBtn.setAttribute('depth', '0.01');
+        choiceBtn.setAttribute('height', '0.5');
+        choiceBtn.setAttribute('width', '1');
+        choiceBtn.setAttribute('material', 'color: black');
+        choiceBtn.setAttribute('position', '0',loopNum+0.5,'0');
+        // addtext
+        let choiceBtnTxt = document.createElement('a-text');
+        choiceBtnTxt.setAttribute('value',choice);
+        choiceBtnTxt.setAttribute('height', '2');
+        choiceBtnTxt.setAttribute('width', '2');
+        choiceBtnTxt.setAttribute('position', '0 0 0.1')
+        choiceBtnTxt.setAttribute('material', 'color: white');
+        choiceBtn.appendChild(choiceBtnTxt);
+        return choiceBtn;
 }
 
 // ICON for triggering dialogues - Chars
@@ -259,11 +279,12 @@ function addCharBtn(charNumber) {
 
 function populateDiag(currentChar, numDiag) {
     showDialogueUI();
-    console.log(diag.passage[currentChar - 1]);
-    let newDiagPassage = diag.passage[currentChar - 1].text;
-    let newCharName = diag.passage[currentChar - 1].char;
+    let newDiagPassage = diag.passage[currentChar].text;
+    let newCharName = diag.passage[currentChar].char;
+    let newCharChoices = diag.passage[currentChar].choices;
+    console.log(diag.passage[currentChar], newCharChoices);
     currentDiagID = currentChar - 1;
-    populateMessage(newCharName, newDiagPassage);
+    populateMessage(newCharName, newDiagPassage, newCharChoices);
 }
 
 
@@ -283,6 +304,9 @@ function populateInteractions(numInteraction) {
     // populate dialog with text / name
     let newDiagPassage = interactions.interactions[numInteraction].text;
     let newObjectName = interactions.interactions[numInteraction].Object;
+    let newObjectChoices = interactions.interactions[numInteraction].choices;
+    console.log(diag.passage[currentChar], newObjectChoices);
+    
     populateMessage(newObjectName, newDiagPassage);
     setTimeout(hideDialogueUI, 10000);
 }
@@ -469,14 +493,20 @@ function createRooms() {
                 let dataLength = mapData[i].length;
                 let diagTrigger = prefabTrigger === 'T' ? true : false;
                 let triggerNum = prefabTrigger === 'T' ? mapData[i].charAt(dataLength - 1) : null;
+                let prefabChoices = [];
+                if (diagTrigger){
+                prefabChoices = interactions.interactions[triggerNum].choices;
+                }
+                console.log('prefab choices' + prefabChoices);
                 const prefabElm = document.createElement('a-entity');
                 const prefabElmNum = prefabs.prefabs[prefabNum1];
+                const prefabName = prefabs.prefabs[prefabNum1].name;
                 prefabElm.setAttribute('gltf-model', '#' + prefabElmNum.id);
                 prefabElm.setAttribute('scale', prefabElmNum.scale);
                 prefabElm.setAttribute('rotation', prefabElmNum.rotation);
                 prefabElm.setAttribute('animation-mixer', "clip: *; loop: repeat;");
                 //add prefab componenet
-                prefabElm.setAttribute('prefab', 'triggerDialogue:' + diagTrigger + ';interactionNum:' + triggerNum + ';');
+                prefabElm.setAttribute('prefab', 'triggerDialogue:' + diagTrigger + ';interactionNum:' + triggerNum + ';' +'interactionName:'+prefabName+'choices:'+ prefabChoices +';');
                 prefabElm.setAttribute('id', 'prefab' + prefabElmNum.id);
                 const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE, true); // true is to remove playermovement
                 el.appendChild(floor);
@@ -761,6 +791,6 @@ function playerDeath() {
 
 // EXPORTS 
 export {
-    nextScene, loadNewLevel, populateDiag, addButton,
+    nextScene, loadNewLevel, populateDiag, addButton, addChoiceButton,
     populateInteractions, populateMessage, clearScene, loadData, gotKey, getPlayerKeysInfo, getPlayerHealth, setPlayerHealth, playerDeath
 };

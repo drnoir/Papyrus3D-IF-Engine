@@ -34,6 +34,7 @@
             <a-asset-item id="zombie" src='./models/zombie.glb'></a-asset-item>
             <!-- sounds -->
             <audio id="music" src="./sound/music.mp3" preload="auto"></audio>
+            <audio id="ambient" src="./sound/ambient.mp3" preload="auto"></audio>
             <audio id="hit" src="./sound/hit.wav" preload="auto"></audio>
             <audio id="death" src="./sound/death.wav" preload="auto"></audio>
             <audio id="attack" src="./sound/attack.wav" preload="auto"></audio>
@@ -41,7 +42,7 @@
             <audio id="playerdeath" src="./sound/playerdeath.wav" preload="auto"></audio>
             <audio id="playerpain" src="./sound/playerpain.wav" preload="auto"></audio>
             <audio id="playerattack" src="./sound/playerpunch.wav" preload="auto"></audio>
-            <audio id="dooropen" src="./sound/dooropen.mp3" preload="auto"></audio>
+            <audio id="dooropen" src="./sound/dooropen.mp3" preload="auto" volume="1.5"></audio>
             <audio id="keypickup" src="./sound/keypickup.mp3" preload="auto"></audio>
             <!--textures-->
             <img id="brick" src="./textures/walls/steelFuture.jpg">
@@ -61,7 +62,9 @@
             <img id="sky" src="textures/night.jpg">
         </a-assets>
         <!-- // sound fx asset loading -->
-        <a-entity sound="src: #music" autoplay="true" volume="6" loop="true" positional="false"
+        <!-- <a-entity sound="src: #music" autoplay="true" volume="4" loop="true" positional="false"
+            refDistance="30000"></a-entity> -->
+        <a-entity sound="src: #ambient" autoplay="true" volume="5" loop="true" positional="false"
             refDistance="30000"></a-entity>
         <a-entity sound="src: #hit" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
         <a-entity sound="src: #death" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
@@ -70,6 +73,7 @@
         <a-entity sound="src: #playerdeath" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
         <a-entity sound="src: #playerpain" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
         <a-entity sound="src: #playerattack" autoplay="false" volume="1.5" loop="false" positional="true"></a-entity>
+       
         <a-entity light="type: ambient; color: #CCC;intensity: 0.2;"></a-entity>
         <!-- start game UI -->
         <a-circle id="startGame" startgamebtn radius="0.5" depth="0.1" position="1 2 -0.1 " rotation="0 0 0"
@@ -103,8 +107,7 @@
                             width="1.3" height="0.09" wrap-count="25"></a-text>
                     </a-box>
                     <a-text id="dialogueContent" position="0 0.3 0.01" width="1" height="0.6" align="center"
-                        wrap-count="20" color="black"
-                        value="">
+                        wrap-count="20" color="black" value="">
                     </a-text>
                     <a-entity id="choices" position="0 0.4 0" visible="true"
                         text="align: center; width: 4; wrapCount: 10; color: black"></a-entity>

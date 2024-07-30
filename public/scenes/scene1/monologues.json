@@ -5,6 +5,18 @@
         "id" : 1,
         "position": "-1.5, 0, -4",
         "text": "It's taken me 10 years to get here. \\n  I've been promoted to the senior Maintence team \\n now I find myself here, \\n in the belly of the beast. In the server cooling farms of Vault 25 \\n I'm not sure what to expect, but I'm ready for anything.  \\n I need to find the tech on watch and talk to him first. "
+      },
+      {
+        "char": "Player",
+        "id" : 2,
+        "position": "-1.5, 0, -4",
+        "text": "You tap on the old computers interface. \\n  A rudimentay UI pops up with several options "
+      },
+      {
+        "char": "Player",
+        "id" : 3,
+        "position": "-1.5, 0, -4",
+        "text": "It's my first day, best to leave it alone. \\n I don't want to break anything. "
       }
     ]
 }

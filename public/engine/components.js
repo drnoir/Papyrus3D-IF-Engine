@@ -3,7 +3,7 @@
 // Dependency tree - A-Frame / A-Frame Extras / Papyrus
 // ENGINE CORE IMPORTS
 import {
-    nextScene, loadData, populateDiag, addButton,
+    nextScene, loadData, populateDiag, addButton, addChoiceButton,
     // nextPassageForChar, 
     populateInteractions, populateMessage, gotKey, getPlayerKeysInfo, getPlayerHealth, setPlayerHealth, clearScene, loadNewLevel
 } from "./papyrus.js";
@@ -201,12 +201,9 @@ AFRAME.registerComponent('character', {
             // add next / continue button for passage nav
             let choiceBtn = document.getElementById('nextPassageBtn');
             if (choiceBtn == null) {
-                let newChoiceBtn = addButton(numDiag,  charID);
+                let newChoiceBtn = addButton(numDiag, charID);
                 el.appendChild(newChoiceBtn);
             }
-            // increment 
-            numDiag++;
-
         })
         if (animated) {
             newCharacter.setAttribute('animation-mixer', 'clip: *; loop: repeat; ');
@@ -270,13 +267,13 @@ AFRAME.registerComponent('playermovement', {
             const playercam = document.getElementById('playercam')
             const playercamPos = document.getElementById('playercam').getAttribute('position');
             const floors = document.querySelectorAll('.floor');
-            const thresholdDistance = 1.5; // Distance within which color change happens
+            const thresholdDistance = 2; // Distance within which color change happens
             const resetTime = 1200;
             // distance checking
             console.log(newPos.x, newPos.z);
             let distanceCheck = playercamPos.distanceTo(newPos);
             console.log(distanceCheck);
-            if (distanceCheck <= 3) {
+            if (distanceCheck <= 2) {
                 // playercam.object3D.position.set(newPos.x, 1.5, newPos.z);
                 setTimeout(() => {
                     playercam.setAttribute('position', {
@@ -305,6 +302,33 @@ AFRAME.registerComponent('playermovement', {
     }
 });
 
+AFRAME.registerComponent('choice-btn', {
+    schema: {
+        selfdestruct: { type: 'boolean', default: false },
+        numDiag: { type: 'number', default: 1 },
+        charID: { type: 'number', default: 1 },
+    },
+    init: function () {
+        const data = this.data;
+        let numDiag = data.numDiag;
+        const charID = data.charID;
+        // const numDiag = data.numDiag
+        this.el.addEventListener('mouseenter', function (evt) {
+            populateDiag(charID - 1, numDiag);
+            numDiag++; //moveonto next passage
+            console.log('diagnum componenent' + numDiag)
+            if (this.data.selfdestruct) {
+                this.remove();
+            }
+        })
+    },
+    remove: function () {
+        const el = this.el;
+        el.destroy();
+    },
+});
+
+
 AFRAME.registerComponent('triggerdiagfloor', {
     schema: {
         default: '',
@@ -332,15 +356,30 @@ AFRAME.registerComponent('prefab', {
     schema: {
         triggerDialogue: { type: 'boolean', default: false },
         interactionNum: { type: 'number', default: 0 },
+        interactionName: { type: 'string', default: 'default' },
+        choices: { type: 'array', default: [] },
     },
     init: function () {
         const data = this.data;
         const el = this.el;
         const triggerDialogue = this.data.triggerDialogue;
         const interactionNum = this.data.interactionNum;
+        const choices = this.data.choices;
+        console.log('choices on init' + choices);
         if (triggerDialogue) {
             this.el.addEventListener('mouseenter', function (evt) {
                 populateInteractions(interactionNum);
+                if (choices) {
+                    console.log('choices triggered' + choices);
+                    let choicesContainer = document.createElement('a-entity');
+                    choicesContainer.setAttribute('id', 'choice-con');
+                    el.appendChild(choicesContainer);
+                    choices.forEach(choice => {
+                        let choiceButton = addChoiceButton(choice, interactionName, choices.indexOf(choice));
+                        choicesContainer.appendChild(choiceButton);
+                    });
+
+                }
             })
         }
     },

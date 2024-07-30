@@ -3,7 +3,10 @@
       {
         "Object": "Old Computer",
         "position": "-1.5, 0, -4",
-        "text": "A model 486 computer, it looks like it's been here for years. \\n I wonder if it still works?"
+        "text": "A model 486 computer, it looks like it's been here for years. \\n I wonder if it still works?",
+        "choices" : ["Tap on it", "Leave it"],
+        "choice1" : 2,
+        "choice2" : 3
       },
       {
         "Object": "chest",
