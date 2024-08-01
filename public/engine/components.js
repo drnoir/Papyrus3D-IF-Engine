@@ -186,6 +186,7 @@ AFRAME.registerComponent('character', {
         glowOn: { type: 'boolean', default: false },
         charID: { type: 'number', default: 1 },
         numDiag: { type: 'number', default: 1 },
+        choices: { type: 'array', default: ['Test1', 'Test2'] },
     },
 
     init: function () {
@@ -193,6 +194,7 @@ AFRAME.registerComponent('character', {
         let animated = data.animated;
         let numDiag = data.numDiag;
         const charID = data.charID;
+        const choices = data.choices;
         const el = this.el;
         this.el.addEventListener('mouseenter', function (evt) {
             console.log('dialog triggered');
@@ -203,6 +205,22 @@ AFRAME.registerComponent('character', {
             if (choiceBtn == null) {
                 let newChoiceBtn = addButton(numDiag, charID);
                 el.appendChild(newChoiceBtn);
+            }
+            // append choices to UI if presesnt in array
+            if (choices) {
+                console.log('choices triggered' + choices);
+                let choicesContainer = document.createElement('a-entity');
+                choicesContainer.setAttribute('position', '1 -0.2 0');
+                choicesContainer.setAttribute('id', 'choice-con');
+                let initY = 0;
+                choices.forEach(choice => {
+                    console.log(initY);
+                    let choiceButton = addChoiceButton(choice, charID);
+                    initY -= 0.3;
+                    choiceButton.setAttribute('position', `0 ${initY} 0`);
+                    choicesContainer.appendChild(choiceButton);
+                });
+                el.appendChild(choicesContainer);
             }
         })
         if (animated) {
@@ -267,7 +285,7 @@ AFRAME.registerComponent('playermovement', {
             const playercam = document.getElementById('playercam')
             const playercamPos = document.getElementById('playercam').getAttribute('position');
             const floors = document.querySelectorAll('.floor');
-            const thresholdDistance = 2; // Distance within which color change happens
+            const thresholdDistance = 1; // Distance within which color change happens
             const resetTime = 1200;
             // distance checking
             console.log(newPos.x, newPos.z);
@@ -307,18 +325,24 @@ AFRAME.registerComponent('choice-btn', {
         selfdestruct: { type: 'boolean', default: false },
         numDiag: { type: 'number', default: 1 },
         charID: { type: 'number', default: 1 },
+        selfdestruct: { type: 'boolean', default: true },
     },
     init: function () {
         const data = this.data;
         let numDiag = data.numDiag;
         const charID = data.charID;
+        const selfdestruct = data.selfdestruct;
         // const numDiag = data.numDiag
-        this.el.addEventListener('mouseenter', function (evt) {
-            populateDiag(charID - 1, numDiag);
-            numDiag++; //moveonto next passage
-            console.log('diagnum componenent' + numDiag)
-            if (this.data.selfdestruct) {
-                this.remove();
+        this.el.addEventListener('mouseenter', () => {
+            populateDiag(charID, numDiag);
+            // Update numDiag in the component's data schema
+            this.el.setAttribute('choice-btn', 'numDiag', numDiag + 1);
+            console.log('diagnum component', numDiag + 1);
+
+            if (selfdestruct) {
+                setTimeout(() => {
+                    this.el.parentNode.removeChild(this.el);
+                }, 20000);
             }
         })
     },
@@ -357,7 +381,7 @@ AFRAME.registerComponent('prefab', {
         triggerDialogue: { type: 'boolean', default: false },
         interactionNum: { type: 'number', default: 0 },
         interactionName: { type: 'string', default: 'default' },
-        choices: { type: 'array', default: ['Branch 1','Branch2']},
+        choices: { type: 'array', default: ['Nothing to see here'] },
     },
     init: function () {
         const data = this.data;
@@ -365,7 +389,8 @@ AFRAME.registerComponent('prefab', {
         const triggerDialogue = this.data.triggerDialogue;
         const interactionNum = this.data.interactionNum;
         const interactionName = this.data.interactionName;
-        const choices = this.data.choices;
+        let choices = this.data.choices;
+
         console.log('choices on init' + choices);
         if (triggerDialogue) {
             this.el.addEventListener('mouseenter', function (evt) {
@@ -379,13 +404,26 @@ AFRAME.registerComponent('prefab', {
                     choices.forEach(choice => {
                         console.log(initY);
                         let choiceButton = addChoiceButton(choice, interactionName);
-                        initY-= 0.60;
+                        initY -= 0.60;
                         choiceButton.setAttribute('position', `0 ${initY} 0`);
-                        choicesContainer.appendChild(choiceButton); 
+                        choicesContainer.appendChild(choiceButton);
                     });
                     el.appendChild(choicesContainer);
                 }
             })
+        }
+    },
+    update: function (oldData) {
+        if (oldData.choices !== this.data.choices) {
+            console.log('Choices updated:', this.data.choices);
+            this.removeChoices();
+            this.showChoices();
+        }
+    },
+    removeChoices: function () {
+        let choicesContainer = this.el.querySelector('#choice-con');
+        if (choicesContainer) {
+            this.el.removeChild(choicesContainer);
         }
     },
     remove: function () {
@@ -680,53 +718,6 @@ AFRAME.registerComponent('Enemyhealthbar', {
     remove: function () {
         const el = this.el;
         el.destroy();
-    },
-});
-
-// chat GPT generated dialogue system 
-AFRAME.registerComponent("dialogue-trigger", {
-    schema: {
-        dialogueTarget: { type: "selector" },
-    },
-    init: function () {
-        const npc = this.el;
-        npc.addEventListener("mouseenter", () => {
-            this.data.dialogueTarget.setAttribute("visible", true);
-            this.startDialogue();
-        });
-    },
-    startDialogue: function () {
-        const dialogue = JSON.parse(document.getElementById("dialogue").textContent);
-        this.displayMessage(dialogue.dialogues[0]);
-    },
-    displayMessage: function (messageData) {
-        const dialogueBox = document.getElementById('dialogueContent');
-        dialogueBox.setAttribute("text", "value", messageData.message);
-        if (messageData.choices.length > 0) {
-            const choicesContainer = document.getElementById("choices");
-            choicesContainer.setAttribute("visible", true);
-            choicesContainer.innerHTML = "";
-            messageData.choices.forEach((choice, index) => {
-                const choiceEl = document.createElement("a-entity");
-                choiceEl.setAttribute("text", {
-                    value: `${index + 1}. ${choice.text}`,
-                    align: "center",
-                    width: 4,
-                    wrapCount: 25,
-                    color: "black",
-                });
-                choiceEl.setAttribute("position", `0 ${-index / 2} 0`);
-                choiceEl.setAttribute("clickable", "");
-                choiceEl.setAttribute("choice-id", choice.next);
-                choicesContainer.appendChild(choiceEl);
-            });
-        } else {
-            const continueText = document.getElementById("continue");
-            continueText.setAttribute("visible", true);
-            continueText.addEventListener("mouseenter", () => {
-                this.data.dialogueTarget.setAttribute("visible", false);
-            });
-        }
     },
 });
 

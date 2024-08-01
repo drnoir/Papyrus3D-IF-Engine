@@ -17,7 +17,21 @@
       "id" : 3,
       "position": "-1.5, 0, -4",
       "text": "You'll have to find the blue key, open that door then go through to the main room. \\n Once in there I just need you to press the red button and our safety check will be complete. ",
-      "choices" : ["Yes Ok", "No Way"]
+      "choices" : ["Yes Ok", "No Way"],
+      "choice1" : 4,
+      "choice2" : 5
+    },
+    {
+      "char": "Engineer Bob",
+      "id" : 4,
+      "position": "-1.5, 0, -6",
+      "text": "That's the spirit! \\n I'll be here if you need me. "
+    },
+    {
+      "char": "Engineer Bob",
+      "id" : 5,
+      "position": "-1.5, 0, -6",
+      "text": "What are you afraid of? We haven't had a raid for 10 years kid. \\n You'll be fine. "
     }
   ]
 }

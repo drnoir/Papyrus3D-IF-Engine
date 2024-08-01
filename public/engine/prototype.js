@@ -292,6 +292,54 @@ function triggerMuzzleFX() {
 }
 
 
+// chat GPT generated dialogue system 
+AFRAME.registerComponent("dialogue-trigger", {
+    schema: {
+        dialogueTarget: { type: "selector" },
+    },
+    init: function () {
+        const npc = this.el;
+        npc.addEventListener("mouseenter", () => {
+            this.data.dialogueTarget.setAttribute("visible", true);
+            this.startDialogue();
+        });
+    },
+    startDialogue: function () {
+        const dialogue = JSON.parse(document.getElementById("dialogue").textContent);
+        this.displayMessage(dialogue.dialogues[0]);
+    },
+    displayMessage: function (messageData) {
+        const dialogueBox = document.getElementById('dialogueContent');
+        dialogueBox.setAttribute("text", "value", messageData.message);
+        if (messageData.choices.length > 0) {
+            const choicesContainer = document.getElementById("choices");
+            choicesContainer.setAttribute("visible", true);
+            choicesContainer.innerHTML = "";
+            messageData.choices.forEach((choice, index) => {
+                const choiceEl = document.createElement("a-entity");
+                choiceEl.setAttribute("text", {
+                    value: `${index + 1}. ${choice.text}`,
+                    align: "center",
+                    width: 4,
+                    wrapCount: 25,
+                    color: "black",
+                });
+                choiceEl.setAttribute("position", `0 ${-index / 2} 0`);
+                choiceEl.setAttribute("clickable", "");
+                choiceEl.setAttribute("choice-id", choice.next);
+                choicesContainer.appendChild(choiceEl);
+            });
+        } else {
+            const continueText = document.getElementById("continue");
+            continueText.setAttribute("visible", true);
+            continueText.addEventListener("mouseenter", () => {
+                this.data.dialogueTarget.setAttribute("visible", false);
+            });
+        }
+    },
+});
+
+
 //Add enemy to scene function 
 function addEnemy(enemyID, enemyNumber) {
     console.log(enemies.enemies[enemyID].id, enemies.enemies[enemyID].name);

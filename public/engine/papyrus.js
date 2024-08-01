@@ -34,7 +34,7 @@ async function loadData() {
     // run create scene routine
     await createRooms();
 
-    
+
     // testing dialogue.json UI population
     const sound = document.querySelector('[sound]');
     sound.components.sound.playSound();
@@ -106,7 +106,7 @@ async function loadSceneMetaData(metaDataToLoad) {
     const res = await fetch(fetchURL)
     sceneMetadata = await res.json();
     introID = sceneMetadata.IntroID;
-    if (sceneMetadata.Intro){populateMono('Player',introID)};
+    if (sceneMetadata.Intro) { populateMono('Player', introID) };
 }
 
 // PLAYER SETUP
@@ -222,7 +222,7 @@ function addButton(diagID, charID) {
     if (!document.getElementById('nextPassageBtn')) {
         let nextPassageBtn = document.createElement('a-box')
         nextPassageBtn.setAttribute('id', 'nextPassageBtn');
-        nextPassageBtn.setAttribute('choice-btn', 'diagID:'+diagID,'charID:'+charID);
+        nextPassageBtn.setAttribute('choice-btn', 'diagID:' + diagID, 'charID:' + charID);
         nextPassageBtn.setAttribute('depth', '0.01');
         nextPassageBtn.setAttribute('height', '0.5');
         nextPassageBtn.setAttribute('width', '0.5');
@@ -245,24 +245,24 @@ function addButton(diagID, charID) {
 }
 
 function addChoiceButton(choice, charID) {
-        let choiceBtn = document.createElement('a-box')
-        choiceBtn.setAttribute('class', 'choiceBtn'+charID);
-        // nextPassageBtn.setAttribute('choice-btn', 'diagID:'+diagID,'charID:'+charID);
-        choiceBtn.setAttribute('depth', '0.01');
-        choiceBtn.setAttribute('height', '0.5');
-        choiceBtn.setAttribute('width', '1');
-        choiceBtn.setAttribute('material', 'color: black');
-        // choiceBtn.setAttribute('position', '0',initY,'0');
-        // addtext
-        let choiceBtnTxt = document.createElement('a-text');
-        choiceBtnTxt.setAttribute('value',choice);
-        choiceBtnTxt.setAttribute('height', '2');
-        choiceBtnTxt.setAttribute('width', '2');
-        choiceBtnTxt.setAttribute('position', '0 0 0.1');
-        choiceBtnTxt.setAttribute('align', 'center');
-        choiceBtnTxt.setAttribute('material', 'color: white');
-        choiceBtn.appendChild(choiceBtnTxt);
-        return choiceBtn;
+    let choiceBtn = document.createElement('a-box')
+    choiceBtn.setAttribute('class', 'choiceBtn' + charID);
+
+    choiceBtn.setAttribute('depth', '0.01');
+    choiceBtn.setAttribute('height', '0.5');
+    choiceBtn.setAttribute('width', '1');
+    choiceBtn.setAttribute('material', 'color: black');
+    // choiceBtn.setAttribute('position', '0',initY,'0');
+    // addtext
+    let choiceBtnTxt = document.createElement('a-text');
+    choiceBtnTxt.setAttribute('value', choice);
+    choiceBtnTxt.setAttribute('height', '2');
+    choiceBtnTxt.setAttribute('width', '2');
+    choiceBtnTxt.setAttribute('position', '0 0 0.1');
+    choiceBtnTxt.setAttribute('align', 'center');
+    choiceBtnTxt.setAttribute('material', 'color: white');
+    choiceBtn.appendChild(choiceBtnTxt);
+    return choiceBtn;
 }
 
 // ICON for triggering dialogues - Chars
@@ -288,15 +288,13 @@ function populateDiag(currentChar, numDiag) {
     populateMessage(newCharName, newDiagPassage, newCharChoices);
 }
 
-
 function populateMono(playerName, numMono) {
     showDialogueUI();
-    console.log(mono.passage[numMono-1].text);
-    let newDiagPassage = mono.passage[numMono-1].text;
-    let newCharName =playerName;
+    console.log(mono.passage[numMono - 1].text);
+    let newDiagPassage = mono.passage[numMono - 1].text;
+    let newCharName = playerName;
     populateMessage(newCharName, newDiagPassage);
 }
-
 
 function populateInteractions(numInteraction) {
     // add button test function
@@ -305,9 +303,9 @@ function populateInteractions(numInteraction) {
     // populate dialog with text / name
     let newDiagPassage = interactions.interactions[numInteraction].text;
     let newObjectName = interactions.interactions[numInteraction].Object;
-    let newObjectChoices = interactions.interactions[numInteraction].choices;
-    console.log(diag.passage[currentChar], newObjectChoices);
-    
+    // let newObjectChoices = interactions.interactions[numInteraction].choices;
+    // console.log(diag.passage[currentChar], newObjectChoices);
+
     populateMessage(newObjectName, newDiagPassage);
     setTimeout(hideDialogueUI, 10000);
 }
@@ -494,9 +492,14 @@ function createRooms() {
                 let dataLength = mapData[i].length;
                 let diagTrigger = prefabTrigger === 'T' ? true : false;
                 let triggerNum = prefabTrigger === 'T' ? mapData[i].charAt(dataLength - 1) : null;
-                let prefabChoices = [];
-                if (diagTrigger){
-                prefabChoices = interactions.interactions[triggerNum].choices;
+                let prefabChoices = [];;
+                if (diagTrigger) {
+                    console.log('Choices being populated');
+                    if (interactions && interactions.interactions && interactions.interactions[triggerNum].choices) {
+                        prefabChoices = interactions.interactions[triggerNum].choices.map(choice => choice); // Assuming choice objects have 'option' property
+                        console.log('Choices populated DATA:', prefabChoices);
+                    }
+                    
                 }
                 console.log('prefab choices' + prefabChoices);
                 const prefabElm = document.createElement('a-entity');
@@ -507,7 +510,7 @@ function createRooms() {
                 prefabElm.setAttribute('rotation', prefabElmNum.rotation);
                 prefabElm.setAttribute('animation-mixer', "clip: *; loop: repeat;");
                 //add prefab componenet
-                prefabElm.setAttribute('prefab', 'triggerDialogue:' + diagTrigger + ';interactionNum:' + triggerNum + ';' +'interactionName:'+prefabName+'choices:'+ prefabChoices +';');
+                prefabElm.setAttribute('prefab', 'triggerDialogue:' + diagTrigger + ';interactionNum:' + triggerNum + ';' + 'interactionName:' + prefabName + 'choices' + { prefabChoices } + ';');
                 prefabElm.setAttribute('id', 'prefab' + prefabElmNum.id);
                 const floor = createFloor(floorPos, WALL_HEIGHT, WALL_SIZE, true); // true is to remove playermovement
                 el.appendChild(floor);
