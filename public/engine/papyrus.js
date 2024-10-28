@@ -224,16 +224,16 @@ function addButton(diagID, charID) {
         nextPassageBtn.setAttribute('id', 'nextPassageBtn');
         nextPassageBtn.setAttribute('choice-btn', 'diagID:' + diagID, 'charID:' + charID);
         nextPassageBtn.setAttribute('depth', '0.01');
-        nextPassageBtn.setAttribute('height', '0.5');
-        nextPassageBtn.setAttribute('width', '0.5');
+        nextPassageBtn.setAttribute('height', '0.3');
+        nextPassageBtn.setAttribute('width', '0.4');
         nextPassageBtn.setAttribute('material', 'color: black');
-        nextPassageBtn.setAttribute('position', '0.6 -0.1 0.1');
+        nextPassageBtn.setAttribute('position', '0.6 -0.15 0.1');
         // addtext
         let nextPassageBtnTxt = document.createElement('a-text');
         nextPassageBtnTxt.setAttribute('value', '>');
         nextPassageBtnTxt.setAttribute('height', '6');
         nextPassageBtnTxt.setAttribute('width', '6');
-        nextPassageBtnTxt.setAttribute('position', '0 0 0.1')
+        nextPassageBtnTxt.setAttribute('position', '0 0 0.002')
         nextPassageBtnTxt.setAttribute('material', 'color: white');
         nextPassageBtn.appendChild(nextPassageBtnTxt);
 
