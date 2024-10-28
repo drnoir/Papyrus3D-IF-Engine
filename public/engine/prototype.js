@@ -1,3 +1,6 @@
+// prototype.js - Various bits and bobs that I've worked on for Papyrus but 
+// left out of codebase but still worth saving in case I want to reintegrate them later
+
 async function loadEnemies() {
     const res = await fetch('enemies.json')
     enemies = await res.json();
@@ -365,3 +368,10 @@ function addEnemy(enemyID, enemyNumber) {
     enemy.appendChild(enemyBoundingBox);
     return enemy;
 }
+
+// Map on 2D Map?
+// function MapMaker(mapData) {
+//     const playerMap = document.createElement('a-entity');
+//     playerMap.setAttribute('playermap', '');
+//     document.querySelector('#mapUI').appendChild(playerMap)
+// }

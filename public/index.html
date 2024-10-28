@@ -118,6 +118,9 @@
         <a-entity id="room"></a-entity>
         <a-sky src="#sky"></a-sky>
         <!-- Sky -->
+        <!-- Add the VR controls -->
+        <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
+        <a-entity laser-controls="hand: left"></a-entity>
     </a-scene>
 </body>
 <script src="./engine/components.js" type="module"></script>

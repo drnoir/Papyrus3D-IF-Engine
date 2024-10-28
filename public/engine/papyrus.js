@@ -236,9 +236,7 @@ function addButton(diagID, charID) {
         nextPassageBtnTxt.setAttribute('position', '0 0 0.002')
         nextPassageBtnTxt.setAttribute('material', 'color: white');
         nextPassageBtn.appendChild(nextPassageBtnTxt);
-
         return nextPassageBtn;
-
     } else {
         console.log('Opps something went wrong - There is already a passage btn on the scene')
     }
@@ -247,7 +245,6 @@ function addButton(diagID, charID) {
 function addChoiceButton(choice, charID) {
     let choiceBtn = document.createElement('a-box')
     choiceBtn.setAttribute('class', 'choiceBtn' + charID);
-
     choiceBtn.setAttribute('depth', '0.01');
     choiceBtn.setAttribute('height', '0.5');
     choiceBtn.setAttribute('width', '1');
@@ -270,7 +267,6 @@ function addCharBtn(charNumber) {
     let indexCharNumber = charNumber - 1;
     let diagCount = countDialogue(charNumber);
     let modelID = '#' + chars.characters[indexCharNumber].name;
-
     let charBtn = document.createElement('a-box');
     charBtn.setAttribute('scale', '0.8 0.8 0.01');
     charBtn.setAttribute('material', 'src:#talk; opacity:0.5;transparent:true;');
@@ -382,7 +378,6 @@ function createWall(WALL_SIZE, WALL_HEIGHT, position, wallTexture, poster, poste
         poster.setAttribute('depth', WALL_SIZE / 100); // Very thin, like a poster
         poster.setAttribute('position', '0 0 0.5'); // Slightly in front of the wall
         poster.setAttribute('material', 'src:#' + 'poster' + posterNum); // Example material, can be changed
-
         // Append the poster to the wall
         wall.appendChild(poster);
     }
@@ -707,17 +702,7 @@ function createRooms() {
             }
         }
     }
-    // top down map update pos - FUTURE FEATURE
-    // MapMaker(mapData);
 } //END ROOM LOOP
-
-// Map on 2D Map?
-// function MapMaker(mapData) {
-//     const playerMap = document.createElement('a-entity');
-//     playerMap.setAttribute('playermap', '');
-//     document.querySelector('#mapUI').appendChild(playerMap)
-// }
-
 
 // RETURN player health
 function getPlayerHealth() {
@@ -737,13 +722,11 @@ function setPlayerHealth(amountToTakeOff) {
         }
     }
 }
-
 function resetPlayerHealth() {
     if (player) {
         player.health = 100;
     }
 }
-
 // calc dialogue lengths per char 
 function countDialogue(charID) {
     let counter = 0;
@@ -757,7 +740,6 @@ function countDialogue(charID) {
     console.log('counter val' + counter);
     return counter;
 };
-
 function finalDiagID(charID) {
     const finalDiagID = countDialogue(charID);
     return diag.passage[finalDiagID - 1].diagID;
